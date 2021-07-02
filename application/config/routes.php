@@ -52,8 +52,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['checkout']['post'] = 'awx_controller/do_checkout';
 $route['success']['get']   = 'awx_controller/success';
 $route['failure']['get']   = 'awx_controller/failure';
+$route['embedded-fields-for-card-payments'] = 'awx_controller/checkout';
 
-
-$route['default_controller'] = 'awx_controller/checkout';
+$route['default_controller'] = 'awx_controller/index';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

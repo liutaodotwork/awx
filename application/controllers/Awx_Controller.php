@@ -1,5 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
+require VENDORPATH . '/autoload.php';
 
 class Awx_Controller extends CI_Controller
 {
@@ -17,13 +18,13 @@ class Awx_Controller extends CI_Controller
         ] );
 
         $this->load->helper( [
-            'url'
+            'url',
+            'string'
         ] );
 
         $this->vars[ 'asset_path' ] = '/assets';
         $this->vars[ 'is_mobile' ] = $this->agent->is_mobile();
-
-        $this->secret_key = 'sk_test_92d9ea33-3fe3-4b66-bdd8-3dee0b1f6b19';
+        $this->awx_domain = 'https://pci-api-demo.airwallex.com';
     }
 
     // --------------------------------------------------------------------
@@ -31,8 +32,19 @@ class Awx_Controller extends CI_Controller
     /**
      * Checkout Page.
      */
+    public function index()
+    {
+    }
+    // --------------------------------------------------------------------
+
+    /**
+     * Checkout Page.
+     */
     public function checkout()
     {
+        $this->vars[ 'client_id' ]  = $this->input->get( 'c', TRUE );
+        $this->vars[ 'api_key' ]    = $this->input->get( 'k', TRUE );
+
         $this->load->view( 'checkout', $this->vars );
     }
 
@@ -50,19 +62,14 @@ class Awx_Controller extends CI_Controller
 
         $rules = [
             [
-                'field' => 'name',
-                'label' => 'Name',
+                'field' => 'client-id',
+                'label' => 'Client ID',
                 'rules' => 'trim|required|max_length[225]'
             ],
             [
-                'field' => 'email',
-                'label' => 'Email',
-                'rules' => 'trim|required|valid_email|max_length[225]'
-            ],
-            [
-                'field' => 'cko-token',
-                'label' => 'Token',
-                'rules' => 'trim|required'
+                'field' => 'api-key',
+                'label' => 'API Key',
+                'rules' => 'trim|required|max_length[225]'
             ]
         ];
         $config = [
@@ -72,60 +79,74 @@ class Awx_Controller extends CI_Controller
         $this->load->library( 'form_validation', $config );
         $this->form_validation->set_rules( $rules );
 
-        $error_text = 'Invalid mobile number';
         if ( $this->form_validation->run() === FALSE )
         {
             $error_msg = [
-                'name'      => form_error( 'name' ),
-                'email'     => form_error( 'email' ),
-                'cko-token' => form_error( 'cko-token' ),
+                'client_id'   => form_error( 'client-id' ),
+                'api_key'     => form_error( 'api-key' )
             ];
             $this->json_response( [ 'result' => 0, 'msg' => $error_msg ] );
             return FALSE;
         }
 
-        
-        $checkout           = new CheckoutApi( $this->secret_key );
+        $client_id = $this->input->post( 'client-id', TRUE );
+        $api_key = $this->input->post( 'api-key', TRUE );
 
-        // Payment details
-        $cko_token  = $this->input->post( 'cko-token', TRUE );
-        $amount     = $this->input->post( 'amount', TRUE );
+        $token = $this->get_api_token( $client_id, $api_key );
 
-        $method             = new TokenSource( $cko_token );
-        $payment            = new Payment( $method, 'GBP' );
-        $payment->amount    = $amount * 100;
-        $payment->reference = 'ord_' . time();
-        $payment->threeDs   = new ThreeDs( TRUE );
-        $payment->risk      = new Risk( TRUE );
-        $payment->setIdempotencyKey( 'ord_' . time() );
-
-        // User details
-        $name   = $this->input->post( 'name', TRUE );
-        $email  = $this->input->post( 'email', TRUE );
-
-        $customer           = new Customer();
-        $customer->email    = $email;
-        $customer->name     = $name;
-        $payment->customer  = $customer;
-
-        try
+        if ( FALSE === $token )
         {
-            $response       = $checkout->payments()->request( $payment );
-            $redirection    = $response->getRedirection();
-
-            $this->json_response( [ 'result' => 1, 'redirection' => $redirection ] );
-            return TRUE;
-        }
-        catch ( CheckoutModelException $ex )
-        {
-            return $ex->getErrors();
-        }
-        catch ( CheckoutHttpException $ex )
-        {
-            return $ex->getErrors();
+            $this->json_response( [ 'result' => 0, 'msg' => [
+                'token' => 'Invalid Client ID or API Key'
+            ] ] );
+            return FALSE;
         }
 
-        $this->json_response( [ 'result' => 1 ] );
+        $order = [
+            'request_id'        => random_string(),
+            'amount'            => '860',
+            'currency'          => 'USD',
+            'merchant_order_id' => random_string(),
+            'order' => [
+                'products' => [
+                    [
+                    'code' => random_string(),
+                    'sku'  => random_string(),
+                    'name' => 'iPhone XR',
+                    'desc' => '64 GB White',
+                    'quantity' => 1,
+                    'unit_price' => 850,
+                    'type' => 'physical'
+                    ],
+                    [
+                    'code' => random_string(),
+                    'sku'  => random_string(),
+                    'name' => 'Shipping',
+                    'desc' => 'Ship to the US',
+                    'quantity' => 1,
+                    'unit_price' => 10,
+                    'type' => 'shipping'
+                    ],
+                ],
+                'shipping' => [
+                    'first_name' => 'Steve',
+                    'last_name'  => 'Gates',
+                    'phone_number' => '+187631283',
+                    'shipping_method' => 'DEFINED by YOUR WEBSITE',
+                    'address' => [
+                        'country_code' => "US",
+                        'state' => "AK",
+                        'city' => "Akhiok",
+                        'street' => "Street No. 4",
+                        'postcode' => "99654"
+                    ]
+                ]
+            ]
+        ];
+
+        $intent = $this->get_secret( $token, $order );
+    
+        $this->json_response( [ 'result' => 1, 'intent' => $intent ] );
         return TRUE;
     }
 
@@ -136,25 +157,30 @@ class Awx_Controller extends CI_Controller
      */
     public function success()
     {
-        $cko_session_id = $this->input->get( 'cko-session-id', TRUE );
-        if ( ! empty( $cko_session_id ) )
+        $client_id = $this->input->get( 'c', TRUE );
+        $api_key = $this->input->get( 'k', TRUE );
+        $intent_id = $this->input->get( 'id', TRUE );
+        if ( empty( $intent_id ) OR  empty( $client_id ) OR empty( $api_key )  )
         {
-            $checkout = new CheckoutApi( $this->secret_key );
-
-            try
-            {
-                $details = $checkout->payments()->details( $cko_session_id );
-
-                $this->vars[ 'cko_source_id' ]  = $details->source[ 'id' ];
-                $this->vars[ 'order_number' ]   = $details->reference;
-                $this->vars[ 'name' ]           = $details->customer[ 'name' ];
-                $this->vars[ 'email' ]          = $details->customer[ 'email' ];
-            }
-            catch(CheckoutHttpException $ex)
-            {
-                return $ex->getErrors();
-            }
+            show_404();
         }
+
+        $token = $this->get_api_token( $client_id, $api_key );
+
+        if ( FALSE === $token )
+        {
+            show_404();
+        }
+
+        $intent = $this->get_payment_intent( $token, $intent_id );
+
+        if ( FALSE === $intent )
+        {
+            show_404();
+        }
+
+        $this->vars[ 'intent' ] = $intent;
+        $this->vars[ 'back_url' ] = '/embedded-fields-for-card-payments?c=' . $client_id . '&k=' . $api_key;
 
         $this->load->view( 'success', $this->vars );
     }
@@ -166,25 +192,6 @@ class Awx_Controller extends CI_Controller
      */
     public function failure()
     {
-        $cko_session_id = $this->input->get( 'cko-session-id', TRUE );
-        if ( ! empty( $cko_session_id ) )
-        {
-            $checkout = new CheckoutApi( $this->secret_key );
-
-            try
-            {
-                $details = $checkout->payments()->details( $cko_session_id );
-
-                $this->vars[ 'order_number' ]   = $details->reference;
-                $this->vars[ 'name' ]           = $details->customer[ 'name' ];
-                $this->vars[ 'email' ]          = $details->customer[ 'email' ];
-            }
-            catch(CheckoutHttpException $ex)
-            {
-                return $ex->getErrors();
-            }
-        }
-
         $this->load->view( 'failure', $this->vars );
     }
 
@@ -208,6 +215,99 @@ class Awx_Controller extends CI_Controller
         $this->vars[ 'result_page' ] = site_url( $result_uri );
 
         $this->load->view( 'three_ds_result', $this->vars );
+    }
+
+    // --------------------------------------------------------------------
+
+    /**
+     * Get API Access token.
+     */
+    private function get_api_token( $client_id = '', $api_key = '' )
+    {
+        $client = new \GuzzleHttp\Client();
+        try
+        {
+             $response = $client->request( 'POST', $this->awx_domain . '/api/v1/authentication/login', [
+                'headers' => [
+                    'x-api-key'     => $api_key,
+                    'x-client-id'   => $client_id
+                ]
+            ] );
+
+            if ( '201' != $response->getStatusCode() )
+            {
+                return FALSE;
+            }
+
+            $token = json_decode( $response->getBody(), TRUE );
+            return $token[ 'token' ];
+        } 
+        catch (\Throwable $th)
+        {
+            return FALSE;
+        }
+    }
+
+    // --------------------------------------------------------------------
+
+    /**
+     * Get intent id and client secret.
+     */
+    private function get_secret( $token = '', $body = [] )
+    {
+        $client = new \GuzzleHttp\Client();
+        try
+        {
+            $response = $client->request( 'POST', $this->awx_domain . '/api/v1/pa/payment_intents/create', [
+                'headers' => [
+                    'Content-Type'  => 'application/json',
+                    'Authorization' => 'Bearer ' . $token
+                ],
+                'body' => json_encode( $body ) 
+            ] );
+
+            if ( '201' != $response->getStatusCode() )
+            {
+                return FALSE;
+            }
+
+            return json_decode( $response->getBody(), TRUE );
+        } 
+        catch (\Throwable $th)
+        {
+            return FALSE;
+        }
+    }
+
+
+    // --------------------------------------------------------------------
+
+    /**
+     * Get intent.
+     */
+    private function get_payment_intent( $token = '', $intent_id = '' )
+    {
+        $client = new \GuzzleHttp\Client();
+        try
+        {
+            $response = $client->request( 'GET', $this->awx_domain . '/api/v1/pa/payment_intents/' . $intent_id, [
+                'headers' => [
+                    'Content-Type'  => 'application/json',
+                    'Authorization' => 'Bearer ' . $token
+                ]
+            ] );
+
+            if ( '200' != $response->getStatusCode() )
+            {
+                return FALSE;
+            }
+
+            return json_decode( $response->getBody(), TRUE );
+        } 
+        catch (\Throwable $th)
+        {
+            return FALSE;
+        }
     }
 
     // --------------------------------------------------------------------

@@ -5,6 +5,7 @@
 	"support": {
 	},
 	"require": {
-		"php": ">=5.3.7"
+		"php": ">=5.3.7",
+		"guzzlehttp/guzzle": "^7.3"
 	}
 }
