@@ -49,11 +49,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | Examples:	my-controller/index	-> my_controller/index
 |		my-controller/my-method	-> my_controller/my_method
 */
-$route['checkout']['post'] = 'awx_controller/do_checkout';
-$route['success']['get']   = 'awx_controller/success';
-$route['failure']['get']   = 'awx_controller/failure';
-$route['embedded-fields-for-card-payments'] = 'awx_controller/checkout';
+$route['checkout']['post'] = 'Awx_Controller/do_checkout';
+$route['success']['get']   = 'Awx_Controller/success';
+$route['failure']['get']   = 'Awx_Controller/failure';
+$route['embedded-fields-for-card-payments'] = 'Awx_Controller/checkout';
 
-$route['default_controller'] = 'awx_controller/index';
+$route['default_controller'] = 'Awx_Controller/index';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
