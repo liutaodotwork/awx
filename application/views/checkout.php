@@ -121,6 +121,11 @@
                                             </div>
                                             <div id="cardNumber"></div>
                                         </div>
+                                        <div class="form-group col-12">
+                                            <div class="input-group">
+                                                <input class="form-control" id="name-on-card" type="text" name="name-on-card" placeholder="Name on Card"><span class="input-group-addon"><i class="icon-user"></i></span>
+                                            </div>
+                                        </div>
                                         <div class="form-group col-6">
                                             <div class="icon-container">
                                                 <i class="icon-calendar"></i>
@@ -133,6 +138,7 @@
                                             </div>
                                             <div id="cvc"></div>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -374,6 +380,9 @@
                                             "postcode": "99654"
                                         }
                                     },
+                                    "card": {
+                                        "name": $('#name-on-card').val()
+                                    }
                                 }
                             })
                             .then((response) => {
