@@ -248,7 +248,9 @@
                         'placeholder': 'Card Number',
                         'autoCapture': true
                     });
-                    const expiry = Airwallex.createElement('expiry');
+                    const expiry = Airwallex.createElement('expiry', {
+                        'placeholder': 'MM/YY'
+                    });
                     const cvc = Airwallex.createElement('cvc', {
                         'placeholder': 'CVV'
                     });
