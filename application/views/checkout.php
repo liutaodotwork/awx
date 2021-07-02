@@ -3,9 +3,9 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Checkout - Smooth CKO Flow</title>
+        <title>Checkout - Card Payment Acceptance</title>
         <!-- SEO Meta Tags-->
-        <meta name="description" content="Checkout - Smooth CKO Flow">
+        <meta name="description" content="Checkout - Card Payment Acceptance">
         <!-- Mobile Specific Meta Tag-->
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <!-- Vendor Styles including: Bootstrap, Font Icons, Plugins, etc.-->
