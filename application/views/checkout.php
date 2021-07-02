@@ -202,7 +202,7 @@
                                         <div class="form-group col-12">
                                             <div class="custom-control custom-checkbox">
                                                 <input class="custom-control-input" type="checkbox" checked id="invalidCheck2">
-                                                <label class="custom-control-label" for="invalidCheck2">I am aware that this demo only accepts <b>Airwallex Demo Accounts</b> and the credentials will <b>NEVER</b> be saved.</label>
+                                                <label class="custom-control-label" for="invalidCheck2">I accept that this demo only allows <b>Airwallex Demo Accounts</b> and the credentials will <b>NEVER</b> be saved.</label>
                                             </div>
                                         </div>
                                     </div>
