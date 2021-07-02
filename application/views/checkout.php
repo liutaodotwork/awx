@@ -184,7 +184,7 @@
                                     </tr>
                                 </table>
                             </section>
-                            <div class="card mt-4">
+                            <div class="card mt-4 mb-5">
                                 <div class="card-header"><span class="text-lg">Demo API Access</span></div>
                                 <div class="card-body">
                                     <p id="error-user" class="text-primary mb-3"></p>
