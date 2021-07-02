@@ -22,7 +22,7 @@ class Awx_Controller extends CI_Controller
             'string'
         ] );
 
-        $this->vars[ 'asset_path' ] = ( ENVIRONMENT == 'production' ) ? 'https://raw.githubusercontent.com/liutaodotwork/awx/master/webroot/assets' : '/assets';
+        $this->vars[ 'asset_path' ] = ( ENVIRONMENT == 'production' ) ? '/assets' : '/assets';
         $this->vars[ 'is_mobile' ] = $this->agent->is_mobile();
         $this->awx_domain = 'https://pci-api-demo.airwallex.com';
     }
