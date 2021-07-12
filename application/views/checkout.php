@@ -218,10 +218,10 @@
                 <div class="modal-content">
                     <div class="modal-body">
                         <h3 class="mb-4 text-primary text-center"><i class="icon-x-circle"></i> Sorry, payment failed!</h3>
-                        <p>Your payment failed, but you can try again with another card.</p>
+                        <p>Your payment failed, but you can <b> try again with another card</b>.</p>
                         <p>Please note: we will keep this UNPAID order for 5 minutes.</p>
                         <div class="padding-top-1x text-center">
-                        <button class="btn btn-primary" type="button" data-dismiss="modal"><i class="icon-credit-card"></i> Try Another Card</a>
+                        <button class="btn btn-primary" type="button" data-dismiss="modal"><i class="icon-credit-card"></i> Pay Now</a>
                         </div>
                     </div>
                 </div>
