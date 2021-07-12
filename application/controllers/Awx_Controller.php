@@ -40,7 +40,7 @@ class Awx_Controller extends CI_Controller
     /**
      * Checkout Page.
      */
-    public function checkout()
+    public function embedded_fields()
     {
         $this->vars[ 'client_id' ]  = $this->input->get( 'c', TRUE );
         $this->vars[ 'api_key' ]    = $this->input->get( 'k', TRUE );
@@ -53,7 +53,7 @@ class Awx_Controller extends CI_Controller
     /**
      * Do checkout.
      */
-    public function do_checkout()
+    public function do_checkout_embedded_fields()
     {
         if ( ! $this->input->is_ajax_request() )
         {
@@ -104,7 +104,7 @@ class Awx_Controller extends CI_Controller
 
         $order = [
             'request_id'        => random_string(),
-            'amount'            => '860',
+            'amount'            => '80.05',
             'currency'          => 'USD',
             'merchant_order_id' => random_string(),
             'order' => [

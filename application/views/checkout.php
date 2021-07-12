@@ -148,7 +148,7 @@
                             <div class="row">
                                 <div class="col-sm-3"></div>
                                 <div class="col-sm-6">
-                                    <button id="pay-button" class="btn btn-primary btn-block" disabled type="button" data-action="/checkout">Pay $860</button>
+                                    <button id="pay-button" class="btn btn-primary btn-block" disabled type="button" data-action="/embedded-fields-checkout">Pay $860</button>
                                 </div>
                                 <div class="col-sm-3"></div>
                               </div>
@@ -213,14 +213,16 @@
                 </div>
             </form>
         </div>
-        <div class="modal fade" id="modal-3ds" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog">
+        <div class="modal fade" id="modal-failure" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog">
         <div class="modal-dialog<?= ! $is_mobile ? ' modal-dialog-centered' : '' ?>" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">3D-Secure 2 Authentication</h5>
-                    </div>
                     <div class="modal-body">
-                        <iframe src="" style="border:none;height:450px"></iframe>
+                        <h3 class="mb-4 text-primary text-center"><i class="icon-x-circle"></i> Sorry, payment failed!</h3>
+                        <p>Your payment failed, but you can try again with another card.</p>
+                        <p>Please note: we will keep this UNPAID order for 5 minutes.</p>
+                        <div class="padding-top-1x text-center">
+                        <button class="btn btn-primary" type="button" data-dismiss="modal"><i class="icon-credit-card"></i> Pay Now</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -230,6 +232,7 @@
         <script>
             $( document ).ready( function()
             {
+
                 var card_is_completed = false;
                 var expiry_is_completed = false;
                 var cvc_is_completed = false;
@@ -355,13 +358,7 @@
                         }
                         else if ( data.result=='1' && data.redirection != undefined )
                         {
-                            var modal = $('#modal-3ds');
-                            $( modal ).on('shown.bs.modal',function()
-                            {
-                                $( modal ).find('iframe').attr('src',data.redirection)
-                            });
 
-                            $(modal).modal('show');
                         }
                         else if( data.result=='1' && data.intent != undefined )
                         {
@@ -397,7 +394,13 @@
                                 // STEP #6c: Listen to the error response
                                 /* Handle error response */
                                 // TODO
+                                console.log( response.original_code );
+                            
+                                var modal = $('#modal-failure');
 
+                                $(modal).modal('show');
+
+                                $('#pay-button').html('Pay $860').prop('disabled', false);
                             });
                         }
                     }
