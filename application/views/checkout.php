@@ -221,7 +221,7 @@
                         <p>Your payment failed, but you can try again with another card.</p>
                         <p>Please note: we will keep this UNPAID order for 5 minutes.</p>
                         <div class="padding-top-1x text-center">
-                        <button class="btn btn-primary" type="button" data-dismiss="modal"><i class="icon-credit-card"></i> Pay Now</a>
+                        <button class="btn btn-primary" type="button" data-dismiss="modal"><i class="icon-credit-card"></i> Try Another Card</a>
                         </div>
                     </div>
                 </div>
