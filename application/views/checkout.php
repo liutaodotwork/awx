@@ -138,6 +138,13 @@
                                             </div>
                                             <div id="cvc"></div>
                                         </div>
+                                        
+                                        <div class="form-group col-12 mt-4">
+                                            <div class="custom-control custom-checkbox">
+                                                <input class="custom-control-input" type="checkbox" checked id="invalidCheck2">
+                                                <label class="custom-control-label" for="invalidCheck2">Billing address is the same as the shipping address.</label>
+                                            </div>
+                                        </div>
 
                                     </div>
                                 </div>
