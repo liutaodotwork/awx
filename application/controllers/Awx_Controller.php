@@ -153,6 +153,19 @@ class Awx_Controller extends CI_Controller
     // --------------------------------------------------------------------
 
     /**
+     * Checkout Page.
+     */
+    public function direct_api()
+    {
+        $this->vars[ 'client_id' ]  = $this->input->get( 'c', TRUE );
+        $this->vars[ 'api_key' ]    = $this->input->get( 'k', TRUE );
+
+        $this->load->view( 'direct_api_checkout', $this->vars );
+    }
+
+    // --------------------------------------------------------------------
+
+    /**
      * Success Result.
      */
     public function success()
