@@ -1,7 +1,7 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-$route['embedded-fields-for-card-payments'] = 'Awx_Controller/embedded_fields';
-$route['embedded-fields-checkout']['post'] = 'Awx_Controller/do_checkout_embedded_fields';
+$route['embedded-fields-for-card-payments'] = 'Embedded_Fields_Controller/embedded_fields';
+$route['embedded-fields-checkout']['post'] = 'Embedded_Fields_Controller/do_checkout_embedded_fields';
 
 $route['direct-api-for-card-payments'] = 'Awx_Controller/direct_api';
 $route['direct-api-checkout']['post'] = 'Awx_Controller/do_checkout_direct_api';

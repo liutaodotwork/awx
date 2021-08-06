@@ -3,7 +3,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Checkout - Card Payment Acceptance</title>
+        <title>Airwallex Checkout - Card Payment Acceptance by embedded fields</title>
         <!-- SEO Meta Tags-->
         <meta name="description" content="Checkout - Card Payment Acceptance">
         <!-- Mobile Specific Meta Tag-->
@@ -80,7 +80,7 @@
         <div class="page-title">
             <div class="container">
                 <div class="column">
-                    <h1>Card Payment Demo</h1>
+                    <h1>Airwallex Card Payment Demo - Embedded Fields</h1>
                 </div>
             </div>
         </div>
@@ -111,8 +111,8 @@
                                     <p>We accept following cards:&nbsp;&nbsp;
                                         <img class="d-inline-block align-middle" src="https://checkout-demo.airwallex.com/static/media/visa.745a6485.svg" height="24" alt="Cerdit Cards">
                                         <img class="d-inline-block align-middle" src="https://checkout-demo.airwallex.com/static/media/mastercard.262f85fc.svg" height="24" alt="Cerdit Cards">
-                                        
-                                </p>
+                                    </p>
+<p><a href="https://www.airwallex.com/docs/online-payments__test-card-numbers" target="_blank">Click here to find Airwallex test cards</a></p>
                                     <p id="error-payment" class="text-primary mb-3"></p>
                                     <div class="row">
                                         <div class="form-group col-12">
@@ -155,7 +155,7 @@
                             <div class="row">
                                 <div class="col-sm-3"></div>
                                 <div class="col-sm-6">
-                                    <button id="pay-button" class="btn btn-primary btn-block" disabled type="button" data-action="/embedded-fields-checkout">Pay $860</button>
+                                    <button id="pay-button" class="btn btn-primary btn-block" disabled type="button" data-action="/embedded-fields-checkout"><i class="icon-credit-card"></i> Pay $860</button>
                                 </div>
                                 <div class="col-sm-3"></div>
                               </div>
@@ -208,8 +208,8 @@
                                         </div>
                                         <div class="form-group col-12">
                                             <div class="custom-control custom-checkbox">
-                                                <input class="custom-control-input" type="checkbox" checked id="invalidCheck2">
-                                                <label class="custom-control-label" for="invalidCheck2">I accept that this demo only allows <b>Airwallex Demo Accounts</b> and the credentials will <b>NEVER</b> be saved.</label>
+                                                <input class="custom-control-input" type="checkbox" checked id="invalidCheck1">
+                                                <label class="custom-control-label" for="invalidCheck1">I konw this demo only accepts <b>Airwallex Demo Accounts</b> and the credentials will <b>NEVER</b> be saved.</label>
                                             </div>
                                         </div>
                                     </div>
@@ -223,12 +223,15 @@
         <div class="modal fade" id="modal-failure" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog">
         <div class="modal-dialog<?= ! $is_mobile ? ' modal-dialog-centered' : '' ?>" role="document">
                 <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Payment Failed</h4>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    </div>
                     <div class="modal-body">
-                        <h3 class="mb-4 text-primary text-center"><i class="icon-x-circle"></i> Sorry, payment failed!</h3>
-                        <p>Your payment failed, but you can <b> try again with another card</b>.</p>
-                        <p>Please note: we will keep this UNPAID order for 5 minutes.</p>
+                        <p class="mt-3">Your payment failed, but you can <b> try again with another card</b>.</p>
+                        <p>Please ensure that the billing address you provided is the same one where your debit/credit card is registered.</p>
                         <div class="padding-top-1x text-center">
-                        <button class="btn btn-primary" type="button" data-dismiss="modal"><i class="icon-credit-card"></i> Pay Now</a>
+                        <button class="btn btn-primary" type="button" data-dismiss="modal"><i class="icon-credit-card"></i> Try Again</a>
                         </div>
                     </div>
                 </div>
@@ -239,7 +242,6 @@
         <script>
             $( document ).ready( function()
             {
-
                 var card_is_completed = false;
                 var expiry_is_completed = false;
                 var cvc_is_completed = false;
@@ -275,7 +277,6 @@
                     //document.getElementById('loading').style.display = 'none'; // Example: hide loading state
                     //document.getElementById('error').style.display = 'block'; // Example: show error
                     //document.getElementById('error').innerHTML = error.message; // Example: set error message
-                    console.error('There was an error', error);
                 }
 
                 window.addEventListener('onReady', (event) => {
@@ -361,7 +362,7 @@
                                 clientId.focus();
                             }
 
-                            $('#pay-button').html('Pay $860').prop('disabled', false);
+                            $('#pay-button').html('<i class="icon-credit-card"></i> Pay $860').prop('disabled', false);
                         }
                         else if ( data.result=='1' && data.redirection != undefined )
                         {
@@ -392,22 +393,19 @@
                                 }
                             })
                             .then((response) => {
-                                // STEP #6b: Listen to the request response
-                                /* Handle confirm response */
+                                // Handle successful responses
                                 window.location = '/success?id=' + data.intent.id + '&c=' + $('#client-id').val() + '&k=' + $('#api-key').val();
 
                             })
                             .catch((response) => {
-                                // STEP #6c: Listen to the error response
-                                /* Handle error response */
-                                // TODO
+                                // Handle error responses
                                 console.log( response.original_code );
                             
                                 var modal = $('#modal-failure');
 
                                 $(modal).modal('show');
 
-                                $('#pay-button').html('Pay $860').prop('disabled', false);
+                                $('#pay-button').html('<i class="icon-credit-card"></i> Pay $860').prop('disabled', false);
                             });
                         }
                     }

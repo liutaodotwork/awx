@@ -1,27 +1,12 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-require VENDORPATH . '/autoload.php';
-
-class Awx_Controller extends CI_Controller
+if ( ! class_exists( 'Awx_Controller', FALSE ) )
 {
-    /**
-     * Variables for front pages
-     *
-     * @access public
-     */
-    protected $vars = [];
+    require_once( APPPATH . 'controllers/Awx_Controller.php' );
+}
 
-    // --------------------------------------------------------------------
-
-    /**
-     * AWX Doamin
-     *
-     * @access public
-     */
-    protected $awx_domain = 'https://pci-api-demo.airwallex.com';
-
-    // --------------------------------------------------------------------
-
+class Embedded_Fields_Controller extends Awx_Controller
+{
     /**
      * Constructor
      *
@@ -30,18 +15,6 @@ class Awx_Controller extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-
-        $this->load->library( [
-            'user_agent'
-        ] );
-
-        $this->load->helper( [
-            'url',
-            'string'
-        ] );
-
-        $this->vars[ 'asset_path' ] = ( ENVIRONMENT == 'production' ) ? '/assets' : '/assets';
-        $this->vars[ 'is_mobile' ] = $this->agent->is_mobile();
     }
 
     // --------------------------------------------------------------------
@@ -62,7 +35,7 @@ class Awx_Controller extends CI_Controller
         $this->vars[ 'client_id' ]  = $this->input->get( 'c', TRUE );
         $this->vars[ 'api_key' ]    = $this->input->get( 'k', TRUE );
 
-        $this->load->view( 'checkout', $this->vars );
+        $this->load->view( 'embedded_fields_checkout', $this->vars );
     }
 
     // --------------------------------------------------------------------
@@ -228,114 +201,22 @@ class Awx_Controller extends CI_Controller
     // --------------------------------------------------------------------
 
     /**
-     * Get API Access token.
+     * 3DS Result.
      */
-    protected function get_api_token( $client_id = '', $api_key = '' )
+    public function three_ds_result( $res = 1 )
     {
-        $client = new \GuzzleHttp\Client();
-        try
+        $res =  ! in_array( $res, [ 1, 0 ] ) ? 1 : $res;
+
+        $result_uri = ( $res == 1 ) ? 'success' : 'failure';
+
+        $cko_session_id = $this->input->get( 'cko-session-id', TRUE );
+        if ( ! empty( $cko_session_id ) )
         {
-             $response = $client->request( 'POST', $this->awx_domain . '/api/v1/authentication/login', [
-                'headers' => [
-                    'x-api-key'     => $api_key,
-                    'x-client-id'   => $client_id
-                ]
-            ] );
-
-            if ( '201' != $response->getStatusCode() )
-            {
-                return FALSE;
-            }
-
-            $token = json_decode( $response->getBody(), TRUE );
-            return $token[ 'token' ];
-        } 
-        catch (\Throwable $th)
-        {
-            return FALSE;
-        }
-    }
-
-    // --------------------------------------------------------------------
-
-    /**
-     * Get intent id and client secret.
-     */
-    protected function get_secret( $token = '', $body = [] )
-    {
-        $client = new \GuzzleHttp\Client();
-        try
-        {
-            $response = $client->request( 'POST', $this->awx_domain . '/api/v1/pa/payment_intents/create', [
-                'headers' => [
-                    'Content-Type'  => 'application/json',
-                    'Authorization' => 'Bearer ' . $token
-                ],
-                'body' => json_encode( $body ) 
-            ] );
-
-            if ( '201' != $response->getStatusCode() )
-            {
-                return FALSE;
-            }
-
-            return json_decode( $response->getBody(), TRUE );
-        } 
-        catch (\Throwable $th)
-        {
-            return FALSE;
-        }
-    }
-
-
-    // --------------------------------------------------------------------
-
-    /**
-     * Get intent.
-     */
-    protected function get_payment_intent( $token = '', $intent_id = '' )
-    {
-        $client = new \GuzzleHttp\Client();
-        try
-        {
-            $response = $client->request( 'GET', $this->awx_domain . '/api/v1/pa/payment_intents/' . $intent_id, [
-                'headers' => [
-                    'Content-Type'  => 'application/json',
-                    'Authorization' => 'Bearer ' . $token
-                ]
-            ] );
-
-            if ( '200' != $response->getStatusCode() )
-            {
-                return FALSE;
-            }
-
-            return json_decode( $response->getBody(), TRUE );
-        } 
-        catch (\Throwable $th)
-        {
-            return FALSE;
-        }
-    }
-
-    // --------------------------------------------------------------------
-
-    /**
-     * Json response
-     *
-     * @access protected
-     */
-    protected function json_response( $json_arr = [], $is_html = FALSE )
-    {
-        if ( ENVIRONMENT !== 'testing' AND $is_html === FALSE )
-        {
-            header('Content-Type: application/json; charset=UTF-8');
-            header("Cache-Control: no-cache, no-store, must-revalidate"); // HTTP 1.1.
-            header("Pragma: no-cache"); // HTTP 1.0.
-            header("Expires: 0"); // Proxies.
+            $result_uri .= '?cko-session-id=' . $cko_session_id;
         }
 
-        echo json_encode( $json_arr );
-    }
+        $this->vars[ 'result_page' ] = site_url( $result_uri );
 
+        $this->load->view( 'three_ds_result', $this->vars );
+    }
 }
