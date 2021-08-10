@@ -3,7 +3,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Success - Card Payment Acceptance</title>
+        <title>Order Placed - Card Payment Acceptance</title>
         <!-- SEO Meta Tags-->
         <meta name="description" content="Checkout Success Result - Card Payment Acceptance">
         <!-- Mobile Specific Meta Tag-->
@@ -22,7 +22,7 @@
         <div class="page-title">
             <div class="container">
                 <div class="column">
-                    <h1>Success</h1>
+                    <h1>Thank You</h1>
                 </div>
             </div>
         </div>
