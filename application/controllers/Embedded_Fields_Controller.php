@@ -32,8 +32,19 @@ class Embedded_Fields_Controller extends Awx_Controller
      */
     public function embedded_fields()
     {
-        $this->vars[ 'client_id' ]  = $this->input->get( 'c', TRUE );
-        $this->vars[ 'api_key' ]    = $this->input->get( 'k', TRUE );
+        $this->vars[ 'client_id' ]      = $this->input->get( 'c', TRUE );
+        $this->vars[ 'api_key' ]        = $this->input->get( 'k', TRUE );
+        $this->vars[ 'customer_id' ]    = $this->input->get( 'cu', TRUE );
+
+
+        $token = $this->get_api_token( $this->vars[ 'client_id' ], $this->vars[ 'api_key' ] );
+
+        if ( ! empty( $token ) )
+        {
+            $this->get_customer( $token, $this->vars[ 'customer_id' ] );
+
+        }
+
 
         $this->load->view( 'embedded_fields_checkout', $this->vars );
     }

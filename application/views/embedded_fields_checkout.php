@@ -104,7 +104,38 @@
                         </div>
 
                         <div class="card mb-4">
-                            <div class="card-header"><span class="text-lg">Payment Details</span></div>
+                            <div class="card-header"><span class="text-lg">Pay With A Saved Card</span></div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                      <tbody>
+                                        <tr>
+                                          <td class="align-middle">
+                                            <div class="custom-control custom-radio mb-0">
+                                              <input class="custom-control-input" type="radio" id="local" name="shipping-method">
+                                              <label class="custom-control-label" for="local"></label>
+                                            </div>
+                                          </td>
+                                          <td class="align-middle"><span class="text-gray-dark">Local Shipping</span><br><span class="text-muted text-sm">All Addresses(default zone), United States &amp; Canada</span></td>
+                                          <td class="align-middle">up to one week</td>
+                                        </tr>
+                                        <tr>
+                                          <td class="align-middle">
+                                            <div class="custom-control custom-radio mb-0">
+                                              <input class="custom-control-input" type="radio" id="flat" name="shipping-method">
+                                              <label class="custom-control-label" for="flat"></label>
+                                            </div>
+                                          </td>
+                                          <td class="align-middle"><span class="text-gray-darkm">Flat Rate</span><br><span class="text-muted text-sm">All Addresses(default zone)</span></td>
+                                          <td class="align-middle">5 - 7 days</td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
+                            </div>
+                        </div>
+                        <div class="card mb-4">
+                            <div class="card-header"><span class="text-lg">Pay With A New Card</span></div>
                             <div class="card-body">
                                 <div class="text-center modal-spinner"><div class="spinner-border text-primary m-2" role="status"></div></div>
                                 <div class="awx-fields" style="display:none;">
@@ -142,7 +173,11 @@
                                         <div class="form-group col-12 mt-4">
                                             <div class="custom-control custom-checkbox">
                                                 <input class="custom-control-input" type="checkbox" checked id="invalidCheck2">
-                                                <label class="custom-control-label" for="invalidCheck2">Billing address is the same as the shipping address.</label>
+                                                <label class="custom-control-label" for="invalidCheck2">Save this card for your next payment.</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input class="custom-control-input" type="checkbox" checked id="invalidCheck3">
+                                                <label class="custom-control-label" for="invalidCheck3">Your billing address and shipping address are the same.</label>
                                             </div>
                                         </div>
 
@@ -198,12 +233,17 @@
                                     <div class="row">
                                         <div class="form-group col-12">
                                             <div class="input-group">
-                                                <input class="form-control" id="client-id" type="text" name="client-id" placeholder="Client ID" value="<?= $client_id ?>"><span class="input-group-addon"><i class="icon-user"></i></span>
+                                                <input class="form-control" id="client-id" type="text" name="client-id" placeholder="Client ID" value="<?= $client_id ?>"><span class="input-group-addon"><i class="icon-lock"></i></span>
                                             </div>
                                         </div>
                                         <div class="form-group col-12">
                                             <div class="input-group">
                                                 <input class="form-control" id="api-key" type="text" name="api-key" placeholder="API Key" value="<?= $api_key ?>"><span class="input-group-addon"><i class="icon-lock"></i></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-12">
+                                            <div class="input-group">
+                                                <input class="form-control" id="customer-id" type="text" name="customer-id" placeholder="Current Customer ID" value="<?= $customer_id ?>"><span class="input-group-addon"><i class="icon-user"></i></span>
                                             </div>
                                         </div>
                                         <div class="form-group col-12">

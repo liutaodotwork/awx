@@ -321,6 +321,36 @@ class Awx_Controller extends CI_Controller
     // --------------------------------------------------------------------
 
     /**
+     * Get customer.
+     */
+    protected function get_customer( $token = '', $customer_id = '' )
+    {
+        $client = new \GuzzleHttp\Client();
+        try
+        {
+            $response = $client->request( 'GET', $this->awx_domain . '/api/v1/pa/customers/' . $customer_id, [
+                'headers' => [
+                    'Content-Type'  => 'application/json',
+                    'Authorization' => 'Bearer ' . $token
+                ]
+            ] );
+
+            if ( '200' != $response->getStatusCode() )
+            {
+                return FALSE;
+            }
+
+            return json_decode( $response->getBody(), TRUE );
+        } 
+        catch (\Throwable $th)
+        {
+            return FALSE;
+        }
+    }
+
+    // --------------------------------------------------------------------
+
+    /**
      * Json response
      *
      * @access protected
