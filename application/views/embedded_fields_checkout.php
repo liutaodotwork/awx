@@ -43,7 +43,7 @@
             }
 
             #payment-form .icon-container.awx-focus {
-                color: #F03B2D;
+                color: #05f;
             }
 
             #payment-form [id$="-error"] {
@@ -61,9 +61,9 @@
             }
 
             #payment-form iframe.awx-focus {
-                border-color: #F03B2D !important;
+                border-color: #05f !important;
                 outline: none !important;
-                background-color: rgba(240,59,45,0.02) !important;
+                background-color: rgba(0,85,255,0.02) !important;
                 color: #505050 !important;
                 box-shadow: none !important
             }

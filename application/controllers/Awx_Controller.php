@@ -40,7 +40,7 @@ class Awx_Controller extends CI_Controller
             'string'
         ] );
 
-        $this->vars[ 'asset_path' ] = ( ENVIRONMENT == 'production' ) ? '/assets' : '/assets';
+        $this->vars[ 'asset_path' ] = ( ENVIRONMENT == 'production' ) ? '/dist' : '/dist';
         $this->vars[ 'is_mobile' ] = $this->agent->is_mobile();
     }
 
