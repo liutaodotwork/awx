@@ -52,133 +52,6 @@ class Awx_Controller extends CI_Controller
     public function index()
     {
     }
-    // --------------------------------------------------------------------
-
-    /**
-     * Checkout Page.
-     */
-    public function embedded_fields()
-    {
-        $this->vars[ 'client_id' ]  = $this->input->get( 'c', TRUE );
-        $this->vars[ 'api_key' ]    = $this->input->get( 'k', TRUE );
-
-        $this->load->view( 'checkout', $this->vars );
-    }
-
-    // --------------------------------------------------------------------
-
-    /**
-     * Do checkout.
-     */
-    public function do_checkout_embedded_fields()
-    {
-        if ( ! $this->input->is_ajax_request() )
-        {
-            show_error(404);
-        }
-
-        $rules = [
-            [
-                'field' => 'client-id',
-                'label' => 'Client ID',
-                'rules' => 'trim|required|max_length[225]'
-            ],
-            [
-                'field' => 'api-key',
-                'label' => 'API Key',
-                'rules' => 'trim|required|max_length[225]'
-            ]
-        ];
-        $config = [
-            'error_prefix' => '',
-            'error_suffix' => '',
-        ];
-        $this->load->library( 'form_validation', $config );
-        $this->form_validation->set_rules( $rules );
-
-        if ( $this->form_validation->run() === FALSE )
-        {
-            $error_msg = [
-                'client_id'   => form_error( 'client-id' ),
-                'api_key'     => form_error( 'api-key' )
-            ];
-            $this->json_response( [ 'result' => 0, 'msg' => $error_msg ] );
-            return FALSE;
-        }
-
-        $client_id = $this->input->post( 'client-id', TRUE );
-        $api_key = $this->input->post( 'api-key', TRUE );
-
-        $token = $this->get_api_token( $client_id, $api_key );
-
-        if ( FALSE === $token )
-        {
-            $this->json_response( [ 'result' => 0, 'msg' => [
-                'token' => 'Invalid Client ID or API Key'
-            ] ] );
-            return FALSE;
-        }
-
-        $order = [
-            'request_id'        => random_string(),
-            'amount'            => '80.05',
-            'currency'          => 'USD',
-            'merchant_order_id' => random_string(),
-            'order' => [
-                'products' => [
-                    [
-                    'code' => random_string(),
-                    'sku'  => random_string(),
-                    'name' => 'iPhone XR',
-                    'desc' => '64 GB White',
-                    'quantity' => 1,
-                    'unit_price' => 850,
-                    'type' => 'physical'
-                    ],
-                    [
-                    'code' => random_string(),
-                    'sku'  => random_string(),
-                    'name' => 'Shipping',
-                    'desc' => 'Ship to the US',
-                    'quantity' => 1,
-                    'unit_price' => 10,
-                    'type' => 'shipping'
-                    ],
-                ],
-                'shipping' => [
-                    'first_name' => 'Steve',
-                    'last_name'  => 'Gates',
-                    'phone_number' => '+187631283',
-                    'shipping_method' => 'DEFINED by YOUR WEBSITE',
-                    'address' => [
-                        'country_code' => "US",
-                        'state' => "AK",
-                        'city' => "Akhiok",
-                        'street' => "Street No. 4",
-                        'postcode' => "99654"
-                    ]
-                ]
-            ]
-        ];
-
-        $intent = $this->get_secret( $token, $order );
-    
-        $this->json_response( [ 'result' => 1, 'intent' => $intent ] );
-        return TRUE;
-    }
-
-    // --------------------------------------------------------------------
-
-    /**
-     * Checkout Page.
-     */
-    public function direct_api()
-    {
-        $this->vars[ 'client_id' ]  = $this->input->get( 'c', TRUE );
-        $this->vars[ 'api_key' ]    = $this->input->get( 'k', TRUE );
-
-        $this->load->view( 'direct_api_checkout', $this->vars );
-    }
 
     // --------------------------------------------------------------------
 
@@ -287,6 +160,38 @@ class Awx_Controller extends CI_Controller
         }
     }
 
+
+    // --------------------------------------------------------------------
+
+    /**
+     * Confirm a payment intent.
+     */
+    protected function confirm_intent( $token = '', $intent_id = '', $body = [] )
+    {
+        $client = new \GuzzleHttp\Client();
+
+        try
+        {
+            $response = $client->request( 'POST', $this->awx_domain . '/api/v1/pa/payment_intents/' . $intent_id . '/confirm', [
+                'headers' => [
+                    'Content-Type'  => 'application/json',
+                    'Authorization' => 'Bearer ' . $token
+                ],
+                'body' => json_encode( $body ) 
+            ] );
+
+            if ( '200' != $response->getStatusCode() )
+            {
+                return FALSE;
+            }
+
+            return json_decode( $response->getBody(), TRUE );
+        } 
+        catch (\Throwable $th)
+        {
+            return FALSE;
+        }
+    }
 
     // --------------------------------------------------------------------
 
