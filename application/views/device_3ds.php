@@ -6,8 +6,8 @@
             <input type="hidden" id="JWT" name="JWT" value="<?= $jwt ?>" /> 
             <input type="submit" name="continue" value="Continue" /> 
         </form> 
-		<script type="text/javascript">
+        <script type="text/javascript">
             setTimeout("collectionForm.submit();", 1);
-		</script>
+        </script>
     </body> 
 </html>

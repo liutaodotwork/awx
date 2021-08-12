@@ -149,7 +149,7 @@ class Direct_Api_Controller extends Awx_Controller
                     ]
                 ]
             ],
-            'return_url' => 'http://dev.awx/direct-api-callback'
+            'return_url' => site_url( 'direct-api-callback' )
         ];
 
         $intent = $this->get_secret( $token, $order );
@@ -186,7 +186,10 @@ class Direct_Api_Controller extends Awx_Controller
             ],
             'payment_method_options' => [
                 'card' => [
-                    'auto_capture' => true
+                    'auto_capture'  => true,
+                    'three_ds'      => [
+                        'return_url' => site_url( 'direct-api-callback/' . $intent[ 'id' ] ) . '?c=' . $client_id . '&k=' . $api_key
+                    ]
                 ]
             ]
         ];
@@ -200,7 +203,6 @@ class Direct_Api_Controller extends Awx_Controller
             ] ] );
             return FALSE;
         }
-
 
         // Optional 5 - 3DS
         if ( 'REQUIRES_CUSTOMER_ACTION' == $confirm_result[ 'status' ] )
@@ -265,11 +267,76 @@ class Direct_Api_Controller extends Awx_Controller
      */
     public function three_ds_device()
     {
-        $this->vars[ 'url' ] = $this->input->get( 'url' );
-        $this->vars[ 'bin' ] = $this->input->get( 'bin' );
-        $this->vars[ 'jwt' ] = $this->input->get( 'jwt' );
+        $this->vars[ 'url' ] = $this->input->get( 'url', TRUE );
+        $this->vars[ 'bin' ] = $this->input->get( 'bin', TRUE );
+        $this->vars[ 'jwt' ] = $this->input->get( 'jwt', TRUE );
 
         $this->load->view( 'device_3ds', $this->vars );
+    }
+
+    // --------------------------------------------------------------------
+
+    /**
+     * 3DS Callback.
+     */
+    public function three_ds_callback( $intent_id = '' )
+    {
+        $client_id  = $this->input->get( 'c', TRUE );
+        $api_key    = $this->input->get( 'k', TRUE );
+
+        $token = $this->get_api_token( $client_id, $api_key );
+
+        if ( FALSE === $token )
+        {
+            return FALSE;
+        }
+
+        $tran_id = $this->input->post( 'TransactionId', TRUE );
+
+        if ( empty( $tran_id ) )
+        {
+            // For stepup
+            $device_data = $this->input->post( 'Response', TRUE );
+
+            $confirm_res = $this->confirm_continue_intent( $token, $intent_id, [
+                'request_id'    => random_string(),
+                'type'          => '3dsCheckEnrollment',
+                'three_ds'      => [
+                    'device_data_collection_res' => $device_data
+                ]
+            ] );
+
+            if ( FALSE === $confirm_res )
+            {
+                return FALSE;
+            }
+
+            $this->vars[ 'url' ] = $confirm_res[ 'next_action' ][ 'url' ];
+            $this->vars[ 'jwt' ] = $confirm_res[ 'next_action' ][ 'data' ][ 'jwt' ];
+
+            $this->load->view( 'stepup_3ds', $this->vars );
+
+            return TRUE;
+        }
+
+        // The last comfirmation
+        $res = $this->confirm_continue_intent( $token, $intent_id, [
+            'request_id'    => random_string(),
+            'type'          => '3dsValidate',
+            'three_ds'      => [
+                'ds_transaction_id' => $tran_id
+            ]
+        ] );
+
+        if ( FALSE === $res )
+        {
+            return FALSE;
+        }
+
+        if ( 'SUCCEEDED' == $res[ 'status' ] )
+        {
+            redirect( site_url( 'direct-api-3ds-result/1' . '?id=' . $intent_id . '&c=' . $client_id . '&k=' . $api_key ) );
+        }
     }
 
     // --------------------------------------------------------------------
@@ -283,14 +350,16 @@ class Direct_Api_Controller extends Awx_Controller
 
         $result_uri = ( $res == 1 ) ? 'success' : 'failure';
 
-        $cko_session_id = $this->input->get( 'cko-session-id', TRUE );
-        if ( ! empty( $cko_session_id ) )
+        $id = $this->input->get( 'id', TRUE );
+        $c = $this->input->get( 'c', TRUE );
+        $k = $this->input->get( 'k', TRUE );
+        if ( ! empty( $id ) )
         {
-            $result_uri .= '?cko-session-id=' . $cko_session_id;
+            $result_uri .= '?id=' . $id . '&c=' . $c . '&k=' . $k . '&m=direct-api';
         }
 
         $this->vars[ 'result_page' ] = site_url( $result_uri );
 
-        $this->load->view( 'three_ds_result', $this->vars );
+        $this->load->view( 'three_ds_success_redirection', $this->vars );
     }
 }

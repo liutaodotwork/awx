@@ -169,7 +169,6 @@ class Awx_Controller extends CI_Controller
         }
     }
 
-
     // --------------------------------------------------------------------
 
     /**
@@ -247,6 +246,38 @@ class Awx_Controller extends CI_Controller
                     'Content-Type'  => 'application/json',
                     'Authorization' => 'Bearer ' . $token
                 ]
+            ] );
+
+            if ( '200' != $response->getStatusCode() )
+            {
+                return FALSE;
+            }
+
+            return json_decode( $response->getBody(), TRUE );
+        } 
+        catch (\Throwable $th)
+        {
+            return FALSE;
+        }
+    }
+
+    // --------------------------------------------------------------------
+
+    /**
+     * Confirm to continue with a payment intent.
+     */
+    protected function confirm_continue_intent( $token = '', $intent_id = '', $body = [] )
+    {
+        $client = new \GuzzleHttp\Client();
+
+        try
+        {
+            $response = $client->request( 'POST', $this->awx_domain . '/api/v1/pa/payment_intents/' . $intent_id . '/confirm_continue', [
+                'headers' => [
+                    'Content-Type'  => 'application/json',
+                    'Authorization' => 'Bearer ' . $token
+                ],
+                'body' => json_encode( $body ) 
             ] );
 
             if ( '200' != $response->getStatusCode() )

@@ -132,7 +132,7 @@
                     <h4 class="modal-title">3D-Secure 2 Authentication</h4>
                 </div>
                 <div class="modal-body">
-                    <iframe id="device-iframe" src="" style="border:none;height:450px">
+                    <iframe id="device-iframe" src="" style="border:none;height:600px">
                     </iframe>
                 </div>
             </div>

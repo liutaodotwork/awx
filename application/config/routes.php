@@ -6,6 +6,8 @@ $route['embedded-fields-checkout']['post'] = 'Embedded_Fields_Controller/do_chec
 $route['direct-api-for-card-payments'] = 'Direct_Api_Controller/direct_api';
 $route['direct-api-checkout']['post'] = 'Direct_Api_Controller/do_checkout_direct_api';
 $route['direct-api-3ds-device']['get'] = 'Direct_Api_Controller/three_ds_device';
+$route['direct-api-callback/(:any)']['post'] = 'Direct_Api_Controller/three_ds_callback/$1';
+$route['direct-api-3ds-result/(:num)']['get'] = 'Direct_Api_Controller/three_ds_result/$1';
 
 $route['success']['get']   = 'Awx_Controller/success';
 $route['failure']['get']   = 'Awx_Controller/failure';
