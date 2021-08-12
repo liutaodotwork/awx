@@ -66,7 +66,7 @@
                     </div>
                     <div class="form-group col-12">
                         <div class="input-group">
-                            <input class="form-control" id="name" type="text" name="name" placeholder="Name on Card"><span class="input-group-addon"><i class="icon-user"></i></span>
+                            <input class="form-control" id="name" type="text" name="name" placeholder="Full Name"><span class="input-group-addon"><i class="icon-user"></i></span>
                         </div>
                     </div>
                     <div class="form-group col-6">
@@ -125,9 +125,35 @@
         </div>
       </div>
     </div>
-    <!-- Back To Top Button--><a class="scroll-to-top-btn" href="#"><i class="icon-chevron-up"></i></a>
-    <!-- Backdrop-->
-    <div class="site-backdrop"></div>
+    <div class="modal fade" id="modal-3ds" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog">
+    <div class="modal-dialog<?= ! $is_mobile ? ' modal-dialog-centered' : '' ?>" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">3D-Secure 2 Authentication</h4>
+                </div>
+                <div class="modal-body">
+                    <iframe id="device-iframe" src="" style="border:none;height:450px">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-failure" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog">
+    <div class="modal-dialog<?= ! $is_mobile ? ' modal-dialog-centered' : '' ?>" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">3D-Secure Authentication</h4>
+                </div>
+                <div class="modal-body">
+                    <p class="mt-3">Your payment failed, but you can <b> try again with another card</b>.</p>
+                    <p>Please ensure that the billing address you provided is the same one where your debit/credit card is registered.</p>
+                    <div class="padding-top-1x text-center">
+                    <button class="btn btn-primary" type="button" data-dismiss="modal"><i class="icon-credit-card"></i> Try Again</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- JavaScript (jQuery) libraries, plugins and custom scripts-->
     <script src="<?= $asset_path ?>/js/vendor.min.js"></script>
     <script src="<?= $asset_path ?>/js/card.min.js"></script>
@@ -138,6 +164,18 @@
             $('#pay-button').click( function()
             {
                 submitPaymentForm();
+            });
+
+            var modal = $('#modal-3ds');
+            $( modal ).on( 'hidden.bs.modal', function (e)
+            {
+                $('#pay-button').html('<i class="icon-credit-card"></i> Pay $860').prop('disabled', false);
+            });
+
+            var modal = $('#modal-failure');
+            $( modal ).on( 'hidden.bs.modal', function (e)
+            {
+                $('#pay-button').html('<i class="icon-credit-card"></i> Pay $860').prop('disabled', false);
             });
         });
 
@@ -187,7 +225,17 @@
                     }
                     else if( data.result=='1' && data.intent != undefined )
                     {
-                        window.location = '/success?id=' + data.intent.id + '&c=' + $('#client-id').val() + '&k=' + $('#api-key').val();
+                        if ( data.fingerprint == '1' )
+                        {
+                            $('#device-iframe').attr( 'src', '<?= site_url('direct-api-3ds-device') ?>?url=' + data.intent.next_action.url + '&bin=' + $('#number').val().replace(/\s/g, '') + '&jwt=' + data.intent.next_action.data.jwt );
+
+                            var modal = $('#modal-3ds');
+                            $(modal).modal('show');
+                        }
+                        else
+                        {
+                            window.location = '/success?id=' + data.intent.id + '&c=' + $('#client-id').val() + '&k=' + $('#api-key').val() + '&m=direct-api';
+                        }
                     }
                 }
             });

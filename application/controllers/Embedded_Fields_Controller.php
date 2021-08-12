@@ -107,7 +107,7 @@ class Embedded_Fields_Controller extends Awx_Controller
             'request_id'        => random_string(),
             'amount'            => '80.05',
             'currency'          => 'USD',
-            'merchant_order_id' => random_string(),
+            'merchant_order_id' => random_string( 'alnum', 32 ),
             'order' => [
                 'products' => [
                     [

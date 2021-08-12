@@ -60,8 +60,9 @@ class Awx_Controller extends CI_Controller
      */
     public function success()
     {
-        $client_id = $this->input->get( 'c', TRUE );
-        $api_key = $this->input->get( 'k', TRUE );
+        $client_id  = $this->input->get( 'c', TRUE );
+        $api_key    = $this->input->get( 'k', TRUE );
+        $mode       = $this->input->get( 'm', TRUE );
         $intent_id = $this->input->get( 'id', TRUE );
         if ( empty( $intent_id ) OR  empty( $client_id ) OR empty( $api_key )  )
         {
@@ -83,7 +84,15 @@ class Awx_Controller extends CI_Controller
         }
 
         $this->vars[ 'intent' ] = $intent;
-        $this->vars[ 'back_url' ] = '/embedded-fields-for-card-payments?c=' . $client_id . '&k=' . $api_key;
+        $this->vars[ 'mode' ]   = $mode;
+        if ( 'direct-api' == $mode )
+        {
+            $this->vars[ 'back_url' ] = '/direct-api-for-card-payments?c=' . $client_id . '&k=' . $api_key;
+        }
+        else
+        {
+            $this->vars[ 'back_url' ] = '/embedded-fields-for-card-payments?c=' . $client_id . '&k=' . $api_key;
+        }
 
         $this->load->view( 'success', $this->vars );
     }

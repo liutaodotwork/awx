@@ -61,7 +61,7 @@ class Direct_Api_Controller extends Awx_Controller
             ],
             [
                 'field' => 'name',
-                'label' => 'Name on Card',
+                'label' => 'Full Name',
                 'rules' => 'trim|required|max_length[30]'
             ],
             [
@@ -113,7 +113,7 @@ class Direct_Api_Controller extends Awx_Controller
             'request_id'        => random_string(),
             'amount'            => '80.05',
             'currency'          => 'USD',
-            'merchant_order_id' => random_string(),
+            'merchant_order_id' => random_string( 'alnum', 32 ),
             'order' => [
                 'products' => [
                     [
@@ -193,7 +193,7 @@ class Direct_Api_Controller extends Awx_Controller
 
         $confirm_result = $this->confirm_intent( $token, $intent[ 'id' ], $payment_detail );
 
-        if ( empty( $confirm_result ) )
+        if ( empty( $confirm_result ) OR ! isset( $confirm_result[ 'status' ] ) )
         {
             $this->json_response( [ 'result' => 0, 'msg' => [
                 'token' => 'Invalid Client ID or API Key'
@@ -201,8 +201,15 @@ class Direct_Api_Controller extends Awx_Controller
             return FALSE;
         }
 
-        $this->json_response( [ 'result' => 1, 'intent' => $confirm_result ] );
 
+        // Optional 5 - 3DS
+        if ( 'REQUIRES_CUSTOMER_ACTION' == $confirm_result[ 'status' ] )
+        {
+            $this->json_response( [ 'result' => 1, 'fingerprint' => 1, 'intent' => $confirm_result ] );
+            return FALSE;
+        }
+
+        $this->json_response( [ 'result' => 1, 'intent' => $confirm_result ] );
         return TRUE;
     }
 
@@ -249,6 +256,20 @@ class Direct_Api_Controller extends Awx_Controller
     public function failure()
     {
         $this->load->view( 'failure', $this->vars );
+    }
+
+    // --------------------------------------------------------------------
+
+    /**
+     * 3DS Device Page.
+     */
+    public function three_ds_device()
+    {
+        $this->vars[ 'url' ] = $this->input->get( 'url' );
+        $this->vars[ 'bin' ] = $this->input->get( 'bin' );
+        $this->vars[ 'jwt' ] = $this->input->get( 'jwt' );
+
+        $this->load->view( 'device_3ds', $this->vars );
     }
 
     // --------------------------------------------------------------------
