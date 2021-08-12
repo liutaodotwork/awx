@@ -8,11 +8,11 @@
     <!-- Mobile Specific Meta Tag-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <!-- Vendor Styles including: Bootstrap, Font Icons, Plugins, etc.-->
-    <link rel="stylesheet" media="screen" href="<?= $asset_path ?>/css/vendor.min.css">
+    <link rel="stylesheet" media="screen" href="<?= $asset_path ?>/css/vendor.min.css?v=<?= VER ?>">
     <!-- Main Template Styles-->
-    <link id="mainStyles" rel="stylesheet" media="screen" href="<?= $asset_path ?>/css/styles.min.css">
+    <link id="mainStyles" rel="stylesheet" media="screen" href="<?= $asset_path ?>/css/styles.min.css?v=<?= VER ?>">
     <!-- Modernizr-->
-    <script src="<?= $asset_path ?>/js/modernizr.min.js"></script>
+    <script src="<?= $asset_path ?>/js/modernizr.min.js?v=<?= VER ?>"></script>
   </head>
   <!-- Body-->
   <body>
@@ -155,9 +155,9 @@
         </div>
     </div>
     <!-- JavaScript (jQuery) libraries, plugins and custom scripts-->
-    <script src="<?= $asset_path ?>/js/vendor.min.js"></script>
-    <script src="<?= $asset_path ?>/js/card.min.js"></script>
-    <script src="<?= $asset_path ?>/js/scripts.min.js"></script>
+    <script src="<?= $asset_path ?>/js/vendor.min.js?v=<?= VER ?>"></script>
+    <script src="<?= $asset_path ?>/js/card.min.js?v=<?= VER ?>"></script>
+    <script src="<?= $asset_path ?>/js/scripts.min.js?v=<?= VER ?>"></script>
     <script>
         $( document ).ready( function()
         {
