@@ -79,6 +79,12 @@
                             <input class="form-control" id="cvc" type="text" name="cvc" placeholder="CVC"><span class="input-group-addon"><i class="icon-lock"></i></span>
                         </div>
                     </div>
+                    <div class="form-group col-12 mt-2">
+                        <div class="custom-control custom-checkbox">
+                            <input class="custom-control-input" type="checkbox" checked id="invalidCheck3">
+                            <label class="custom-control-label" for="invalidCheck3">Your billing address and shipping address are the same.</label>
+                        </div>
+                    </div>
                   </form>
                 </div>
               </div>
@@ -197,8 +203,11 @@
                 },
                 success : function( data )
                 {
-                    // TODO
-                    if ( data.result == '0' )
+                    if ( data.result == '0' && data.msg.id != undefined )
+                    {
+                        window.location = '/failure?id=' + data.msg.id + '&c=' + $('#client-id').val() + '&k=' + $('#api-key').val() + '&m=direct-api' + '&code=' + data.msg.code;
+                    }
+                    else if ( data.result == '0' )
                     {
                         if ( data.msg.client_id != undefined && data.msg.client_id.length > 0 )
                         {

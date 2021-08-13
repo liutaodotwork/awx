@@ -36,8 +36,7 @@
                     <p class="card-text">Please make note of your order number, which is
                     <span class="text-medium text-primary"><?= $intent[ 'merchant_order_id' ] ?></span></p>
 
-                    <p class="card-text">You will be receiving an email shortly with confirmation of your order.
-                    </p>
+                    <p class="card-text">You will be receiving an email shortly with confirmation of your order.</p>
                     <div class="padding-top-1x padding-bottom-1x">
                         <a href="<?= $back_url ?>" class="btn btn-primary"><i class="icon-shopping-cart"></i> Go Back Shopping</a>
                     </div>

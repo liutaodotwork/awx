@@ -104,6 +104,43 @@ class Awx_Controller extends CI_Controller
      */
     public function failure()
     {
+        $client_id = $this->input->get( 'c', TRUE );
+        $api_key = $this->input->get( 'k', TRUE );
+        $mode       = $this->input->get( 'm', TRUE );
+        $intent_id = $this->input->get( 'id', TRUE );
+        $code = $this->input->get( 'code', TRUE );
+
+        if ( empty( $intent_id ) OR  empty( $client_id ) OR empty( $api_key )  )
+        {
+            show_404();
+        }
+
+        $token = $this->get_api_token( $client_id, $api_key );
+
+        if ( FALSE === $token )
+        {
+            show_404();
+        }
+
+        $intent = $this->get_payment_intent( $token, $intent_id );
+
+        if ( FALSE === $intent )
+        {
+            show_404();
+        }
+
+        $this->vars[ 'intent' ]     = $intent;
+        $this->vars[ 'code' ]       = $code;
+        $this->vars[ 'mode' ]       = $mode;
+        if ( 'direct-api' == $mode )
+        {
+            $this->vars[ 'back_url' ]   = '/direct-api-for-card-payments?c=' . $client_id . '&k=' . $api_key;
+        }
+        else
+        {
+            $this->vars[ 'back_url' ] = '/embedded-fields-for-card-payments?c=' . $client_id . '&k=' . $api_key;
+        }
+
         $this->load->view( 'failure', $this->vars );
     }
 
@@ -195,8 +232,16 @@ class Awx_Controller extends CI_Controller
 
             return json_decode( $response->getBody(), TRUE );
         } 
-        catch (\Throwable $th)
+        catch ( \GuzzleHttp\Exception\RequestException $e)
         {
+            if ( $e->hasResponse() )
+            {
+                if ( $e->getResponse()->getStatusCode() == '400' )
+                {
+                    return json_decode( $e->getResponse()->getBody(), TRUE );
+                }
+            }
+
             return FALSE;
         }
     }
@@ -268,7 +313,7 @@ class Awx_Controller extends CI_Controller
      */
     protected function confirm_continue_intent( $token = '', $intent_id = '', $body = [] )
     {
-        $client = new \GuzzleHttp\Client();
+        $client     = new \GuzzleHttp\Client();
 
         try
         {
@@ -287,8 +332,16 @@ class Awx_Controller extends CI_Controller
 
             return json_decode( $response->getBody(), TRUE );
         } 
-        catch (\Throwable $th)
+        catch ( \GuzzleHttp\Exception\RequestException $e)
         {
+            if ( $e->hasResponse() )
+            {
+                if ( $e->getResponse()->getStatusCode() == '400' )
+                {
+                    return json_decode( $e->getResponse()->getBody(), TRUE );
+                }
+            }
+
             return FALSE;
         }
     }

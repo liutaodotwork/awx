@@ -3,7 +3,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Failure - Smooth CKO Flow</title>
+        <title>Payment Failed</title>
         <!-- SEO Meta Tags-->
         <meta name="description" content="Checkout Failure Result - Smooth CKO Flow">
         <!-- Mobile Specific Meta Tag-->
@@ -22,7 +22,7 @@
         <div class="page-title">
             <div class="container">
                 <div class="column">
-                    <h1>Failure</h1>
+                    <h1>Payment Failed</h1>
                 </div>
             </div>
         </div>
@@ -30,14 +30,14 @@
         <div class="container padding-bottom-3x mb-2">
             <div class="card text-center">
                 <div class="card-body padding-top-2x">
-                    <h2 class="card-title mb-4 text-primary"><i class="icon-x-circle"></i> Sorry</h2>
-                    <p class="card-text">Your payment failed, but you can try again with other cards within 5 minutes.</p>
-                    <p class="card-text">Your order number is
-                    <span class="text-medium text-primary"><?= $order_number ?></span></p>
-                    <p class="card-text">We will keep this UNPAID order for 5 minutes.
-                    </p>
+                    <h2 class="card-title mb-4 text-danger"><i class="icon-x-circle"></i> Your Payment Failed</h2>
+                    <p class="card-text">You can try again with another Visa or Mastercard card.</p>
+                    <p class="card-text">Please also ensure that the billing address you provided is the same one where your debit/credit card is registered.</p>
+<?php if ( ! empty( $code ) ) { ?>
+                    <p class="card-text">Error Code: <?= $code ?></p>
+<?php } ?>
                     <div class="padding-top-1x padding-bottom-1x">
-                        <a href="<?= site_url() ?>" class="btn btn-primary"><i class="icon-credit-card"></i> Try Agian</a>
+                        <a href="<?= $back_url ?>" class="btn btn-primary"><i class="icon-credit-card"></i> Try Again</a>
                     </div>
                 </div>
             </div>

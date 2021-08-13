@@ -172,6 +172,8 @@ class Direct_Api_Controller extends Awx_Controller
         $cvc = $this->input->post( 'cvc', TRUE );
         $name = $this->input->post( 'name', TRUE );
 
+        // 1. billing address
+        // 2. update the notification return url
         $payment_detail = [
             'request_id'        => random_string(),
             'payment_method' => [
@@ -181,7 +183,20 @@ class Direct_Api_Controller extends Awx_Controller
                     'expiry_month'  => $expiry_month,
                     'expiry_year'   => '20' . $expiry_year,
                     'cvc'           => $cvc,
-                    'name'          => $name
+                    'name'          => $name,
+                    'billing'       => [
+                        'first_name'    => 'Steve',
+                        'last_name'     => 'Gates',
+                        'phone_number'  => '+187631283',
+                        'address'   => [
+                            'country_code' => "US",
+                            'state' => "AK",
+                            'city' => "Akhiok",
+                            'street' => "Street No. 4",
+                            'postcode' => "99654"
+                        ]
+
+                    ]
                 ],
             ],
             'payment_method_options' => [
@@ -199,7 +214,8 @@ class Direct_Api_Controller extends Awx_Controller
         if ( empty( $confirm_result ) OR ! isset( $confirm_result[ 'status' ] ) )
         {
             $this->json_response( [ 'result' => 0, 'msg' => [
-                'token' => 'Invalid Client ID or API Key'
+                'id'        => $intent[ 'id' ],
+                'code'      => isset( $confirm_result[ 'provider_original_response_code' ] ) ?  $confirm_result[ 'provider_original_response_code' ] : 0
             ] ] );
             return FALSE;
         }
@@ -208,56 +224,11 @@ class Direct_Api_Controller extends Awx_Controller
         if ( 'REQUIRES_CUSTOMER_ACTION' == $confirm_result[ 'status' ] )
         {
             $this->json_response( [ 'result' => 1, 'fingerprint' => 1, 'intent' => $confirm_result ] );
-            return FALSE;
+            return TRUE;
         }
 
         $this->json_response( [ 'result' => 1, 'intent' => $confirm_result ] );
         return TRUE;
-    }
-
-    // --------------------------------------------------------------------
-
-    /**
-     * Success Result.
-     */
-    public function success()
-    {
-        $client_id = $this->input->get( 'c', TRUE );
-        $api_key = $this->input->get( 'k', TRUE );
-        $intent_id = $this->input->get( 'id', TRUE );
-        if ( empty( $intent_id ) OR  empty( $client_id ) OR empty( $api_key )  )
-        {
-            show_404();
-        }
-
-        $token = $this->get_api_token( $client_id, $api_key );
-
-        if ( FALSE === $token )
-        {
-            show_404();
-        }
-
-        $intent = $this->get_payment_intent( $token, $intent_id );
-
-        if ( FALSE === $intent )
-        {
-            show_404();
-        }
-
-        $this->vars[ 'intent' ] = $intent;
-        $this->vars[ 'back_url' ] = '/embedded-fields-for-card-payments?c=' . $client_id . '&k=' . $api_key;
-
-        $this->load->view( 'success', $this->vars );
-    }
-
-    // --------------------------------------------------------------------
-
-    /**
-     * Failure Result.
-     */
-    public function failure()
-    {
-        $this->load->view( 'failure', $this->vars );
     }
 
     // --------------------------------------------------------------------
@@ -328,15 +299,19 @@ class Direct_Api_Controller extends Awx_Controller
             ]
         ] );
 
-        if ( FALSE === $res )
-        {
-            return FALSE;
-        }
-
-        if ( 'SUCCEEDED' == $res[ 'status' ] )
+        if ( isset( $res[ 'status' ] ) AND ( 'SUCCEEDED' == $res[ 'status' ] ) )
         {
             redirect( site_url( 'direct-api-3ds-result/1' . '?id=' . $intent_id . '&c=' . $client_id . '&k=' . $api_key ) );
+
+            return TRUE;
         }
+
+        if ( FALSE !== $res )
+        {
+            redirect( site_url( 'direct-api-3ds-result/0' . '?id=' . $intent_id . '&c=' . $client_id . '&k=' . $api_key . ( isset( $res[ 'provider_original_response_code' ] ) ? '&code=' . $res[ 'provider_original_response_code' ] : '' ) ) );
+        }
+
+        return FALSE;
     }
 
     // --------------------------------------------------------------------
@@ -353,12 +328,14 @@ class Direct_Api_Controller extends Awx_Controller
         $id = $this->input->get( 'id', TRUE );
         $c = $this->input->get( 'c', TRUE );
         $k = $this->input->get( 'k', TRUE );
+        $code = $this->input->get( 'code', TRUE );
         if ( ! empty( $id ) )
         {
             $result_uri .= '?id=' . $id . '&c=' . $c . '&k=' . $k . '&m=direct-api';
         }
 
-        $this->vars[ 'result_page' ] = site_url( $result_uri );
+        $this->vars[ 'result_page' ]    = site_url( $result_uri );
+        $this->vars[ 'code' ]           = $code;
 
         $this->load->view( 'three_ds_success_redirection', $this->vars );
     }
