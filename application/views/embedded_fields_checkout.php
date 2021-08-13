@@ -190,7 +190,7 @@
                             <div class="row">
                                 <div class="col-sm-3"></div>
                                 <div class="col-sm-6">
-                                    <button id="pay-button" class="btn btn-primary btn-block" disabled type="button" data-action="/embedded-fields-checkout"><i class="icon-credit-card"></i> Pay $860</button>
+                                    <button id="pay-button" class="btn btn-primary btn-block" disabled type="button" data-action="/embedded-fields-checkout"><i class="icon-credit-card"></i> Pay $80.05</button>
                                 </div>
                                 <div class="col-sm-3"></div>
                               </div>
@@ -402,7 +402,7 @@
                                 clientId.focus();
                             }
 
-                            $('#pay-button').html('<i class="icon-credit-card"></i> Pay $860').prop('disabled', false);
+                            $('#pay-button').html('<i class="icon-credit-card"></i> Pay $80.05').prop('disabled', false);
                         }
                         else if ( data.result=='1' && data.redirection != undefined )
                         {
@@ -445,7 +445,7 @@
 
                                 $(modal).modal('show');
 
-                                $('#pay-button').html('<i class="icon-credit-card"></i> Pay $860').prop('disabled', false);
+                                $('#pay-button').html('<i class="icon-credit-card"></i> Pay $80.05').prop('disabled', false);
                             });
                         }
                     }

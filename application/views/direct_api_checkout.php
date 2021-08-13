@@ -87,7 +87,7 @@
                 <div class="row">
                     <div class="col-sm-3"></div>
                     <div class="col-sm-6">
-                    <button id="pay-button" class="btn btn-primary btn-block" type="button" data-action="/direct-api-checkout?c=<?= $client_id ?>&k=<?= $api_key ?>"><i class="icon-credit-card"></i> Pay $860</button>
+                    <button id="pay-button" class="btn btn-primary btn-block" type="button" data-action="/direct-api-checkout?c=<?= $client_id ?>&k=<?= $api_key ?>"><i class="icon-credit-card"></i> Pay $80.05</button>
                     </div>
                     <div class="col-sm-3"></div>
                   </div>
@@ -105,19 +105,19 @@
               <table class="table">
                 <tr>
                   <td>Cart Subtotal:</td>
-                  <td class="text-gray-dark">$2,548.50</td>
+                  <td class="text-gray-dark">$60.05</td>
                 </tr>
                 <tr>
                   <td>Shipping:</td>
-                  <td class="text-gray-dark">$26.50</td>
+                  <td class="text-gray-dark">$10.00</td>
                 </tr>
                 <tr>
                   <td>Estimated tax:</td>
-                  <td class="text-gray-dark">$9.72</td>
+                  <td class="text-gray-dark">$10.00</td>
                 </tr>
                 <tr>
                   <td></td>
-                  <td class="text-lg text-gray-dark">$2,584.72</td>
+                  <td class="text-lg text-gray-dark">$80.05</td>
                 </tr>
               </table>
             </section>
@@ -169,13 +169,13 @@
             var modal = $('#modal-3ds');
             $( modal ).on( 'hidden.bs.modal', function (e)
             {
-                $('#pay-button').html('<i class="icon-credit-card"></i> Pay $860').prop('disabled', false);
+                $('#pay-button').html('<i class="icon-credit-card"></i> Pay $80.05').prop('disabled', false);
             });
 
             var modal = $('#modal-failure');
             $( modal ).on( 'hidden.bs.modal', function (e)
             {
-                $('#pay-button').html('<i class="icon-credit-card"></i> Pay $860').prop('disabled', false);
+                $('#pay-button').html('<i class="icon-credit-card"></i> Pay $80.05').prop('disabled', false);
             });
         });
 
@@ -221,7 +221,7 @@
                             clientId.focus();
                         }
 
-                        $('#pay-button').html('<i class="icon-credit-card"></i> Pay $860').prop('disabled', false);
+                        $('#pay-button').html('<i class="icon-credit-card"></i> Pay $80.05').prop('disabled', false);
                     }
                     else if( data.result=='1' && data.intent != undefined )
                     {
