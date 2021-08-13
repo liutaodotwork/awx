@@ -62,21 +62,25 @@
                     <div class="form-group col-12">
                         <div class="input-group">
                             <input class="form-control" id="number" type="text" name="number" placeholder="Card Number"><span class="input-group-addon"><i class="icon-credit-card"></i></span>
+                            <div class="invalid-tooltip"></div>
                         </div>
                     </div>
                     <div class="form-group col-12">
                         <div class="input-group">
                             <input class="form-control" id="name" type="text" name="name" placeholder="Full Name"><span class="input-group-addon"><i class="icon-user"></i></span>
+                            <div class="invalid-tooltip"></div>
                         </div>
                     </div>
                     <div class="form-group col-6">
                         <div class="input-group">
                             <input class="form-control" id="expiry" type="text" name="expiry" placeholder="MM/YY"><span class="input-group-addon"><i class="icon-calendar"></i></span>
+                            <div class="invalid-tooltip"></div>
                         </div>
                     </div>
                     <div class="form-group col-6">
                         <div class="input-group">
                             <input class="form-control" id="cvc" type="text" name="cvc" placeholder="CVC"><span class="input-group-addon"><i class="icon-lock"></i></span>
+                            <div class="invalid-tooltip"></div>
                         </div>
                     </div>
                     <div class="form-group col-12 mt-2">
@@ -209,25 +213,32 @@
                     }
                     else if ( data.result == '0' )
                     {
-                        if ( data.msg.client_id != undefined && data.msg.client_id.length > 0 )
+                        if ( data.msg.number != undefined && data.msg.number.length > 0 )
                         {
-                            var clientId = $( '#client-id' );
-                            $('#error-user').html(data.msg.client_id);
-                            clientId.focus();
+                            var number = $( '#number' );
+                            number.siblings('.invalid-tooltip').html( '' ).html(data.msg.number);
+                            number.addClass('is-invalid');
                         }
 
-                        if ( data.msg.api_key != undefined && data.msg.api_key.length > 0 )
+                        if ( data.msg.name != undefined && data.msg.name.length > 0 )
                         {
-                            var apiKey = $( '#api-key' );
-                            $('#error-user').html(data.msg.api_key);
-                            apiKey.focus();
+                            var name = $( '#name' );
+                            name.siblings('.invalid-tooltip').html( '' ).html(data.msg.name);
+                            name.addClass('is-invalid');
                         }
 
-                        if ( data.msg.token != undefined && data.msg.token.length > 0 )
+                        if ( data.msg.expiry != undefined && data.msg.expiry.length > 0 )
                         {
-                            var clientId = $( '#client-id' );
-                            $('#error-user').html(data.msg.token);
-                            clientId.focus();
+                            var expiry = $( '#expiry' );
+                            expiry.siblings('.invalid-tooltip').html( '' ).html(data.msg.expiry);
+                            expiry.addClass('is-invalid');
+                        }
+
+                        if ( data.msg.cvc != undefined && data.msg.cvc.length > 0 )
+                        {
+                            var cvc = $( '#cvc' );
+                            cvc.siblings('.invalid-tooltip').html( '' ).html(data.msg.cvc);
+                            cvc.addClass('is-invalid');
                         }
 
                         $('#pay-button').html('<i class="icon-credit-card"></i> Pay $80.05').prop('disabled', false);
