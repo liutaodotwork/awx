@@ -267,6 +267,7 @@ class Direct_Api_Controller extends Awx_Controller
         $api_key    = $this->input->get( 'k', TRUE );
 
         $token = $this->get_api_token( $client_id, $api_key );
+        $res = FALSE;
 
         if ( FALSE === $token )
         {
@@ -277,10 +278,9 @@ class Direct_Api_Controller extends Awx_Controller
 
         if ( empty( $tran_id ) )
         {
-            // For stepup
             $device_data = $this->input->post( 'Response', TRUE );
 
-            $confirm_res = $this->confirm_continue_intent( $token, $intent_id, [
+            $res = $this->confirm_continue_intent( $token, $intent_id, [
                 'request_id'    => random_string(),
                 'type'          => '3dsCheckEnrollment',
                 'three_ds'      => [
@@ -288,28 +288,31 @@ class Direct_Api_Controller extends Awx_Controller
                 ]
             ] );
 
-            if ( FALSE === $confirm_res )
+            if ( isset( $res[ 'next_action' ] ) AND isset( $res[ 'next_action' ][ 'url' ] ) )
             {
-                return FALSE;
+                $this->vars[ 'url' ] = $res[ 'next_action' ][ 'url' ];
+                $this->vars[ 'jwt' ] = $res[ 'next_action' ][ 'data' ][ 'jwt' ];
+
+                $this->load->view( 'stepup_3ds', $this->vars );
+
+                return TRUE;
             }
-
-            $this->vars[ 'url' ] = $confirm_res[ 'next_action' ][ 'url' ];
-            $this->vars[ 'jwt' ] = $confirm_res[ 'next_action' ][ 'data' ][ 'jwt' ];
-
-            $this->load->view( 'stepup_3ds', $this->vars );
-
-            return TRUE;
         }
 
         // The last comfirmation
-        $res = $this->confirm_continue_intent( $token, $intent_id, [
-            'request_id'    => random_string(),
-            'type'          => '3dsValidate',
-            'three_ds'      => [
-                'ds_transaction_id' => $tran_id
-            ]
-        ] );
+        if ( ! empty( $tran_id ) )
+        {
+            $res = $this->confirm_continue_intent( $token, $intent_id, [
+                'request_id'    => random_string(),
+                'type'          => '3dsValidate',
+                'three_ds'      => [
+                    'ds_transaction_id' => $tran_id
+                ]
+            ] );
 
+        }
+
+        // Happy path
         if ( isset( $res[ 'status' ] ) AND ( 'SUCCEEDED' == $res[ 'status' ] ) )
         {
             redirect( site_url( 'direct-api-3ds-result/1' . '?id=' . $intent_id . '&c=' . $client_id . '&k=' . $api_key ) );
@@ -320,9 +323,9 @@ class Direct_Api_Controller extends Awx_Controller
         if ( FALSE !== $res )
         {
             redirect( site_url( 'direct-api-3ds-result/0' . '?id=' . $intent_id . '&c=' . $client_id . '&k=' . $api_key . ( isset( $res[ 'provider_original_response_code' ] ) ? '&code=' . $res[ 'provider_original_response_code' ] : '' ) ) );
-        }
 
-        return FALSE;
+            return FALSE;
+        }
     }
 
     // --------------------------------------------------------------------
@@ -383,7 +386,7 @@ class Direct_Api_Controller extends Awx_Controller
                 'enroute'	=> '/^2(?:014|149)\\d{11}$/',
                 'jcb'		=> '/^(3\\d{4}|2100|1800)\\d{11}$/',
                 'maestro'	=> '/^(?:5020|6\\d{3})\\d{12}$/',
-                'mc'		=> '/^5[1-5]\\d{14}$/',
+                'mc'		=> '/^(5[1-5][0-9]{14}|2(22[1-9][0-9]{12}|2[3-9][0-9]{13}|[3-6][0-9]{14}|7[0-1][0-9]{13}|720[0-9]{12}))$/',
                 'solo'		=> '/^(6334[5-9][0-9]|6767[0-9]{2})\\d{10}(\\d{2,3})?$/',
                 'switch'	=>
                 '/^(?:49(03(0[2-9]|3[5-9])|11(0[1-2]|7[4-9]|8[1-2])|36[0-9]{2})\\d{10}(\\d{2,3})?)|(?:564182\\d{10}(\\d{2,3})?)|(6(3(33[0-4][0-9])|759[0-9]{2})\\d{10}(\\d{2,3})?)$/',
