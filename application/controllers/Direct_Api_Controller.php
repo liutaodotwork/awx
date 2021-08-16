@@ -104,6 +104,7 @@ class Direct_Api_Controller extends Awx_Controller
             $this->json_response( [ 'result' => 0, 'msg' => $error_msg ] );
             return FALSE;
         }
+        // TODO validate expiry and cvc
 
         // 2 - Fetch an AWX Token
         $client_id  = $this->input->get( 'c', TRUE );
@@ -183,8 +184,8 @@ class Direct_Api_Controller extends Awx_Controller
         $cvc = $this->input->post( 'cvc', TRUE );
         $name = $this->input->post( 'name', TRUE );
 
-        // 1. billing address
-        // 2. update the notification return url
+        // 4.1 billing address
+        // 4.2 update the notification return url
         $payment_detail = [
             'request_id'        => random_string(),
             'payment_method' => [
@@ -206,7 +207,6 @@ class Direct_Api_Controller extends Awx_Controller
                             'street' => "Street No. 4",
                             'postcode' => "99654"
                         ]
-
                     ]
                 ],
             ],
