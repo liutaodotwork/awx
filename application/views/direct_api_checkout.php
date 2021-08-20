@@ -203,15 +203,18 @@
                 type : 'post',
                 beforeSend : function()
                 {
+                    removeErrorMsg();
+
                     $( '#pay-button' ).html('<div class="spinner-border spinner-border-sm text-white mr-2" role="status"></div>Processing...').prop('disabled', true);
                 },
                 success : function( data )
                 {
+                    // Processing Failed
                     if ( data.result == '0' && data.msg.id != undefined )
                     {
                         window.location = '/failure?id=' + data.msg.id + '&c=' + $('#client-id').val() + '&k=' + $('#api-key').val() + '&m=direct-api' + '&code=' + data.msg.code;
                     }
-                    else if ( data.result == '0' )
+                    else if ( data.result == '0' ) // Validation Failed
                     {
                         if ( data.msg.number != undefined && data.msg.number.length > 0 )
                         {
@@ -259,6 +262,25 @@
                     }
                 }
             });
+        }
+
+        function removeErrorMsg()
+        {
+            var number = $( '#number' );
+            number.siblings('.invalid-tooltip').html( '' );
+            number.removeClass('is-invalid');
+
+            var name = $( '#name' );
+            name.siblings('.invalid-tooltip').html( '' );
+            name.removeClass('is-invalid');
+
+            var expiry = $( '#expiry' );
+            expiry.siblings('.invalid-tooltip').html( '' );
+            expiry.removeClass('is-invalid');
+
+            var cvc = $( '#cvc' );
+            cvc.siblings('.invalid-tooltip').html( '' );
+            cvc.removeClass('is-invalid');
         }
     </script>
   </body>

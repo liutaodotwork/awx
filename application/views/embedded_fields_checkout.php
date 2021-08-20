@@ -278,7 +278,8 @@
             </div>
         </div>
         <script src="<?= $asset_path ?>/js/vendor.min.js"></script>
-        <script src="https://checkout.airwallex.com/assets/bundle.0.2.22.min.js"></script>
+        <script src="https://checkout.airwallex.com/assets/bundle.0.2.41.es5.min.js"></script>
+
         <script>
             $( document ).ready( function()
             {
