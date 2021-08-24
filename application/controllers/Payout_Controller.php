@@ -51,43 +51,26 @@ class Payout_Controller extends CI_Controller
     // --------------------------------------------------------------------
 
     /**
-     * Checkout Page.
+     * Index page.
      */
     public function index()
     {
 
-        $countries = $this->bilibili->match_countries();
+        $countries = $this->bilibili->get_bilibili_countries();
 
-        /*
         $client_id  = $this->input->get( 'c', TRUE );
         $api_key    = $this->input->get( 'k', TRUE );
 
         $token = $this->get_api_token( $client_id, $api_key );
 
-        $countries = $this->bilibili->get_countries();
-        $i =0;
-        $j =0;
         foreach ( $countries as $c )
         {
-            if ( $c[ 'is_local' ] == 1 )
-            {
-                $l_c = $this->bilibili->get_local_country( $c[ 'code' ] );
-                $res = $this->get_form_schema( $token, [ 
-                    'entity_type' => 'PERSONAL',
-                    'bank_country_code' => $c[ 'code' ],
-                    'account_currency' => $l_c[ 'currency' ],
-                    'payment_method' => 'LOCAL'
-                ] );
-            }
-            else
-            {
-                $res = $this->get_form_schema( $token, [ 
-                    'entity_type' => 'PERSONAL',
-                    'bank_country_code' => $c[ 'code' ],
-                    'account_currency' => 'USD',
-                    'payment_method' => 'SWIFT'
-                ] );
-            }
+            $res = $this->get_form_schema( $token, [ 
+                'entity_type' => 'PERSONAL',
+                'bank_country_code' => $c[ 'code' ],
+                'account_currency' => $c[ 'currency' ],
+                'payment_method' => $c[ 'is_local' ] ? 'LOCAL' : 'SWIFT'
+            ] );
 
 
             if ( empty( $res ) )
@@ -97,17 +80,33 @@ class Payout_Controller extends CI_Controller
             }
             else
             {
-                echo "<pre>";
-                var_dump( $c[ 'code' ]);
-                $i++;
+
+                foreach ( $res[ 'fields' ] as $r )
+                {
+
+                    // $item = [
+                    //     'label'    => $r[ 'field' ][ 'label' ],
+                    //     'type'          => $r[ 'field' ][ 'type' ],
+                    //     'rule'          => isset( $r[ 'rule' ] ) ? json_encode( $r[ 'rule' ], JSON_FORCE_OBJECT ) : ''
+                    // ];
+                    // if ( TRUE == $r[ 'required' ] )
+                    // {
+                    //     $item[ 'is_required' ] = 1;
+                    // }
+
+                    // $res = $this->bilibili->update_beneficiary_fields( $item, [ 'path' => $r[ 'path' ] ] );
+
+                    $item = [
+                        'path'          => $r[ 'path' ],
+                        'type'          => $r[ 'field' ][ 'type' ],
+                        'rule'          => isset( $r[ 'rule' ] ) ? json_encode( $r[ 'rule' ], JSON_FORCE_OBJECT ) : ''
+                    ];
+
+                    echo "<pre>";
+                    var_dump($this->bilibili->add_field_rule( $item ));
+                }
             }
         }
-
-        echo "<pre>";
-        var_dump( 'total:' . $i );
-        exit();
-         */
-
     }
 
     // --------------------------------------------------------------------
