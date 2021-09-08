@@ -103,104 +103,116 @@
                             </a>
                         </div>
 
-                        <div class="card mb-4">
-                            <div class="card-header"><span class="text-lg">Pay With A Saved Card</span></div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover">
-                                      <tbody>
-                                        <tr>
-                                          <td class="align-middle">
-                                            <div class="custom-control custom-radio mb-0">
-                                              <input class="custom-control-input" type="radio" id="local" checked name="shipping-method">
-                                              <label class="custom-control-label" for="local"></label>
-                                            </div>
-                                          </td>
-                                          <td class="align-middle"><span class="text-gray-dark">Local Shipping</span><br><span class="text-muted text-sm">All Addresses(default zone), United States &amp; Canada</span></td>
-                                          <td class="align-middle">up to one week</td>
-                                        </tr>
-                                        <tr>
-                                          <td class="align-middle">
-                                            <div class="custom-control custom-radio mb-0">
-                                              <input class="custom-control-input" type="radio" id="flat" name="shipping-method">
-                                              <label class="custom-control-label" for="flat"></label>
-                                            </div>
-                                          </td>
-                                          <td class="align-middle"><span class="text-gray-darkm">Flat Rate</span><br><span class="text-muted text-sm">All Addresses(default zone)</span></td>
-                                          <td class="align-middle">5 - 7 days</td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                  </div>
+        <div class="accordion" id="accordion" role="tablist">
+            <div class="card">
+                <div class="card-header" role="tab">
+                    <h6><a href="#card" data-toggle="collapse" class="" aria-expanded="true">Pay With A Saved Card</a></h6>
+                </div>
+                <div class="collapse show" id="card" data-parent="#accordion" role="tabpanel" style="">
 
-                                <div class="form-group col-12 text-center mt-2">
-                                    <div class="row">
-                                        <div class="col-sm-3"></div>
-                                        <div class="col-sm-6">
-                                            <button id="pay-button" class="btn btn-primary btn-block" type="button" data-action="/embedded-fields-checkout"><i class="icon-credit-card"></i> Pay $80.05</button>
-                                        </div>
-                                        <div class="col-sm-3"></div>
-                                      </div>
+                <div class="card-body" style="padding-left:0;padding-right:0;padding-top:0">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                          <tbody>
+                            <tr>
+                              <td class="align-middle" width="2%" style="border-top:0;border-bottom: 1px solid #dee2e6;">
+                                <div class="custom-control custom-radio mb-0" style="padding-left:2px">
+                                  <input class="custom-control-input" type="radio" id="local" checked name="shipping-method">
+                                  <label class="custom-control-label" for="local"></label>
                                 </div>
+                              </td>
+                              <td class="align-middle" style="border-top:0;border-bottom: 1px solid #dee2e6;"><img class="d-inline-block align-middle" src="https://checkout-demo.airwallex.com/static/media/visa.745a6485.svg" height="24" alt="Cerdit Cards"> <span class="text-gray-dark">411111******1111</span><br><span class="text-muted text-sm">Saved on: July 12, 2021</span></td>
+                              <td class="align-middle" style="border-top:0;border-bottom: 1px solid #dee2e6;">Forget this card</td>
+                            </tr>
+                            <tr>
+                              <td class="align-middle">
+                                <div class="custom-control custom-radio mb-0">
+                                  <input class="custom-control-input" type="radio" id="flat" name="shipping-method">
+                                  <label class="custom-control-label" for="flat"></label>
+                                </div>
+                              </td>
+                              <td class="align-middle"><img class="d-inline-block align-middle" src="https://checkout-demo.airwallex.com/static/media/mastercard.262f85fc.svg" height="24" alt="Cerdit Cards"> <span class="text-gray-dark">222300******1375</span><br><span class="text-muted text-sm">Saved on: Sep. 02, 2021</span></td>
+                              <td class="align-middle">Forget this card</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+                    <div class="form-group col-12 text-center mt-2">
+                        <div class="row">
+                            <div class="col-sm-3"></div>
+                            <div class="col-sm-6">
+                                <button id="pay-button-saved-card" class="btn btn-primary btn-block" type="button" data-action="/embedded-fields-checkout"><i class="icon-credit-card"></i> Pay $80.05</button>
                             </div>
-                        </div>
-                        <div class="card mb-4">
-                            <div class="card-header"><span class="text-lg">Pay With A New Card</span></div>
-                            <div class="card-body">
-                                <div class="text-center modal-spinner"><div class="spinner-border text-primary m-2" role="status"></div></div>
-                                <div class="awx-fields" style="display:none;">
-                                    <p>We accept following cards:&nbsp;&nbsp;
-                                        <img class="d-inline-block align-middle" src="https://checkout-demo.airwallex.com/static/media/visa.745a6485.svg" height="24" alt="Cerdit Cards">
-                                        <img class="d-inline-block align-middle" src="https://checkout-demo.airwallex.com/static/media/mastercard.262f85fc.svg" height="24" alt="Cerdit Cards">
-                                    </p>
+                            <div class="col-sm-3"></div>
+                          </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header" role="tab">
+                <h6><a class="collapsed" href="#paypal" data-toggle="collapse" aria-expanded="false">Pay with A New Card</a></h6>
+              </div>
+              <div class="collapse" id="paypal" data-parent="#accordion" role="tabpanel" style="">
+                <div class="card-body">
+                    <div class="text-center modal-spinner"><div class="spinner-border text-primary m-2" role="status"></div></div>
+                    <div class="awx-fields" style="display:none;">
+                        <p>We accept following cards:&nbsp;&nbsp;
+                            <img class="d-inline-block align-middle" src="https://checkout-demo.airwallex.com/static/media/visa.745a6485.svg" height="24" alt="Cerdit Cards">
+                            <img class="d-inline-block align-middle" src="https://checkout-demo.airwallex.com/static/media/mastercard.262f85fc.svg" height="24" alt="Cerdit Cards">
+                        </p>
 <p><a href="https://www.airwallex.com/docs/online-payments__test-card-numbers" target="_blank">Click here to find Airwallex test cards</a></p>
-                                    <p id="error-payment" class="text-primary mb-3"></p>
-                                    <div class="row">
-                                        <div class="form-group col-12">
-                                            <div class="icon-container">
-                                                <i class="icon-credit-card"></i>
-                                            </div>
-                                            <div id="cardNumber"></div>
-                                        </div>
-                                        <div class="form-group col-6">
-                                            <div class="icon-container">
-                                                <i class="icon-calendar"></i>
-                                            </div>
-                                            <div id="expiry"></div>
-                                        </div>
-                                        <div class="form-group col-6">
-                                            <div class="icon-container">
-                                                <i class="icon-lock"></i>
-                                            </div>
-                                            <div id="cvc"></div>
-                                        </div>
-                                        
-                                        <div class="form-group col-12 mt-4">
-                                            <div class="custom-control custom-checkbox">
-                                                <input class="custom-control-input" type="checkbox" checked id="invalidCheck2">
-                                                <label class="custom-control-label" for="invalidCheck2">Save this card for your next payment.</label>
-                                            </div>
-                                            <div class="custom-control custom-checkbox">
-                                                <input class="custom-control-input" type="checkbox" checked id="invalidCheck3">
-                                                <label class="custom-control-label" for="invalidCheck3">Your billing address and shipping address are the same.</label>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group col-12 text-center paddin-top-1x">
-                                            <div class="row">
-                                                <div class="col-sm-3"></div>
-                                                <div class="col-sm-6">
-                                                    <button id="pay-button" class="btn btn-primary btn-block" disabled type="button" data-action="/embedded-fields-checkout"><i class="icon-credit-card"></i> Pay $80.05</button>
-                                                </div>
-                                                <div class="col-sm-3"></div>
-                                              </div>
-                                        </div>
-
-                                    </div>
+                        <p id="error-payment" class="text-primary mb-3"></p>
+                        <div class="row">
+                            <div class="form-group col-12">
+                                <div class="icon-container">
+                                    <i class="icon-credit-card"></i>
+                                </div>
+                                <div id="cardNumber"></div>
+                            </div>
+                            <div class="form-group col-6">
+                                <div class="icon-container">
+                                    <i class="icon-calendar"></i>
+                                </div>
+                                <div id="expiry"></div>
+                            </div>
+                            <div class="form-group col-6">
+                                <div class="icon-container">
+                                    <i class="icon-lock"></i>
+                                </div>
+                                <div id="cvc"></div>
+                            </div>
+                            
+                            <div class="form-group col-12 mt-4">
+                                <div class="custom-control custom-checkbox">
+                                    <input class="custom-control-input" type="checkbox" checked id="invalidCheck2">
+                                    <label class="custom-control-label" for="invalidCheck2">Save this card for your next payment.</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input class="custom-control-input" type="checkbox" checked id="invalidCheck3">
+                                    <label class="custom-control-label" for="invalidCheck3">Your billing address and shipping address are the same.</label>
                                 </div>
                             </div>
+
+                            <div class="form-group col-12 text-center paddin-top-1x">
+                                <div class="row">
+                                    <div class="col-sm-3"></div>
+                                    <div class="col-sm-6">
+                                        <button id="pay-button" class="btn btn-primary btn-block" disabled type="button" data-action="/embedded-fields-checkout"><i class="icon-credit-card"></i> Pay $80.05</button>
+                                    </div>
+                                    <div class="col-sm-3"></div>
+                                  </div>
+                            </div>
+
                         </div>
- 
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
                     </div>
                     <!-- Sidebar -->
                     <div class="col-xl-4 col-lg-5 order-first order-md-last">
