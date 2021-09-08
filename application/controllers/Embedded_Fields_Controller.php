@@ -103,22 +103,11 @@ class Embedded_Fields_Controller extends Awx_Controller
             return FALSE;
         }
 
-        if ( TRUE )
-        {
-            $customer = $this->create_customer( $token, [
-                'request_id' => random_string(),
-                'merchant_customer_id' => random_string(),
-                'first_name' => 'Steve',
-                'last_name' => 'Gates',
-            ] );
-        }
-
         $order = [
             'request_id'        => random_string(),
             'amount'            => '80.05',
             'currency'          => 'USD',
             'merchant_order_id' => random_string( 'alnum', 32 ),
-            'customer_id'       => $customer[ 'id' ],
             'order' => [
                 'products' => [
                     [
@@ -155,6 +144,18 @@ class Embedded_Fields_Controller extends Awx_Controller
                 ]
             ]
         ];
+
+        if ( TRUE )
+        {
+            $customer = $this->create_customer( $token, [
+                'request_id' => random_string(),
+                'merchant_customer_id' => random_string(),
+                'first_name' => 'Steve',
+                'last_name' => 'Gates',
+            ] );
+
+            $order[ 'customer_id' ] = $customer[ 'id' ];
+        }
 
         $intent = $this->get_secret( $token, $order );
     

@@ -112,7 +112,7 @@
                                         <tr>
                                           <td class="align-middle">
                                             <div class="custom-control custom-radio mb-0">
-                                              <input class="custom-control-input" type="radio" id="local" name="shipping-method">
+                                              <input class="custom-control-input" type="radio" id="local" checked name="shipping-method">
                                               <label class="custom-control-label" for="local"></label>
                                             </div>
                                           </td>
@@ -132,6 +132,16 @@
                                       </tbody>
                                     </table>
                                   </div>
+
+                                <div class="form-group col-12 text-center mt-2">
+                                    <div class="row">
+                                        <div class="col-sm-3"></div>
+                                        <div class="col-sm-6">
+                                            <button id="pay-button" class="btn btn-primary btn-block" type="button" data-action="/embedded-fields-checkout"><i class="icon-credit-card"></i> Pay $80.05</button>
+                                        </div>
+                                        <div class="col-sm-3"></div>
+                                      </div>
+                                </div>
                             </div>
                         </div>
                         <div class="card mb-4">
@@ -151,11 +161,6 @@
                                                 <i class="icon-credit-card"></i>
                                             </div>
                                             <div id="cardNumber"></div>
-                                        </div>
-                                        <div class="form-group col-12">
-                                            <div class="input-group">
-                                                <input class="form-control" id="name-on-card" type="text" name="name-on-card" placeholder="Name on Card"><span class="input-group-addon"><i class="icon-user"></i></span>
-                                            </div>
                                         </div>
                                         <div class="form-group col-6">
                                             <div class="icon-container">
@@ -181,20 +186,21 @@
                                             </div>
                                         </div>
 
+                                        <div class="form-group col-12 text-center paddin-top-1x">
+                                            <div class="row">
+                                                <div class="col-sm-3"></div>
+                                                <div class="col-sm-6">
+                                                    <button id="pay-button" class="btn btn-primary btn-block" disabled type="button" data-action="/embedded-fields-checkout"><i class="icon-credit-card"></i> Pay $80.05</button>
+                                                </div>
+                                                <div class="col-sm-3"></div>
+                                              </div>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
                         </div>
  
-                        <div class="text-center paddin-top-1x mt-4">
-                            <div class="row">
-                                <div class="col-sm-3"></div>
-                                <div class="col-sm-6">
-                                    <button id="pay-button" class="btn btn-primary btn-block" disabled type="button" data-action="/embedded-fields-checkout"><i class="icon-credit-card"></i> Pay $80.05</button>
-                                </div>
-                                <div class="col-sm-3"></div>
-                              </div>
-                        </div>
                     </div>
                     <!-- Sidebar -->
                     <div class="col-xl-4 col-lg-5 order-first order-md-last">
@@ -278,7 +284,7 @@
             </div>
         </div>
         <script src="<?= $asset_path ?>/js/vendor.min.js"></script>
-        <script src="https://checkout.airwallex.com/assets/bundle.0.2.41.es5.min.js"></script>
+        <script src="https://checkout.airwallex.com/assets/bundle.0.2.22.min.js"></script>
 
         <script>
             $( document ).ready( function()
@@ -312,12 +318,8 @@
                     cardNumber.mount('cardNumber'); // This 'cardNumber' id MUST MATCH the id on your cardNumber empty container created in Step 3
                     expiry.mount('expiry'); // Same as above
                     cvc.mount('cvc'); // Same as above
-
-
                 } catch (error) {
-                    //document.getElementById('loading').style.display = 'none'; // Example: hide loading state
-                    //document.getElementById('error').style.display = 'block'; // Example: show error
-                    //document.getElementById('error').innerHTML = error.message; // Example: set error message
+
                 }
 
                 window.addEventListener('onReady', (event) => {
@@ -351,18 +353,6 @@
                     submitPaymentForm();
                 });
             });
-
-            function getErrorMessage(element)
-            {
-                var errors =
-                {
-                    "card-number": "Please enter a valid card number",
-                    "expiry-date": "Please enter a valid expiry date",
-                    "cvv": "Please enter a valid cvv code",
-                };
-
-                return errors[element];
-            }
 
             function submitPaymentForm()
             {
@@ -413,7 +403,7 @@
                         {
                             if ( data.customer != undefined )
                             {
-                                var props = {
+                                Airwallex.createPaymentConsent({
                                     "intent_id": data.intent.id,
                                     "client_secret": data.intent.client_secret,
                                     "element": Airwallex.getElement("cardNumber"),
@@ -433,10 +423,8 @@
                                             "street": "Street No. 4",
                                             "postcode": "99654"
                                         }
-                                    },
-                                }
-
-                                Airwallex.createPaymentConsent(props).then((response) => {
+                                    }
+                                }).then((response) => {
                                     window.location = '/success?id=' + data.intent.id + '&c=' + $('#client-id').val() + '&k=' + $('#api-key').val();
                                 }).catch((response) => {
                                     console.log( response.original_code );
@@ -472,7 +460,7 @@
                                         }
                                     },
                                     "card": {
-                                        "name": $('#name-on-card').val()
+                                        //"name": $('#name-on-card').val()
                                     }
                                 }
                             })
