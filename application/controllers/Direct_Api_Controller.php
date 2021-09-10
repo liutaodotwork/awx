@@ -123,7 +123,7 @@ class Direct_Api_Controller extends Awx_Controller
         // 3 - Create a Payment Intent
         $order = [
             'request_id'        => random_string(),
-            'amount'            => '80.05',
+            'amount'            => '100000',
             'currency'          => 'USD',
             'merchant_order_id' => random_string( 'alnum', 32 ),
             'order' => [
@@ -274,6 +274,7 @@ class Direct_Api_Controller extends Awx_Controller
             return FALSE;
         }
 
+
         $tran_id = $this->input->post( 'TransactionId', TRUE );
 
         if ( empty( $tran_id ) )
@@ -302,6 +303,10 @@ class Direct_Api_Controller extends Awx_Controller
         // The last comfirmation
         if ( ! empty( $tran_id ) )
         {
+        $res = $this->input->post();
+        echo "<pre>";
+        var_dump($res);
+        exit();
             $res = $this->confirm_continue_intent( $token, $intent_id, [
                 'request_id'    => random_string(),
                 'type'          => '3dsValidate',

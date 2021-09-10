@@ -18,7 +18,7 @@ class Awx_Controller extends CI_Controller
      *
      * @access public
      */
-    protected $awx_domain = 'https://pci-api-demo.airwallex.com';
+    protected $awx_domain = 'https://pci-api.airwallex.com';
 
     // --------------------------------------------------------------------
 

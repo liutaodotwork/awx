@@ -20,7 +20,7 @@
 
         <form id="stepUpForm" name="stepup" method="POST" action="<?= $url ?>" style="display:none;"> 
             <input type="hidden" name="JWT" value="<?= $jwt ?>" /> 
-            <input type="hidden" name="MD" value="pa" /> 
+            <input type="hidden" name="MD" value="the_value_to_be_passed_to_return_url" /> 
             <input type="submit" name="continue" value="Continue" />
         </form> 
         <script type="text/javascript">
