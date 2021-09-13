@@ -18,7 +18,7 @@ class Awx_Controller extends CI_Controller
      *
      * @access public
      */
-    protected $awx_domain = 'https://pci-api.airwallex.com';
+    protected $awx_domain = 'https://pci-api-demo.airwallex.com';
 
     // --------------------------------------------------------------------
 
@@ -85,9 +85,14 @@ class Awx_Controller extends CI_Controller
 
         $this->vars[ 'intent' ] = $intent;
         $this->vars[ 'mode' ]   = $mode;
-        if ( 'direct-api' == $mode )
+
+        if ( 'nc-direct-api' == $mode )
         {
-            $this->vars[ 'back_url' ] = '/direct-api-for-card-payments?c=' . $client_id . '&k=' . $api_key;
+            $this->vars[ 'back_url' ] = '/nc-direct-api-for-card-payments?c=' . $client_id . '&k=' . $api_key;
+        }
+        elseif ( 'direct-api' == $mode )
+        {
+            $this->vars[ 'back_url' ] = '/nc-direct-api-for-card-payments?c=' . $client_id . '&k=' . $api_key;
         }
         else
         {
@@ -132,7 +137,11 @@ class Awx_Controller extends CI_Controller
         $this->vars[ 'intent' ]     = $intent;
         $this->vars[ 'code' ]       = $code;
         $this->vars[ 'mode' ]       = $mode;
-        if ( 'direct-api' == $mode )
+        if ( 'nc-direct-api' == $mode )
+        {
+            $this->vars[ 'back_url' ]   = '/nc-direct-api-for-card-payments?c=' . $client_id . '&k=' . $api_key;
+        }
+        elseif ( 'direct-api' == $mode )
         {
             $this->vars[ 'back_url' ]   = '/direct-api-for-card-payments?c=' . $client_id . '&k=' . $api_key;
         }
