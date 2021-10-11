@@ -1,5 +1,8 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
+$route['testing']['get']   = 'Test_Controller/index';
+
+
 $route['embedded-fields-for-card-payments'] = 'Embedded_Fields_Controller/embedded_fields';
 $route['embedded-fields-checkout']['post'] = 'Embedded_Fields_Controller/do_checkout_embedded_fields';
 
