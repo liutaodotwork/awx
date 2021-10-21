@@ -60,11 +60,6 @@ class Nc_Direct_Api_Controller extends Awx_Controller
                 'rules' => 'trim|required|max_length[30]'
             ],
             [
-                'field' => 'name',
-                'label' => 'Full Name',
-                'rules' => 'trim|required|max_length[30]'
-            ],
-            [
                 'field' => 'expiry',
                 'label' => 'Expiry',
                 'rules' => 'trim|required|max_length[7]'
@@ -86,7 +81,6 @@ class Nc_Direct_Api_Controller extends Awx_Controller
         {
             $error_msg = [
                 'number'   => form_error( 'number' ),
-                'name'     => form_error( 'name' ),
                 'expiry'   => form_error( 'expiry' ),
                 'cvc'      => form_error( 'cvc' )
             ];
@@ -182,7 +176,6 @@ class Nc_Direct_Api_Controller extends Awx_Controller
         $expiry_year    = $expiry[ 1 ];
 
         $cvc = $this->input->post( 'cvc', TRUE );
-        $name = $this->input->post( 'name', TRUE );
 
         // 4.1 billing address
         // 4.2 update the notification return url
@@ -195,7 +188,6 @@ class Nc_Direct_Api_Controller extends Awx_Controller
                     'expiry_month'  => $expiry_month,
                     'expiry_year'   => '20' . $expiry_year,
                     'cvc'           => $cvc,
-                    'name'          => $name,
                     'billing'       => [
                         'first_name'    => 'Steve',
                         'last_name'     => 'Gates',

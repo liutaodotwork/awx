@@ -65,12 +65,6 @@
                             <div class="invalid-tooltip"></div>
                         </div>
                     </div>
-                    <div class="form-group col-12">
-                        <div class="input-group">
-                            <input class="form-control" id="name" type="text" name="name" placeholder="Full Name"><span class="input-group-addon"><i class="icon-user"></i></span>
-                            <div class="invalid-tooltip"></div>
-                        </div>
-                    </div>
                     <div class="form-group col-6">
                         <div class="input-group">
                             <input class="form-control" id="expiry" type="text" name="expiry" placeholder="MM/YY"><span class="input-group-addon"><i class="icon-calendar"></i></span>
