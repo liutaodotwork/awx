@@ -18,11 +18,16 @@ $route['nc-direct-api-3ds-device']['get'] = 'Nc_Direct_Api_Controller/three_ds_d
 $route['nc-direct-api-callback/(:any)']['post'] = 'Nc_Direct_Api_Controller/three_ds_callback/$1';
 $route['nc-direct-api-3ds-result/(:num)']['get'] = 'Nc_Direct_Api_Controller/three_ds_result/$1';
 
-
 $route['payout']['get'] = 'Payout_Controller/index';
 
 $route['success']['get']   = 'Awx_Controller/success';
 $route['failure']['get']   = 'Awx_Controller/failure';
+
+
+// Stripe Payments
+$route['s-payment'] = 'Stripe_Controller/embedded_fields';
+$route['s-checkout']['post'] = 'Stripe_Controller/do_checkout';
+
 
 $route['default_controller'] = 'Awx_Controller/index';
 $route['404_override'] = '';
