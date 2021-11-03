@@ -17,23 +17,13 @@
                 height: 46px !important
             }
 
-            #payment-form #cardNumber iframe,#payment-form #expiry iframe,#payment-form #cvc iframe {
-                -webkit-box-flex: 1;
-                -ms-flex: 1 1 auto;
-                flex: 1 1 auto;
-                padding-left: 37px;
-                padding-top: 8px;
-                padding-right: 13px;
-
-            }
-
             #payment-form .icon-container {
                 transition: color .3s;
                 background-color: transparent !important;
                 color: #999;
                 display: inline-block;
                 position: absolute;
-                top: 48%;
+                top: 21px;
                 margin-top: 2px;
                 -webkit-transform: translateY(-50%);
                 -ms-transform: translateY(-50%);
@@ -50,17 +40,32 @@
                 display: none
             }
 
-            #payment-form iframe {
+            #payment-form #cardNumber, #payment-form #expiry, #payment-form #cvc {
                 border: 1px solid #e0e0e0 !important;
                 border-radius: 5px !important;
                 background-color: #fff !important;
                 color: #505050 !important;
                 font-family: "Rubik",Helvetica,Arial,sans-serif !important;
                 font-size: 14px !important;
-                height: 46px !important
+                height: 46px !important;
+                -webkit-box-flex: 1;
+                -ms-flex: 1 1 auto;
+                flex: 1 1 auto;
             }
 
-            #payment-form iframe.awx-focus {
+            #payment-form #cardNumber {
+                padding-left: 14px;
+                padding-top: 14px;
+            }
+
+            #payment-form #expiry, #payment-form #cvc {
+                padding-left: 43px;
+                padding-top: 15px;
+            }
+
+            #payment-form #cardNumber.awx-focus,
+            #payment-form #expiry.awx-focus,
+            #payment-form #cvc.awx-focus {
                 border-color: #05f !important;
                 outline: none !important;
                 background-color: rgba(0,85,255,0.02) !important;
@@ -167,9 +172,6 @@
                         <p id="error-payment" class="text-primary mb-3"></p>
                         <div class="row">
                             <div class="form-group col-12">
-                                <div class="icon-container">
-                                    <i class="icon-credit-card"></i>
-                                </div>
                                 <div id="cardNumber"></div>
                             </div>
                             <div class="form-group col-6">
@@ -312,7 +314,19 @@
                     const cardNumber = elements.create('cardNumber', {
                         'placeholder': 'Card Number',
                         'showIcon': true,
-                        'iconStyle': 'solid'
+                        'iconStyle': 'solid',
+                        'style': {
+                            base: {
+                              backgroundColor: '#fff',
+                              iconColor: '#999',
+                              color: '#505050',
+                              fontSize: '14px',
+                            },
+                            invalid: {
+                              iconColor: '#FFC7EE',
+                              color: '#FFC7EE',
+                            },
+                          },
                     });
 
                     const cardExpiry = elements.create('cardExpiry', {
@@ -326,23 +340,68 @@
                     cardExpiry.mount('#expiry');
                     cardCvc.mount('#cvc');
 
+                    // onReady
                     cardCvc.on( 'ready', function( event ) {
                         $( '.awx-fields' ).show();
                         $( '.modal-spinner' ).remove();
                     });
 
+
+                    // onChange
+                    cardNumber.on('change', function(event)
+                    {
+                        if (event.error)
+                        {
+                        }
+
+                        card_is_completed = event.complete;
+
+                        $( '#pay-button' ).prop('disabled', !(card_is_completed && expiry_is_completed && cvc_is_completed));
+                    });
+
+                    cardExpiry.on('change', function(event)
+                    {
+                        if (event.error)
+                        {
+                        }
+
+                        expiry_is_completed = event.complete;
+
+                        $( '#pay-button' ).prop('disabled', !(card_is_completed && expiry_is_completed && cvc_is_completed));
+                    });
+
+                    cardCvc.on('change', function(event)
+                    {
+                        if (event.error)
+                        {
+                        }
+
+                        cvc_is_completed = event.complete;
+
+                        $( '#pay-button' ).prop('disabled', !(card_is_completed && expiry_is_completed && cvc_is_completed));
+                    });
+
+
+                    // onFocus
+                    cardNumber.on('focus', function(event)
+                    {
+                        $('#cardNumber').addClass('awx-focus');
+                    });
+
+                    cardExpiry.on('focus', function(event)
+                    {
+                        $('#expiry').addClass('awx-focus');
+                    });
+
+                    cardCvc.on('focus', function(event)
+                    {
+                        $('#cvc').addClass('awx-focus');
+                    });
+
+
                 } catch (error) {
 
                 }
-
-
-                window.addEventListener('onReady', (event) => {
-                    if( 'cvc' == event.detail.type)
-                    {
-                        $( '.awx-fields' ).show();
-                        $( '.modal-spinner' ).remove();
-                    }
-                });
 
                 window.addEventListener('onFocus', (event) => {
                     $('#' + event.detail.type + ' iframe').addClass('awx-focus');
@@ -354,13 +413,6 @@
                    $('#' + event.detail.type ).siblings('.icon-container').removeClass('awx-focus');
                 });
 
-                window.addEventListener('onChange', (event) => {
-                    if( 'cardNumber' == event.detail.type  ) card_is_completed = event.detail.complete;
-                    if( 'expiry' == event.detail.type ) expiry_is_completed = event.detail.complete;
-                    if( 'cvc' == event.detail.type ) cvc_is_completed = event.detail.complete;
-
-                    $( '#pay-button' ).prop('disabled', !(card_is_completed && expiry_is_completed && cvc_is_completed));
-                });
 
                 $('#pay-button').click(function(){
                     validateApiKey();
