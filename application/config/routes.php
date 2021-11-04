@@ -27,7 +27,8 @@ $route['failure']['get']   = 'Awx_Controller/failure';
 // Stripe Payments
 $route['s-payment'] = 'Stripe_Controller/embedded_fields';
 $route['s-checkout']['post'] = 'Stripe_Controller/do_checkout';
-
+$route['s-success']['get']   = 'Stripe_Controller/success';
+$route['s-failure']['get']   = 'Stripe_Controller/failure';
 
 $route['default_controller'] = 'Awx_Controller/index';
 $route['404_override'] = '';

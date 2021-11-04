@@ -123,7 +123,7 @@ class Stripe_Controller extends CI_Controller
             return;
         }
 
-        $this->json_response( [ 'result' => 1, 'intent' => $intent, 'publishable_key' =>  $this->vars[ 'publishable_key' ] ] );
+        $this->json_response( [ 'result' => 1, 'intent' => $this->vars[ 'intent' ], 'publishable_key' =>  $this->vars[ 'publishable_key' ] ] );
 
         return TRUE;
     }
@@ -135,23 +135,17 @@ class Stripe_Controller extends CI_Controller
      */
     public function success()
     {
-        $client_id  = $this->input->get( 'c', TRUE );
-        $api_key    = $this->input->get( 'k', TRUE );
-        $mode       = $this->input->get( 'm', TRUE );
-        $intent_id = $this->input->get( 'id', TRUE );
+        $client_id  = $this->input->get( 'p', TRUE );
+        $api_key    = $this->input->get( 's', TRUE );
+        $intent_id  = $this->input->get( 'id', TRUE );
         if ( empty( $intent_id ) OR  empty( $client_id ) OR empty( $api_key )  )
         {
             show_404();
         }
 
-        $token = $this->get_api_token( $client_id, $api_key );
+        $stripe = new \Stripe\StripeClient( $api_key );
 
-        if ( FALSE === $token )
-        {
-            show_404();
-        }
-
-        $intent = $this->get_payment_intent( $token, $intent_id );
+        $intent = $stripe->paymentIntents->retrieve( $intent_id );
 
         if ( FALSE === $intent )
         {
@@ -159,20 +153,8 @@ class Stripe_Controller extends CI_Controller
         }
 
         $this->vars[ 'intent' ] = $intent;
-        $this->vars[ 'mode' ]   = $mode;
 
-        if ( 'nc-direct-api' == $mode )
-        {
-            $this->vars[ 'back_url' ] = '/nc-direct-api-for-card-payments?c=' . $client_id . '&k=' . $api_key;
-        }
-        elseif ( 'direct-api' == $mode )
-        {
-            $this->vars[ 'back_url' ] = '/nc-direct-api-for-card-payments?c=' . $client_id . '&k=' . $api_key;
-        }
-        else
-        {
-            $this->vars[ 'back_url' ] = '/embedded-fields-for-card-payments?c=' . $client_id . '&k=' . $api_key;
-        }
+        $this->vars[ 'back_url' ] = '/s-payment?p=' . $client_id . '&s=' . $api_key;
 
         $this->load->view( 'success', $this->vars );
     }

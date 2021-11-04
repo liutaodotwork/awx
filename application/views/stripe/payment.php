@@ -3,7 +3,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Airwallex Checkout - Card Payment Acceptance by embedded fields</title>
+        <title>Stripe Checkout - Card Payment Acceptance by embedded fields</title>
         <!-- SEO Meta Tags-->
         <meta name="description" content="Checkout - Card Payment Acceptance">
         <!-- Mobile Specific Meta Tag-->
@@ -54,13 +54,13 @@
             }
 
             #payment-form #cardNumber {
-                padding-left: 14px;
+                padding-left: 12px;
                 padding-top: 14px;
             }
 
             #payment-form #expiry, #payment-form #cvc {
-                padding-left: 43px;
-                padding-top: 15px;
+                padding-left: 36px;
+                padding-top: 14px;
             }
 
             #payment-form #cardNumber.awx-focus,
@@ -85,7 +85,7 @@
         <div class="page-title">
             <div class="container">
                 <div class="column">
-                    <h1>Airwallex Card Payment Demo - Embedded Fields</h1>
+                    <h1>Stripe Card Payment Demo - Embedded Fields</h1>
                 </div>
             </div>
         </div>
@@ -168,7 +168,7 @@
                             <img class="d-inline-block align-middle" src="https://checkout-demo.airwallex.com/static/media/visa.745a6485.svg" height="24" alt="Cerdit Cards">
                             <img class="d-inline-block align-middle" src="https://checkout-demo.airwallex.com/static/media/mastercard.262f85fc.svg" height="24" alt="Cerdit Cards">
                         </p>
-<p><a href="https://www.airwallex.com/docs/online-payments__test-card-numbers" target="_blank">Click here to find Airwallex test cards</a></p>
+<p><a href="https://stripe.com/docs/testing" target="_blank">Click here to find Stripe test cards</a></p>
                         <p id="error-payment" class="text-primary mb-3"></p>
                         <div class="row">
                             <div class="form-group col-12">
@@ -202,7 +202,7 @@
                                 <div class="row">
                                     <div class="col-sm-3"></div>
                                     <div class="col-sm-6">
-                                        <button id="pay-button" class="btn btn-primary btn-block" disabled type="button" data-action="/embedded-fields-checkout"><i class="icon-credit-card"></i> Pay $80.05</button>
+                                        <button id="pay-button" class="btn btn-primary btn-block" disabled type="button" data-action="/s-checkout"><i class="icon-credit-card"></i> Pay $80.05</button>
                                     </div>
                                     <div class="col-sm-3"></div>
                                   </div>
@@ -264,7 +264,7 @@
                                         <div class="form-group col-12">
                                             <div class="custom-control custom-checkbox">
                                                 <input class="custom-control-input" type="checkbox" checked id="invalidCheck1">
-                                                <label class="custom-control-label" for="invalidCheck1">I konw this demo only accepts <b>Airwallex Demo Accounts</b> and the credentials will <b>NEVER</b> be saved.</label>
+                                                <label class="custom-control-label" for="invalidCheck1">I konw this demo only accepts <b>Stripe Demo Accounts</b> and the credentials will <b>NEVER</b> be saved.</label>
                                             </div>
                                         </div>
                                     </div>
@@ -304,104 +304,167 @@
 
                 var button_text = $('#pay-button').html();
 
-                try {
-                    const stripe = Stripe( $('#publishable-key').val(), {
-                        apiVersion: '2020-08-27',
-                    });
+                const stripe = Stripe( $('#publishable-key').val(), {
+                    apiVersion: '2020-08-27',
+                });
 
-                    const elements = stripe.elements();
+                const elements = stripe.elements();
 
-                    const cardNumber = elements.create('cardNumber', {
-                        'placeholder': 'Card Number',
-                        'showIcon': true,
-                        'iconStyle': 'solid',
-                        'style': {
-                            base: {
-                              backgroundColor: '#fff',
-                              iconColor: '#999',
-                              color: '#505050',
-                              fontSize: '14px',
-                            },
-                            invalid: {
-                              iconColor: '#FFC7EE',
-                              color: '#FFC7EE',
-                            },
+                const cardNumber = elements.create('cardNumber', {
+                    'placeholder': 'Card Number',
+                    'showIcon': true,
+                    'iconStyle': 'solid',
+                    'style': {
+                        base: {
+                          backgroundColor: '#fff',
+                          iconColor: '#999',
+                          color: '#505050',
+                          fontSize: '14px',
+                          fontWeight: '500',
+                          fontSmoothing: 'antialiased',
+                          ':-webkit-autofill': {
+                            color: '#999999',
+                            fontWeight: '400'
                           },
-                    });
+                          '::placeholder': {
+                            color: '#999999',
+                            fontWeight: '400'
+                          },
+                        },
+                        invalid: {
+                          iconColor: '#FFC7EE',
+                          color: '#FFC7EE',
+                        },
+                      },
+                });
 
-                    const cardExpiry = elements.create('cardExpiry', {
-                        'placeholder': 'MM/YY'
-                    });
-                    const cardCvc = elements.create('cardCvc', {
-                        'placeholder': 'CVV'
-                    });
+                const cardExpiry = elements.create('cardExpiry', {
+                    'placeholder': 'MM/YY',
+                    'style': {
+                        base: {
+                          backgroundColor: '#fff',
+                          iconColor: '#999',
+                          color: '#505050',
+                          fontSize: '14px',
+                          fontWeight: '500',
+                          fontSmoothing: 'antialiased',
+                          ':-webkit-autofill': {
+                            color: '#999999',
+                            fontWeight: '400'
+                          },
+                          '::placeholder': {
+                            color: '#999999',
+                            fontWeight: '400'
+                          },
+                        },
+                        invalid: {
+                          iconColor: '#FFC7EE',
+                          color: '#FFC7EE',
+                        },
+                      },
+                });
+                const cardCvc = elements.create('cardCvc', {
+                    'placeholder': 'CVV',
+                    'style': {
+                        base: {
+                          backgroundColor: '#fff',
+                          iconColor: '#999',
+                          color: '#505050',
+                          fontSize: '14px',
+                          fontWeight: '500',
+                          fontSmoothing: 'antialiased',
+                          ':-webkit-autofill': {
+                            color: '#999999',
+                            fontWeight: '400'
+                          },
+                          '::placeholder': {
+                            color: '#999999',
+                            fontWeight: '400'
+                          },
+                        },
+                        invalid: {
+                          iconColor: '#FFC7EE',
+                          color: '#FFC7EE',
+                        },
+                      },
+                });
 
-                    cardNumber.mount('#cardNumber');
-                    cardExpiry.mount('#expiry');
-                    cardCvc.mount('#cvc');
+                cardNumber.mount('#cardNumber');
+                cardExpiry.mount('#expiry');
+                cardCvc.mount('#cvc');
 
-                    // onReady
-                    cardCvc.on( 'ready', function( event ) {
-                        $( '.awx-fields' ).show();
-                        $( '.modal-spinner' ).remove();
-                    });
+                // onReady
+                cardCvc.on( 'ready', function( event ) {
+                    $( '.awx-fields' ).show();
+                    $( '.modal-spinner' ).remove();
+                });
 
 
-                    // onChange
-                    cardNumber.on('change', function(event)
+                // onChange
+                cardNumber.on('change', function(event)
+                {
+                    if (event.error)
                     {
-                        if (event.error)
-                        {
-                        }
+                    }
 
-                        card_is_completed = event.complete;
+                    card_is_completed = event.complete;
 
-                        $( '#pay-button' ).prop('disabled', !(card_is_completed && expiry_is_completed && cvc_is_completed));
-                    });
+                    $( '#pay-button' ).prop('disabled', !(card_is_completed && expiry_is_completed && cvc_is_completed));
+                });
 
-                    cardExpiry.on('change', function(event)
+                cardExpiry.on('change', function(event)
+                {
+                    if (event.error)
                     {
-                        if (event.error)
-                        {
-                        }
+                    }
 
-                        expiry_is_completed = event.complete;
+                    expiry_is_completed = event.complete;
 
-                        $( '#pay-button' ).prop('disabled', !(card_is_completed && expiry_is_completed && cvc_is_completed));
-                    });
+                    $( '#pay-button' ).prop('disabled', !(card_is_completed && expiry_is_completed && cvc_is_completed));
+                });
 
-                    cardCvc.on('change', function(event)
+                cardCvc.on('change', function(event)
+                {
+                    if (event.error)
                     {
-                        if (event.error)
-                        {
-                        }
+                    }
 
-                        cvc_is_completed = event.complete;
+                    cvc_is_completed = event.complete;
 
-                        $( '#pay-button' ).prop('disabled', !(card_is_completed && expiry_is_completed && cvc_is_completed));
-                    });
+                    $( '#pay-button' ).prop('disabled', !(card_is_completed && expiry_is_completed && cvc_is_completed));
+                });
 
 
-                    // onFocus
-                    cardNumber.on('focus', function(event)
-                    {
-                        $('#cardNumber').addClass('awx-focus');
-                    });
+                // onFocus
+                cardNumber.on('focus', function(event)
+                {
+                    $('#cardNumber').addClass('awx-focus');
+                });
 
-                    cardExpiry.on('focus', function(event)
-                    {
-                        $('#expiry').addClass('awx-focus');
-                    });
+                cardExpiry.on('focus', function(event)
+                {
+                    $('#expiry').addClass('awx-focus');
+                });
 
-                    cardCvc.on('focus', function(event)
-                    {
-                        $('#cvc').addClass('awx-focus');
-                    });
+                cardCvc.on('focus', function(event)
+                {
+                    $('#cvc').addClass('awx-focus');
+                });
 
+                cardNumber.on('blur', function(event)
+                {
+                    $('#cardNumber').removeClass('awx-focus');
+                });
 
-                } catch (error) {
+                cardExpiry.on('blur', function(event)
+                {
+                    $('#expiry').removeClass('awx-focus');
+                });
 
-                }
+                cardCvc.on('blur', function(event)
+                {
+                    $('#cvc').removeClass('awx-focus');
+                });
 
                 window.addEventListener('onFocus', (event) => {
                     $('#' + event.detail.type + ' iframe').addClass('awx-focus');
@@ -416,11 +479,11 @@
 
                 $('#pay-button').click(function(){
                     validateApiKey();
-                    submitPaymentForm();
+                    submitPaymentForm( stripe, elements.getElement( 'cardNumber' ) );
                 });
             });
 
-            function submitPaymentForm()
+            function submitPaymentForm( stripe, cardNumber )
             {
                 $.ajax({
                     url : $( '#pay-button' ).attr( 'data-action' ),
@@ -454,50 +517,43 @@
 
                             $('#pay-button').html('<i class="icon-credit-card"></i> Pay $80.05').prop('disabled', false);
                         }
-                        else if ( data.result=='1' && data.redirection != undefined )
-                        {
-
-                        }
                         else if( data.result=='1' && data.intent != undefined )
                         {
-                            /*
-                            Airwallex.confirmPaymentIntent({
-                                element: Airwallex.getElement('cardNumber'),
-                                id: data.intent.id,
-                                client_secret: data.intent.client_secret,
-                                payment_method: {
-                                    "billing": {
-                                        "first_name": "Steve",
-                                        "last_name": "Gates",
-                                        "phone_number": "+187631283",
-                                        "address": {
-                                            "country_code": "US",
-                                            "state": "AK",
-                                            "city": "Akhiok",
-                                            "street": "Street No. 4",
-                                            "postcode": "99654"
-                                        }
+                            stripe.confirmCardPayment(
+                                data.intent.client_secret,
+                                {
+                                    payment_method: {
+                                        card: cardNumber,
+                                        billing_details: {
+                                            name: 'James Smith',
+                                            phone: '+18888888',
+                                            email: 'james@example.com',
+                                            address: {
+                                                country: 'US',
+                                                state: 'CA',
+                                                city: 'Los Angeles',
+                                                postal_code: '222122',
+                                                line1: 'ABC Street',
+                                                line2: 'CCD Street'
+                                            }
+                                        },
                                     },
-                                    "card": {
-                                        //"name": $('#name-on-card').val()
-                                    }
                                 }
-                            })
-                            .then((response) => {
-                                // Handle successful responses
-                                window.location = '/success?id=' + data.intent.id + '&c=' + $('#client-id').val() + '&k=' + $('#api-key').val();
+                            ).then(function(result){
+                                if ( result.error )
+                                {
+                                    var modal = $('#modal-failure');
 
-                            })
-                            .catch((response) => {
-                                // Handle error responses
-                                console.log( response.original_code );
-                            
-                                var modal = $('#modal-failure');
+                                    $(modal).modal('show');
 
-                                $(modal).modal('show');
-
-                                $('#pay-button').html('<i class="icon-credit-card"></i> Pay $80.05').prop('disabled', false);
-                            });*/
+                                    // TODO - should consider how many attempts are allowed.
+                                    $('#pay-button').html('<i class="icon-credit-card"></i> Pay $80.05').prop('disabled', false);
+                                }
+                                else
+                                {
+                                    window.location = '/s-success?id=' + data.intent.id + '&p=' + $('#publishable-key').val() + '&s=' + $('#secret-key').val();
+                                }
+                            });
                         }
                     }
                 });
@@ -506,20 +562,20 @@
             function validateApiKey( event )
             {
                 var isValid     = false;
-                var clientId        = $( '#client-id' );
-                var apiKey       = $( '#api-key' );
+                var clientId        = $( '#publishable-key' );
+                var apiKey       = $( '#secret-key' );
                 var clientIdVal     = $( clientId ).val().trim();
                 var apiKeyVal    = $( apiKey ).val().trim();
                 var re = /\S+@\S+\.\S+/;
 
                 if ( clientIdVal.length == 0 )
                 {
-                    $('#error-user').html('The Client Id field is required.');
+                    $('#error-user').html('The Publishable Key field is required.');
                     clientId.focus();
                 }
                 else if ( apiKeyVal.length == 0 )
                 {
-                    $('#error-user').html('The Api Key field is required.');
+                    $('#error-user').html('The Secret Key field is required.');
                     apiKey.focus();
                 }
                 else
