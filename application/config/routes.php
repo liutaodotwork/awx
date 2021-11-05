@@ -30,6 +30,7 @@ $route['s-checkout']['post'] = 'Stripe_Controller/do_checkout';
 $route['s-success']['get']   = 'Stripe_Controller/success';
 $route['s-failure']['get']   = 'Stripe_Controller/failure';
 
+
 $route['default_controller'] = 'Awx_Controller/index';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

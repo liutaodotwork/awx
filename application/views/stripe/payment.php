@@ -98,7 +98,7 @@
                     <div class="col-xl-8 col-lg-7">
                         <div class="steps flex-sm-nowrap mb-5">
                             <a class="step" href="#">
-                                <h4 class="step-title"><i class="icon-check-circle"></i>1. Address</h4>
+                                <h4 class="step-title"><i class="icon-check-circle"></i>1. Cart</h4>
                             </a>
                             <a class="step" href="#">
                                 <h4 class="step-title"><i class="icon-check-circle"></i>2. Shipping</h4>
