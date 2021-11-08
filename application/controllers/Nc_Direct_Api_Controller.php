@@ -117,7 +117,7 @@ class Nc_Direct_Api_Controller extends Awx_Controller
         // 3 - Create a Payment Intent
         $order = [
             'request_id'        => random_string(),
-            'amount'            => '100000',
+            'amount'            => '80.05',
             'currency'          => 'USD',
             'merchant_order_id' => random_string( 'alnum', 32 ),
             'order' => [
