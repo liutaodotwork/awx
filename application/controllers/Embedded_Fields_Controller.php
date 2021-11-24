@@ -37,16 +37,119 @@ class Embedded_Fields_Controller extends Awx_Controller
         $this->vars[ 'customer_id' ]    = $this->input->get( 'cu', TRUE );
 
 
-        $token = $this->get_api_token( $this->vars[ 'client_id' ], $this->vars[ 'api_key' ] );
+        $this->load->view( 'embedded_fields_checkout', $this->vars );
+    }
 
-        if ( ! empty( $token ) )
+    // --------------------------------------------------------------------
+
+    /**
+     * Save cards Page.
+     */
+    public function embedded_fields_save_cards()
+    {
+        $this->vars[ 'client_id' ]      = $this->input->get( 'c', TRUE );
+        $this->vars[ 'api_key' ]        = $this->input->get( 'k', TRUE );
+        $this->vars[ 'customer_id' ]    = $this->input->get( 'cu', TRUE );
+
+
+        $this->load->view( 'embedded_fields_save_cards', $this->vars );
+    }
+
+    // --------------------------------------------------------------------
+
+    /**
+     * Do checkout.
+     */
+    public function do_save_cards_embedded_fields()
+    {
+        if ( ! $this->input->is_ajax_request() )
         {
-            $this->get_customer( $token, $this->vars[ 'customer_id' ] );
+            show_error(404);
+        }
 
+        $rules = [
+            [
+                'field' => 'client-id',
+                'label' => 'Client ID',
+                'rules' => 'trim|required|max_length[225]'
+            ],
+            [
+                'field' => 'api-key',
+                'label' => 'API Key',
+                'rules' => 'trim|required|max_length[225]'
+            ],
+            [
+                'field' => 'customer-id',
+                'label' => 'Customer Id',
+                'rules' => 'trim|required|max_length[225]'
+            ]
+        ];
+        $config = [
+            'error_prefix' => '',
+            'error_suffix' => '',
+        ];
+        $this->load->library( 'form_validation', $config );
+        $this->form_validation->set_rules( $rules );
+
+        if ( $this->form_validation->run() === FALSE )
+        {
+            $error_msg = [
+                'client_id'   => form_error( 'client-id' ),
+                'api_key'     => form_error( 'api-key' ),
+                'customer_id' => form_error( 'customer-id' )
+            ];
+            $this->json_response( [ 'result' => 0, 'msg' => $error_msg ] );
+            return FALSE;
+        }
+
+        $client_id = $this->input->post( 'client-id', TRUE );
+        $api_key = $this->input->post( 'api-key', TRUE );
+
+        $token = $this->get_api_token( $client_id, $api_key );
+
+        if ( FALSE === $token )
+        {
+            $this->json_response( [ 'result' => 0, 'msg' => [
+                'token' => 'Invalid Client ID or API Key'
+            ] ] );
+            return FALSE;
+        }
+
+        $customer_id = $this->input->post( 'customer-id', TRUE );
+
+        if ( ! empty( $customer_id ) )
+        {
+
+            $customer = $this->get_customer( $token, $customer_id );
+
+            if ( empty( $customer ) )
+            {
+                $error_msg = [
+                    'client_id'   => 'Invalid client Id',
+                ];
+                $this->json_response( [ 'result' => 0, 'msg' => $error_msg ] );
+                return FALSE;
+            }
+
+            $client_secret = $this->generate_customer_client_secret( $token, $customer_id );
+
+            if ( empty( $client_secret ) )
+            {
+                $error_msg = [
+                    'client_id'   => 'Invalid client Id',
+                ];
+                $this->json_response( [ 'result' => 0, 'msg' => $error_msg ] );
+                return FALSE;
+            }
+
+            $customer[ 'client_secret' ] = $client_secret[ 'client_secret' ]; 
+
+            $this->json_response( [ 'result' => 1, 'customer' => $customer  ] );
         }
 
 
-        $this->load->view( 'embedded_fields_checkout', $this->vars );
+
+        return TRUE;
     }
 
     // --------------------------------------------------------------------
@@ -157,9 +260,17 @@ class Embedded_Fields_Controller extends Awx_Controller
             $order[ 'customer_id' ] = $customer[ 'id' ];
         }
 
+        $token = $this->get_api_token( $this->vars[ 'client_id' ], $this->vars[ 'api_key' ] );
+
+        if ( ! empty( $token ) )
+        {
+            $this->vars[ 'customer' ] = $this->get_customer( $token, $this->vars[ 'customer_id' ] );
+        }
+
         $intent = $this->get_secret( $token, $order );
     
         $this->json_response( [ 'result' => 1, 'intent' => $intent, 'customer' => $customer  ] );
+
         return TRUE;
     }
 

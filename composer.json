@@ -7,6 +7,7 @@
 	"require": {
 		"php": ">=5.3.7",
 		"guzzlehttp/guzzle": "^7.3",
-		"stripe/stripe-php": "^7.100"
+		"stripe/stripe-php": "^7.100",
+		"yansongda/pay": "~3.0.0"
 	}
 }
