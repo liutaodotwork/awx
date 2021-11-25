@@ -32,7 +32,7 @@
         <div class="col-xl-8 col-lg-7">
             <div class="steps flex-sm-nowrap mb-5">
                 <a class="step" href="#">
-                    <h4 class="step-title"><i class="icon-check-circle"></i>1. Address</h4>
+                    <h4 class="step-title"><i class="icon-check-circle"></i>1. Cart</h4>
                 </a>
                 <a class="step" href="#">
                     <h4 class="step-title"><i class="icon-check-circle"></i>2. Shipping</h4>
@@ -62,12 +62,6 @@
                     <div class="form-group col-12">
                         <div class="input-group">
                             <input class="form-control" id="number" type="text" name="number" placeholder="Card Number"><span class="input-group-addon"><i class="icon-credit-card"></i></span>
-                            <div class="invalid-tooltip"></div>
-                        </div>
-                    </div>
-                    <div class="form-group col-12">
-                        <div class="input-group">
-                            <input class="form-control" id="name" type="text" name="name" placeholder="Full Name"><span class="input-group-addon"><i class="icon-user"></i></span>
                             <div class="invalid-tooltip"></div>
                         </div>
                     </div>

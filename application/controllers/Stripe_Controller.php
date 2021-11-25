@@ -2,7 +2,7 @@
 
 require VENDORPATH . '/autoload.php';
 
-class Awx_Controller extends CI_Controller
+class Stripe_Controller extends CI_Controller
 {
     /**
      * Variables for front pages
@@ -49,8 +49,83 @@ class Awx_Controller extends CI_Controller
     /**
      * Checkout Page.
      */
-    public function index()
+    public function embedded_fields()
     {
+        $this->vars[ 'publishable_key' ]    = $this->input->get( 'p', TRUE );
+        $this->vars[ 'secret_key' ]         = $this->input->get( 's', TRUE );
+
+        $this->load->view( 'stripe/payment', $this->vars );
+    }
+
+    // --------------------------------------------------------------------
+
+    /**
+     * Do checkout.
+     */
+    public function do_checkout()
+    {
+        if ( ! $this->input->is_ajax_request() )
+        {
+            show_error(404);
+        }
+
+        $rules = [
+            [
+                'field' => 'publishable-key',
+                'label' => 'Publishable Key',
+                'rules' => 'trim|required|max_length[225]'
+            ],
+            [
+                'field' => 'secret-key',
+                'label' => 'Secret Key',
+                'rules' => 'trim|required|max_length[225]'
+            ]
+        ];
+        $config = [
+            'error_prefix' => '',
+            'error_suffix' => '',
+        ];
+        $this->load->library( 'form_validation', $config );
+        $this->form_validation->set_rules( $rules );
+
+        if ( $this->form_validation->run() === FALSE )
+        {
+            $error_msg = [
+                'publishable_key'       => form_error( 'publishable-key' ),
+                'secret_key'            => form_error( 'secret-key' )
+            ];
+            $this->json_response( [ 'result' => 0, 'msg' => $error_msg ] );
+            return FALSE;
+        }
+
+        $this->vars[ 'publishable_key' ]    = $this->input->post( 'publishable-key', TRUE );
+        $this->vars[ 'secret_key' ]         = $this->input->post( 'secret-key', TRUE );
+
+        $stripe = new \Stripe\StripeClient( [
+            'api_key' => $this->vars[ 'secret_key' ],
+            'stripe_version' => '2020-08-27',
+        ] );
+
+        try {
+            $this->vars[ 'intent' ] = $stripe->paymentIntents->create( [
+                'payment_method_types' => ['card'],
+                'amount' => 1999,
+                'currency' => 'usd',
+            ] );
+
+        } catch (\Stripe\Exception\ApiErrorException $e) {
+            http_response_code(400);
+            error_log($e->getError()->message);
+            return;
+        } catch (Exception $e) {
+            error_log($e);
+            http_response_code(500);
+            return;
+        }
+
+        $this->json_response( [ 'result' => 1, 'intent' => $this->vars[ 'intent' ], 'publishable_key' =>  $this->vars[ 'publishable_key' ] ] );
+
+        return TRUE;
     }
 
     // --------------------------------------------------------------------
@@ -60,23 +135,17 @@ class Awx_Controller extends CI_Controller
      */
     public function success()
     {
-        $client_id  = $this->input->get( 'c', TRUE );
-        $api_key    = $this->input->get( 'k', TRUE );
-        $mode       = $this->input->get( 'm', TRUE );
-        $intent_id = $this->input->get( 'id', TRUE );
+        $client_id  = $this->input->get( 'p', TRUE );
+        $api_key    = $this->input->get( 's', TRUE );
+        $intent_id  = $this->input->get( 'id', TRUE );
         if ( empty( $intent_id ) OR  empty( $client_id ) OR empty( $api_key )  )
         {
             show_404();
         }
 
-        $token = $this->get_api_token( $client_id, $api_key );
+        $stripe = new \Stripe\StripeClient( $api_key );
 
-        if ( FALSE === $token )
-        {
-            show_404();
-        }
-
-        $intent = $this->get_payment_intent( $token, $intent_id );
+        $intent = $stripe->paymentIntents->retrieve( $intent_id );
 
         if ( FALSE === $intent )
         {
@@ -84,20 +153,8 @@ class Awx_Controller extends CI_Controller
         }
 
         $this->vars[ 'intent' ] = $intent;
-        $this->vars[ 'mode' ]   = $mode;
 
-        if ( 'nc-direct-api' == $mode )
-        {
-            $this->vars[ 'back_url' ] = '/nc-direct-api-for-card-payments?c=' . $client_id . '&k=' . $api_key;
-        }
-        elseif ( 'direct-api' == $mode )
-        {
-            $this->vars[ 'back_url' ] = '/nc-direct-api-for-card-payments?c=' . $client_id . '&k=' . $api_key;
-        }
-        else
-        {
-            $this->vars[ 'back_url' ] = '/embedded-fields-for-card-payments?c=' . $client_id . '&k=' . $api_key;
-        }
+        $this->vars[ 'back_url' ] = '/s-payment?p=' . $client_id . '&s=' . $api_key;
 
         $this->load->view( 'success', $this->vars );
     }
@@ -296,36 +353,6 @@ class Awx_Controller extends CI_Controller
         try
         {
             $response = $client->request( 'GET', $this->awx_domain . '/api/v1/pa/customers/' . $customer_id, [
-                'headers' => [
-                    'Content-Type'  => 'application/json',
-                    'Authorization' => 'Bearer ' . $token
-                ]
-            ] );
-
-            if ( '200' != $response->getStatusCode() )
-            {
-                return FALSE;
-            }
-
-            return json_decode( $response->getBody(), TRUE );
-        } 
-        catch (\Throwable $th)
-        {
-            return FALSE;
-        }
-    }
-
-    // --------------------------------------------------------------------
-
-    /**
-     * Generate customer client secret.
-     */
-    protected function generate_customer_client_secret( $token = '', $customer_id = '' )
-    {
-        $client = new \GuzzleHttp\Client();
-        try
-        {
-            $response = $client->request( 'GET', $this->awx_domain . '/api/v1/pa/customers/' . $customer_id . '/generate_client_secret', [
                 'headers' => [
                     'Content-Type'  => 'application/json',
                     'Authorization' => 'Bearer ' . $token
