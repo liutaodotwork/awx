@@ -16,6 +16,8 @@ $route['nc-direct-api-callback/(:any)']['post'] = 'Nc_Direct_Api_Controller/thre
 $route['nc-direct-api-3ds-result/(:num)']['get'] = 'Nc_Direct_Api_Controller/three_ds_result/$1';
 
 
+$route['hpp-for-card-payments'] = 'Hpp_Controller/hpp';
+
 $route['payout']['get'] = 'Payout_Controller/index';
 
 $route['success']['get']   = 'Awx_Controller/success';
