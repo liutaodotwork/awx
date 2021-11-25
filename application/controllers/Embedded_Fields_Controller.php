@@ -25,20 +25,6 @@ class Embedded_Fields_Controller extends Awx_Controller
     public function index()
     {
     }
-    // --------------------------------------------------------------------
-
-    /**
-     * Checkout Page.
-     */
-    public function embedded_fields()
-    {
-        $this->vars[ 'client_id' ]      = $this->input->get( 'c', TRUE );
-        $this->vars[ 'api_key' ]        = $this->input->get( 'k', TRUE );
-        $this->vars[ 'customer_id' ]    = $this->input->get( 'cu', TRUE );
-
-
-        $this->load->view( 'embedded_fields_checkout', $this->vars );
-    }
 
     // --------------------------------------------------------------------
 
@@ -62,6 +48,7 @@ class Embedded_Fields_Controller extends Awx_Controller
      */
     public function do_save_cards_embedded_fields()
     {
+        // 1. Back-end validation
         if ( ! $this->input->is_ajax_request() )
         {
             show_error(404);
@@ -80,7 +67,7 @@ class Embedded_Fields_Controller extends Awx_Controller
             ],
             [
                 'field' => 'customer-id',
-                'label' => 'Customer Id',
+                'label' => 'Customer ID',
                 'rules' => 'trim|required|max_length[225]'
             ]
         ];
@@ -102,10 +89,12 @@ class Embedded_Fields_Controller extends Awx_Controller
             return FALSE;
         }
 
-        $client_id = $this->input->post( 'client-id', TRUE );
-        $api_key = $this->input->post( 'api-key', TRUE );
 
-        $token = $this->get_api_token( $client_id, $api_key );
+        // 2. Get an access token
+        $client_id  = $this->input->post( 'client-id', TRUE );
+        $api_key    = $this->input->post( 'api-key', TRUE );
+
+        $token      = $this->get_api_token( $client_id, $api_key );
 
         if ( FALSE === $token )
         {
@@ -115,11 +104,12 @@ class Embedded_Fields_Controller extends Awx_Controller
             return FALSE;
         }
 
+
+        // 3. Fetch current Customer
         $customer_id = $this->input->post( 'customer-id', TRUE );
 
         if ( ! empty( $customer_id ) )
         {
-
             $customer = $this->get_customer( $token, $customer_id );
 
             if ( empty( $customer ) )
@@ -147,9 +137,75 @@ class Embedded_Fields_Controller extends Awx_Controller
             $this->json_response( [ 'result' => 1, 'customer' => $customer  ] );
         }
 
+        return TRUE;
+    }
 
+    // --------------------------------------------------------------------
+
+    /**
+     * Do charge fees.
+     */
+    public function do_charge_fees()
+    {
+        // 1. Get an access token
+        $client_id  = $this->input->post( 'client-id', TRUE );
+        $api_key    = $this->input->post( 'api-key', TRUE );
+
+        $token      = $this->get_api_token( $client_id, $api_key );
+
+        $customer_id    = $this->input->post( 'customer-id', TRUE );
+        $consent_id     = $this->input->post( 'consent-id', TRUE );
+
+        $intent = [
+            'request_id'        => random_string(),
+            'amount'            => '29',
+            'currency'          => 'USD',
+            'merchant_order_id' => random_string( 'alnum', 32 ),
+            'customer_id'       => $customer_id,
+            'order' => [
+                'products' => [
+                    [
+                    'code' => random_string(),
+                    'sku'  => random_string(),
+                    'name' => 'xx Platform Subscription Fee',
+                    'desc' => 'A virtual product',
+                    'quantity' => 1,
+                    'unit_price' => 29,
+                    'type' => 'virtual_goods'
+                    ],
+                ],
+                'type' => 'virtual_goods'
+            ]
+        ];
+
+        $consent = [
+            'request_id'        => random_string(),
+            'customer_id'       => $customer_id,
+            'payment_consent_reference' => [
+                'id' => $consent_id
+            ],
+        ];
+
+        $res = $this->charge_fees( $token, $intent, $consent );
+
+        $this->json_response( [ 'result' => $res  ] );
 
         return TRUE;
+    }
+
+    // --------------------------------------------------------------------
+
+    /**
+     * Checkout Page.
+     */
+    public function embedded_fields()
+    {
+        $this->vars[ 'client_id' ]      = $this->input->get( 'c', TRUE );
+        $this->vars[ 'api_key' ]        = $this->input->get( 'k', TRUE );
+        $this->vars[ 'customer_id' ]    = $this->input->get( 'cu', TRUE );
+
+
+        $this->load->view( 'embedded_fields_checkout', $this->vars );
     }
 
     // --------------------------------------------------------------------

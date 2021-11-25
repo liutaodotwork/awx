@@ -318,6 +318,29 @@ class Awx_Controller extends CI_Controller
     // --------------------------------------------------------------------
 
     /**
+     * Charge fees.
+     */
+    protected function charge_fees( $token = '', $intent = [], $consent = [] )
+    {
+        $client = new \GuzzleHttp\Client();
+        try
+        {
+            $int = $this->get_secret( $token, $intent );
+
+            if ( ! empty( $int ) )
+            {
+                return $this->confirm_intent( $token, $int[ 'id' ], $consent );
+            }
+        } 
+        catch (\Throwable $th)
+        {
+            return FALSE;
+        }
+    }
+
+    // --------------------------------------------------------------------
+
+    /**
      * Generate customer client secret.
      */
     protected function generate_customer_client_secret( $token = '', $customer_id = '' )

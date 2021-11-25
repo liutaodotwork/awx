@@ -80,7 +80,7 @@
         <div class="page-title">
             <div class="container">
                 <div class="column">
-                    <h1>Airwallex Save Card Demo - Embedded Fields</h1>
+                    <h1>Save Card Demo - Airwallex Embedded Fields</h1>
                 </div>
             </div>
         </div>
@@ -137,12 +137,19 @@
                                 </div>
                                 <div id="cvc"></div>
                             </div>
+
+                            <div class="form-group col-12 mt-4">
+                                <div class="custom-control custom-checkbox">
+                                    <input class="custom-control-input" type="checkbox" checked id="invalidCheck3">
+                                    <label class="custom-control-label" for="invalidCheck3">Your billing address and shipping address are the same.</label>
+                                </div>
+                            </div>
                             
                             <div class="form-group col-12 text-center paddin-top-1x">
                                 <div class="row">
                                     <div class="col-sm-3"></div>
                                     <div class="col-sm-6">
-                                        <button id="pay-button" class="btn btn-primary btn-block" disabled type="button" data-action="/embedded-fields-save-cards"><i class="icon-credit-card"></i> Save</button>
+                                        <button id="pay-button" class="btn btn-primary btn-block" disabled type="button" data-action="/embedded-fields-save-cards"><i class="icon-credit-card"></i> Save the card</button>
                                     </div>
                                     <div class="col-sm-3"></div>
                                   </div>
@@ -162,7 +169,7 @@
                             <div class="card mb-5">
                                 <div class="card-header"><span class="text-lg">Demo API Access</span></div>
                                 <div class="card-body">
-                                    <p id="error-user" class="text-primary mb-3"></p>
+                                    <p id="error-account" class="text-danger mb-3"></p>
                                     <div class="row">
                                         <div class="form-group col-12">
                                             <div class="input-group">
@@ -193,6 +200,23 @@
                 </div>
             </form>
         </div>
+        <div class="modal fade" id="modal-success" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog">
+        <div class="modal-dialog<?= ! $is_mobile ? ' modal-dialog-centered' : '' ?>" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Your card is saved</h4>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="mt-3">You have saved a new card, and we have charged <b>$29.00</b> subscription fee for the first month.</p>
+                        <p class="mt-3">Payment Intent ID: <b id="fee"></b></p>
+                        <div class="padding-top-1x text-center">
+                        <a class="btn btn-primary" href=""><i class="icon-credit-card"></i> Close and save another one</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="modal fade" id="modal-failure" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog">
         <div class="modal-dialog<?= ! $is_mobile ? ' modal-dialog-centered' : '' ?>" role="document">
                 <div class="modal-content">
@@ -222,33 +246,31 @@
 
                 var button_text = $('#pay-button').html();
 
-                try {
-                    // STEP #2: Initialize the Airwallex global context for event communication
-                    Airwallex.init({
-                        env: 'demo', // Setup which Airwallex env('staging' | 'demo' | 'prod') to integrate with
-                        origin: window.location.origin, // Setup your event target to receive the browser events message
-                    });
+                // 1. Initialize the Airwallex global context for event communication
+                Airwallex.init({
+                    env: 'demo', // Setup which Airwallex env('demo' | 'prod') to integrate with
+                    origin: window.location.origin, // Keep it as-is
+                });
 
-                    // STEP #4: Create split card elements
-                    const cardNumber = Airwallex.createElement('cardNumber', {
-                        'placeholder': 'Card Number',
-                        'autoCapture': true
-                    });
-                    const expiry = Airwallex.createElement('expiry', {
-                        'placeholder': 'MM/YY'
-                    });
-                    const cvc = Airwallex.createElement('cvc', {
-                        'placeholder': 'CVV'
-                    });
+                // 2. Create embedded fields
+                // 2.1 Init the elements and mount them on the DOM ids
+                const cardNumber = Airwallex.createElement('cardNumber', {
+                    'placeholder': 'Card Number',
+                    'autoCapture': true
+                });
+                const expiry = Airwallex.createElement('expiry', {
+                    'placeholder': 'MM/YY'
+                });
+                const cvc = Airwallex.createElement('cvc', {
+                    'placeholder': 'CVV'
+                });
 
-                    // STEP #5: Mount split card elements
-                    cardNumber.mount('cardNumber'); // This 'cardNumber' id MUST MATCH the id on your cardNumber empty container created in Step 3
-                    expiry.mount('expiry'); // Same as above
-                    cvc.mount('cvc'); // Same as above
-                } catch (error) {
+                cardNumber.mount( 'cardNumber' ); // This 'cardNumber' DOM id
+                expiry.mount( 'expiry' );
+                cvc.mount('cvc');
 
-                }
 
+                // 2.2 Add event listeners
                 window.addEventListener('onReady', (event) => {
                     if( 'cvc' == event.detail.type)
                     {
@@ -303,28 +325,28 @@
                             if ( data.msg.client_id != undefined && data.msg.client_id.length > 0 )
                             {
                                 var clientId = $( '#client-id' );
-                                $('#error-user').html(data.msg.client_id);
+                                $('#error-account').html(data.msg.client_id);
                                 clientId.focus();
                             }
 
                             if ( data.msg.api_key != undefined && data.msg.api_key.length > 0 )
                             {
                                 var apiKey = $( '#api-key' );
-                                $('#error-user').html(data.msg.api_key);
+                                $('#error-account').html(data.msg.api_key);
                                 apiKey.focus();
                             }
 
                             if ( data.msg.customer_id != undefined && data.msg.customer_id.length > 0 )
                             {
                                 var customerId = $( '#customer-id' );
-                                $('#error-user').html(data.msg.customer_id);
+                                $('#error-account').html(data.msg.customer_id);
                                 customerId.focus();
                             }
 
                             if ( data.msg.token != undefined && data.msg.token.length > 0 )
                             {
                                 var clientId = $( '#client-id' );
-                                $('#error-user').html(data.msg.token);
+                                $('#error-account').html(data.msg.token);
                                 clientId.focus();
                             }
 
@@ -334,22 +356,33 @@
                         {
                             if ( data.customer != undefined )
                             {
-                                // Only save a card
+                                // Save a new card
                                 Airwallex.createPaymentConsent({
                                     "client_secret": data.customer.client_secret,
-                                    "element": Airwallex.getElement("cardNumber"),
+                                    "element": Airwallex.getElement( 'cardNumber' ),
                                     "customer_id": data.customer.id,
                                     "currency": 'USD',
                                     "next_triggered_by": "merchant",
                                     "merchant_trigger_reason": "scheduled",
-                                    "requires_cvc": false
+                                    "requires_cvc": false,
+                                    "billing": {
+                                        "first_name": "Steve",
+                                        "last_name": "Gates",
+                                        "address": {
+                                            "country_code": "US",
+                                            "state": "AK",
+                                            "city": "Akhiok",
+                                            "postcode": "99654",
+                                            "street": "Street No. 1"
+                                        }
+                                    }
                                 }).then((response) => {
 
-                                console.log( response );
-                                    // window.location = '/success?id=' + data.intent.id + '&c=' + $('#client-id').val() + '&k=' + $('#api-key').val();
+                                    // Try to demonstrate how to charge fees with the saved card. 
+                                    chargeFee(response);
+
                                 }).catch((response) => {
-                                    console.log( response.original_code );
-                                
+
                                     var modal = $('#modal-failure');
 
                                     $(modal).modal('show');
@@ -362,28 +395,58 @@
                 });
             }
 
+            function chargeFee( customer )
+            {
+                $.ajax({
+                    url : '/embedded-fields-charge-fees',
+                    data : {
+                        'client-id': $('#client-id').val(),
+                        'api-key': $('#api-key').val(),
+                        'customer-id': customer.customer_id,
+                        'consent-id': customer.payment_consent_id,
+                        '<?= $this->security->get_csrf_token_name() ?>':'<?= $this->security->get_csrf_hash() ?>'
+                    },
+                    type : 'post',
+                    beforeSend : function()
+                    {
+                    },
+                    success : function( data )
+                    {
+                        $( '#fee' ).html( data.result.id );
+                        var modal = $('#modal-success');
+                        $(modal).modal('show');
+                    }
+                });
+            }
+
             function validateApiKey( event )
             {
-                var isValid     = false;
+                var isValid         = false;
                 var clientId        = $( '#client-id' );
-                var apiKey       = $( '#api-key' );
+                var apiKey          = $( '#api-key' );
+                var customerId      = $( '#customer-id' );
                 var clientIdVal     = $( clientId ).val().trim();
-                var apiKeyVal    = $( apiKey ).val().trim();
-                var re = /\S+@\S+\.\S+/;
+                var apiKeyVal       = $( apiKey ).val().trim();
+                var customerIdVal   = $( customerId ).val().trim();
 
                 if ( clientIdVal.length == 0 )
                 {
-                    $('#error-user').html('The Client Id field is required.');
+                    $('#error-account').html('The Client ID is required.');
                     clientId.focus();
                 }
                 else if ( apiKeyVal.length == 0 )
                 {
-                    $('#error-user').html('The Api Key field is required.');
+                    $('#error-account').html('The Api Key is required.');
                     apiKey.focus();
+                }
+                else if ( customerIdVal.length == 0 )
+                {
+                    $('#error-account').html('The Customer ID is required.');
+                    customerId.focus();
                 }
                 else
                 {
-                    $('#error-user').html('');
+                    $('#error-account').html('');
                     isValid = true;
                 }
 
