@@ -117,7 +117,7 @@ class Nc_Direct_Api_Controller extends Awx_Controller
         // 3 - Create a Payment Intent
         $order = [
             'request_id'        => random_string(),
-            'amount'            => '80.05',
+            'amount'            => '88.88',
             'currency'          => 'USD',
             'merchant_order_id' => random_string( 'alnum', 32 ),
             'order' => [
@@ -267,42 +267,23 @@ class Nc_Direct_Api_Controller extends Awx_Controller
 
         $posted_data = $this->input->post();
 
-        $check_enrollment   = $this->input->post( 'threeDSMethodData', TRUE );
-        $validate_cres      = $this->input->post( 'cres', TRUE );
-        $validate_pares     = $this->input->post( 'PaRes', TRUE );
+        $res = $this->confirm_continue_intent( $token, $intent_id, [
+            'request_id'    => random_string(),
+            'type'          => '3ds_continue',
+            'three_ds'      => [
+                'acs_response' => http_build_query( $posted_data ),
+                //'return_url'    => 'url'
+            ]
+        ] );
 
-        if ( ! empty( $check_enrollment ) )
+        if ( isset( $res[ 'next_action' ] ) AND isset( $res[ 'next_action' ][ 'url' ] ) )
         {
-            $res = $this->confirm_continue_intent( $token, $intent_id, [
-                'request_id'    => random_string(),
-                'type'          => '3dsCheckEnrollment',
-                'three_ds'      => [
-                    'acs_response' => http_build_query( $posted_data )
-                ]
-            ] );
+            $this->vars[ 'url' ] = $res[ 'next_action' ][ 'url' ];
+            $this->vars[ 'data' ] = $res[ 'next_action' ][ 'data' ];
 
-            if ( isset( $res[ 'next_action' ] ) AND isset( $res[ 'next_action' ][ 'url' ] ) )
-            {
-                $this->vars[ 'url' ] = $res[ 'next_action' ][ 'url' ];
-                $this->vars[ 'data' ] = $res[ 'next_action' ][ 'data' ];
+            $this->load->view( 'nc_stepup_3ds', $this->vars );
 
-                $this->load->view( 'nc_stepup_3ds', $this->vars );
-
-                return TRUE;
-            }
-        }
-
-        // The last comfirmation
-        if ( ! empty( $validate_cres ) OR ! empty( $validate_pares ) )
-        {
-            $res = $this->confirm_continue_intent( $token, $intent_id, [
-                'request_id'    => random_string(),
-                'type'          => '3dsValidate',
-                'three_ds'      => [
-                    'acs_response' => http_build_query( $posted_data )
-                ]
-            ] );
-
+            return TRUE;
         }
 
         // Happy path

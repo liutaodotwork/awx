@@ -408,106 +408,14 @@
 
                             $('#pay-button').html('<i class="icon-credit-card"></i> Pay $80.05').prop('disabled', false);
                         }
-                        else if ( data.result=='1' && data.redirection != undefined )
-                        {
-
-                        }
                         else if( data.result=='1' && data.intent != undefined )
                         {
-                            if ( data.customer != undefined )
-                            {
-                                // Only save a card
-                                Airwallex.createPaymentConsent({
-                                    "client_secret": data.customer.client_secret,
-                                    "element": Airwallex.getElement("cardNumber"),
-                                    "customer_id": data.customer.id,
-                                    "currency": 'USD',
-                                    "next_triggered_by": "customer",
-                                    "merchant_trigger_reason": "unscheduled",
-                                    "requires_cvc": false,
-                                    "billing": {
-                                        "first_name": "Steve",
-                                        "last_name": "Gates",
-                                        "phone_number": "+187631283",
-                                        "address": {
-                                            "country_code": "US",
-                                            "state": "AK",
-                                            "city": "Akhiok",
-                                            "street": "Street No. 4",
-                                            "postcode": "99654"
-                                        }
-                                    }
-                                }).then((response) => {
-                                    window.location = '/success?id=' + data.intent.id + '&c=' + $('#client-id').val() + '&k=' + $('#api-key').val();
-                                }).catch((response) => {
-                                    console.log( response.original_code );
-                                
-                                    var modal = $('#modal-failure');
-
-                                    $(modal).modal('show');
-
-                                    $('#pay-button').html('<i class="icon-credit-card"></i> Pay $80.05').prop('disabled', false);
-                                });
-                                // Pay and save the card
-                                /*
-                                Airwallex.createPaymentConsent({
-                                    "intent_id": data.intent.id,
-                                    "client_secret": data.intent.client_secret,
-                                    "element": Airwallex.getElement("cardNumber"),
-                                    "customer_id": data.customer.id,
-                                    "currency": 'USD',
-                                    "next_triggered_by": "customer",
-                                    "merchant_trigger_reason": "unscheduled",
-                                    "requires_cvc": false,
-                                    "billing": {
-                                        "first_name": "Steve",
-                                        "last_name": "Gates",
-                                        "phone_number": "+187631283",
-                                        "address": {
-                                            "country_code": "US",
-                                            "state": "AK",
-                                            "city": "Akhiok",
-                                            "street": "Street No. 4",
-                                            "postcode": "99654"
-                                        }
-                                    }
-                                }).then((response) => {
-                                    window.location = '/success?id=' + data.intent.id + '&c=' + $('#client-id').val() + '&k=' + $('#api-key').val();
-                                }).catch((response) => {
-                                    console.log( response.original_code );
-                                
-                                    var modal = $('#modal-failure');
-
-                                    $(modal).modal('show');
-
-                                    $('#pay-button').html('<i class="icon-credit-card"></i> Pay $80.05').prop('disabled', false);
-                                });
-                            */
-
 
                             // Do not save the card or use a saved card.
-                            /*
                             Airwallex.confirmPaymentIntent({
                                 element: Airwallex.getElement('cardNumber'),
                                 id: data.intent.id,
                                 client_secret: data.intent.client_secret,
-                                payment_method: {
-                                    "billing": {
-                                        "first_name": "Steve",
-                                        "last_name": "Gates",
-                                        "phone_number": "+187631283",
-                                        "address": {
-                                            "country_code": "US",
-                                            "state": "AK",
-                                            "city": "Akhiok",
-                                            "street": "Street No. 4",
-                                            "postcode": "99654"
-                                        }
-                                    },
-                                    "card": {
-                                        //"name": $('#name-on-card').val()
-                                    }
-                                }
                             })
                             .then((response) => {
                                 // Handle successful responses
@@ -523,7 +431,8 @@
                                 $(modal).modal('show');
 
                                 $('#pay-button').html('<i class="icon-credit-card"></i> Pay $80.05').prop('disabled', false);
-                            });*/
+
+                            });
                         }
                     }
                 });

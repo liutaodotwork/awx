@@ -1,6 +1,7 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
 $route['testing']['get']   = 'Test_Controller/index';
+$route['test-webhook']['get']   = 'Test_Controller/test_webhook';
 
 
 $route['embedded-fields-for-card-payments'] = 'Embedded_Fields_Controller/embedded_fields';
@@ -27,6 +28,7 @@ $route['nc-direct-api-3ds-result/(:num)']['get'] = 'Nc_Direct_Api_Controller/thr
 $route['hpp-for-card-payments'] = 'Hpp_Controller/hpp';
 
 $route['payout']['get'] = 'Payout_Controller/index';
+$route['fx']['get'] = 'Fx_Controller/index';
 
 $route['success']['get']   = 'Awx_Controller/success';
 $route['failure']['get']   = 'Awx_Controller/failure';
