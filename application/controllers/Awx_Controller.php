@@ -108,13 +108,13 @@ class Awx_Controller extends CI_Controller
         $this->vars[ 'intent' ] = $intent;
         $this->vars[ 'mode' ]   = $mode;
 
-        if ( 'nc-direct-api' == $mode )
+        if ( 'nc-native-api' == $mode )
         {
-            $this->vars[ 'back_url' ] = site_url( 'payments/cards/nc-direct-api-for-card-payments' );
+            $this->vars[ 'back_url' ] = site_url( 'payments/cards/nc-native-api-for-card-payments' );
         }
-        elseif ( 'direct-api' == $mode )
+        elseif ( 'native-api' == $mode )
         {
-            $this->vars[ 'back_url' ] = site_url( 'payments/cards/direct-api' );
+            $this->vars[ 'back_url' ] = site_url( 'payments/cards/native-api' );
         }
         else
         {
@@ -160,13 +160,13 @@ class Awx_Controller extends CI_Controller
         $this->vars[ 'intent' ]     = $intent;
         $this->vars[ 'code' ]       = $code;
         $this->vars[ 'mode' ]       = $mode;
-        if ( 'nc-direct-api' == $mode )
+        if ( 'nc-native-api' == $mode )
         {
-            $this->vars[ 'back_url' ]   = '/nc-direct-api-for-card-payments';
+            $this->vars[ 'back_url' ]   = '/nc-native-api-for-card-payments';
         }
-        elseif ( 'direct-api' == $mode )
+        elseif ( 'native-api' == $mode )
         {
-            $this->vars[ 'back_url' ] = site_url( 'payments/cards/direct-api' );
+            $this->vars[ 'back_url' ] = site_url( 'payments/cards/native-api' );
         }
         else
         {

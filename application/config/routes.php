@@ -3,11 +3,11 @@
 $route['testing']['get']   = 'Test_Controller/index';
 $route['test-webhook']['get']   = 'Test_Controller/test_webhook';
 
-// Direct API
-$route['payments/cards/direct-api']                             = 'Direct_Api_Controller/direct_api';
-$route['payments/cards/direct-api-checkout']['post']            = 'Direct_Api_Controller/do_checkout_direct_api';
-$route['payments/cards/direct-api-callback']['post']            = 'Direct_Api_Controller/three_ds_callback';
-$route['payments/cards/direct-api-3ds-result/(:num)']['get']    = 'Direct_Api_Controller/three_ds_result/$1';
+// Native API
+$route['payments/cards/native-api']                             = 'Native_Api_Controller/native_api';
+$route['payments/cards/native-api-checkout']['post']            = 'Native_Api_Controller/do_checkout_native_api';
+$route['payments/cards/native-api-callback']['post']            = 'Native_Api_Controller/three_ds_callback';
+$route['payments/cards/native-api-3ds-result/(:num)']['get']    = 'Native_Api_Controller/three_ds_result/$1';
 
 
 $route['demo']['get']   = 'Embedded_Fields_Controller/demo';
@@ -24,10 +24,10 @@ $route['embedded-fields-charge-fees']['post'] = 'Embedded_Fields_Controller/do_c
 
 
 
-$route['nc-direct-api-for-card-payments'] = 'Nc_Direct_Api_Controller/direct_api';
-$route['nc-direct-api-checkout']['post'] = 'Nc_Direct_Api_Controller/do_checkout_direct_api';
-$route['nc-direct-api-callback/(:any)']['post'] = 'Nc_Direct_Api_Controller/three_ds_callback/$1';
-$route['nc-direct-api-3ds-result/(:num)']['get'] = 'Nc_Direct_Api_Controller/three_ds_result/$1';
+$route['nc-native-api-for-card-payments'] = 'Nc_native_Api_Controller/native_api';
+$route['nc-native-api-checkout']['post'] = 'Nc_native_Api_Controller/do_checkout_native_api';
+$route['nc-native-api-callback/(:any)']['post'] = 'Nc_native_Api_Controller/three_ds_callback/$1';
+$route['nc-native-api-3ds-result/(:num)']['get'] = 'Nc_native_Api_Controller/three_ds_result/$1';
 
 $route['hpp-for-card-payments'] = 'Hpp_Controller/hpp';
 

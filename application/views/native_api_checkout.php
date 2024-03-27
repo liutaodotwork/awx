@@ -4,7 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Checkout</title>
+    <title>Native API Card Payments Demo</title>
     <!-- Mobile Specific Meta Tag-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <!-- Vendor Styles including: Bootstrap, Font Icons, Plugins, etc.-->
@@ -20,7 +20,7 @@
     <div class="page-title">
       <div class="container">
         <div class="column">
-          <h1>Checkout</h1>
+          <h1>Native API Card Payments Demo</h1>
         </div>
         <div class="column"></div>
       </div>
@@ -28,17 +28,16 @@
     <!-- Page Content-->
     <div class="container padding-bottom-3x mb-2">
       <div class="row">
-        <!-- Checkout Adress-->
         <div class="col-xl-8 col-lg-7">
             <div class="steps flex-sm-nowrap mb-5">
                 <a class="step" href="#">
-                    <h4 class="step-title"><i class="icon-check-circle"></i>1. Product Selection</h4>
+                    <h4 class="step-title"><i class="icon-check-circle"></i><strong>1. Product Selection</strong></h4>
                 </a>
                 <a class="step" href="#">
-                    <h4 class="step-title"><i class="icon-check-circle"></i>2. Shipping</h4>
+                    <h4 class="step-title"><i class="icon-check-circle"></i><strong>2. Shipping</strong></h4>
                 </a>
                 <a class="step active" href="">
-                    <h4 class="step-title">3. Payment and Confirmation</h4>
+                    <h4 class="step-title"><strong>3. Payment and Confirmation</strong></h4>
                 </a>
             </div>
           <h4>Select a Payment Method</h4>
@@ -56,7 +55,7 @@
                         <img class="d-inline-block align-middle" src="https://checkout-demo.airwallex.com/static/media/jcb.9c8dde0afb56485cd18e.svg" height="24" alt="JCB">
                         <img class="d-inline-block align-middle" src="https://checkout-demo.airwallex.com/static/media/unionpay.9421a757c6289e8c65ec.svg" height="24" alt="UnionPay">
                     </p>
-                    <p><a href="https://www.airwallex.com/docs/online-payments__test-card-numbers" target="_blank">Click here to access Airwallex test cards.</a></p>
+                    <p><a href="https://www.airwallex.com/docs/online-payments__test-card-numbers" target="_blank"><strong>Click here to access Airwallex test cards >></strong></a></p>
                   <div class="card-wrapper"></div>
                   <form class="interactive-credit-card row">
                     <div class="form-group col-12">
@@ -97,7 +96,7 @@
                 <div class="row">
                     <div class="col-sm-3"></div>
                     <div class="col-sm-6">
-                    <button id="pay-button" class="btn btn-primary btn-block" type="button" data-action="<?= site_url( 'payments/cards/direct-api-checkout' ) ?>"><i class="icon-credit-card"></i> Proceed to Checkout</button>
+                    <button id="pay-button" class="btn btn-primary btn-block" type="button" data-action="<?= site_url( 'payments/cards/native-api-checkout' ) ?>"><i class="icon-credit-card"></i> Proceed to Checkout</button>
                     </div>
                     <div class="col-sm-3"></div>
                   </div>
@@ -122,8 +121,13 @@
                   <td class="text-gray-dark">$20.00</td>
                 </tr>
                 <tr>
-                  <td></td>
-                  <td class="text-lg text-gray-dark">$80.05</td>
+                  <td style="padding-top: 20px;" class="text-primary"><strong>Modify Price</strong></td>
+                  <td class="text-lg text-gray-dark" width="70%">
+                    <div class="input-group">
+                        <input class="form-control form-control-sm" id="price" type="text" name="price" placeholder="Price" value="80.05" style="padding-left:12px;">
+                        <div class="invalid-tooltip text-left"></div>
+                    </div>
+                  </td>
                 </tr>
               </table>
             </section>
@@ -200,6 +204,7 @@
                     'name': $('#name').val(),
                     'expiry': $('#expiry').val(),
                     'cvc': $('#cvc').val(),
+                    'price': $('#price').val(),
                     'device_id': '<?= $device_id ?>',
                     '<?= $this->security->get_csrf_token_name() ?>':'<?= $this->security->get_csrf_hash() ?>'
                 },
@@ -215,7 +220,7 @@
                     // Processing Failed
                     if ( data.result == '0' && data.msg.id != undefined )
                     {
-                        window.location = '/failure?id=' + data.msg.id + '&code=' + data.msg.code + '&m=direct-api';
+                        window.location = '/failure?id=' + data.msg.id + '&code=' + data.msg.code + '&m=native-api';
                     }
                     else if ( data.result == '0' ) // Validation Failed
                     {
@@ -247,13 +252,20 @@
                             cvc.addClass('is-invalid');
                         }
 
+                        if ( data.msg.price != undefined && data.msg.price.length > 0 )
+                        {
+                            var price = $( '#price' );
+                            price.siblings('.invalid-tooltip').html( '' ).html(data.msg.price);
+                            price.addClass('is-invalid');
+                        }
+
                         $('#pay-button').html('<i class="icon-credit-card"></i> Place Order').prop('disabled', false);
                     }
                     else if( data.result=='1' && data.intent != undefined )
                     {
                         if ( data.req_customer_action != '1' )
                         {
-                            window.location = '/success?id=' + data.intent.id + '&m=direct-api';
+                            window.location = '/success?id=' + data.intent.id + '&m=native-api';
 
                             return true;
                         }
@@ -289,6 +301,10 @@
             var cvc = $( '#cvc' );
             cvc.siblings('.invalid-tooltip').html( '' );
             cvc.removeClass('is-invalid');
+
+            var price = $( '#price' );
+            price.siblings('.invalid-tooltip').html( '' );
+            price.removeClass('is-invalid');
         }
     </script>
   </body>

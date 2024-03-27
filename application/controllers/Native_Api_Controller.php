@@ -5,7 +5,7 @@ if ( ! class_exists( 'Awx_Controller', FALSE ) )
     require_once( APPPATH . 'controllers/Awx_Controller.php' );
 }
 
-class Direct_Api_Controller extends Awx_Controller
+class Native_Api_Controller extends Awx_Controller
 {
     /**
      * Constructor
@@ -31,14 +31,14 @@ class Direct_Api_Controller extends Awx_Controller
     /**
      * Checkout Page.
      */
-    public function direct_api()
+    public function native_api()
     {
         $this->vars[ 'client_id' ]  = $this->client_id;
         $this->vars[ 'api_key' ]    = $this->api_key;
 
         $this->vars[ 'device_id' ]  = random_string( 'alnum', 64 );
 
-        $this->load->view( 'direct_api_checkout', $this->vars );
+        $this->load->view( 'native_api_checkout', $this->vars );
     }
 
 
@@ -47,7 +47,7 @@ class Direct_Api_Controller extends Awx_Controller
     /**
      * Do checkout.
      */
-    public function do_checkout_direct_api()
+    public function do_checkout_native_api()
     {
         if ( ! $this->input->is_ajax_request() )
         {
@@ -75,6 +75,11 @@ class Direct_Api_Controller extends Awx_Controller
                 'field' => 'cvc',
                 'label' => 'CVC',
                 'rules' => 'trim|required|max_length[4]'
+            ],
+            [
+                'field' => 'price',
+                'label' => 'Price',
+                'rules' => 'trim|required|numeric'
             ]
         ];
         $config = [
@@ -90,7 +95,8 @@ class Direct_Api_Controller extends Awx_Controller
                 'number'   => form_error( 'number' ),
                 'name'     => form_error( 'name' ),
                 'expiry'   => form_error( 'expiry' ),
-                'cvc'      => form_error( 'cvc' )
+                'cvc'      => form_error( 'cvc' ),
+                'price'    => form_error( 'price' ),
             ];
             $this->json_response( [ 'result' => 0, 'msg' => $error_msg ] );
             return FALSE;
@@ -126,7 +132,7 @@ class Direct_Api_Controller extends Awx_Controller
         // 3 - Create a Payment Intent
         $order = [
             'request_id'        => random_string(),
-            'amount'            => '80.05',
+            'amount'            => $this->input->post( 'price', TRUE ),
             'currency'          => 'USD',
             'merchant_order_id' => random_string( 'alnum', 32 ),
             'order' => [
@@ -164,7 +170,7 @@ class Direct_Api_Controller extends Awx_Controller
                     ]
                 ]
             ],
-            'return_url' => site_url( 'payments/cards/direct-api-callback' )
+            'return_url' => site_url( 'payments/cards/native-api-callback' )
         ];
 
         $intent = $this->get_secret( $token, $order );
@@ -305,13 +311,13 @@ class Direct_Api_Controller extends Awx_Controller
         //
         if ( isset( $res[ 'status' ] ) AND ( 'SUCCEEDED' == $res[ 'status' ] ) )
         {
-            redirect( site_url( 'payments/cards/direct-api-3ds-result/1' . '?id=' . $intent_id ) );
+            redirect( site_url( 'payments/cards/native-api-3ds-result/1' . '?id=' . $intent_id ) );
 
             return TRUE;
         }
         else
         {
-            redirect( site_url( 'payments/cards/direct-api-3ds-result/0' . '?id=' . $intent_id . ( isset( $res[ 'provider_original_response_code' ] ) ? '&code=' . $res[ 'provider_original_response_code' ] : '' ) ) );
+            redirect( site_url( 'payments/cards/native-api-3ds-result/0' . '?id=' . $intent_id . ( isset( $res[ 'provider_original_response_code' ] ) ? '&code=' . $res[ 'provider_original_response_code' ] : '' ) ) );
 
             return FALSE;
         }
@@ -334,7 +340,7 @@ class Direct_Api_Controller extends Awx_Controller
         $code = $this->input->get( 'code', TRUE );
         if ( ! empty( $id ) )
         {
-            $result_uri .= '?id=' . $id . '&m=direct-api';
+            $result_uri .= '?id=' . $id . '&m=native-api';
         }
 
         $this->vars[ 'result_page' ]    = site_url( $result_uri );
