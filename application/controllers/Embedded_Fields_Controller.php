@@ -356,4 +356,13 @@ class Embedded_Fields_Controller extends Awx_Controller
 
         $this->load->view( 'three_ds_result', $this->vars );
     }
+
+
+    // --------------------------------------------------------------------
+    //
+    public function demo()
+    {
+        $this->load->view( 'demo', $this->vars );
+    }
+
 }

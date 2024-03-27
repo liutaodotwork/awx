@@ -189,7 +189,7 @@
                                         <div class="form-group col-12">
                                             <div class="custom-control custom-checkbox">
                                                 <input class="custom-control-input" type="checkbox" checked id="invalidCheck1">
-                                                <label class="custom-control-label" for="invalidCheck1">I konw this demo only accepts <b>Airwallex Demo Accounts</b> and the credentials will <b>NEVER</b> be saved.</label>
+                                                <label class="custom-control-label" for="invalidCheck1">I am aware that this demo exclusively supports Airwallex Demo Accounts and ensures that the credentials will never be stored.</label>
                                             </div>
                                         </div>
                                     </div>

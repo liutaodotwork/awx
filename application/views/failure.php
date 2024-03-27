@@ -3,9 +3,9 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Payment Failed</title>
+        <title>Payment Unsuccessful</title>
         <!-- SEO Meta Tags-->
-        <meta name="description" content="Checkout Failure Result - Smooth CKO Flow">
+        <meta name="description" content="Checkout Failure Result">
         <!-- Mobile Specific Meta Tag-->
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <!-- Vendor Styles including: Bootstrap, Font Icons, Plugins, etc.-->
@@ -22,7 +22,7 @@
         <div class="page-title">
             <div class="container">
                 <div class="column">
-                    <h1>Payment Failed</h1>
+                    <h1>Payment Unsuccessful</h1>
                 </div>
             </div>
         </div>
@@ -30,9 +30,9 @@
         <div class="container padding-bottom-3x mb-2">
             <div class="card text-center">
                 <div class="card-body padding-top-2x">
-                    <h2 class="card-title mb-4 text-danger"><i class="icon-x-circle"></i> Your Payment Failed</h2>
-                    <p class="card-text">You can try again with another Visa or Mastercard card.</p>
-                    <p class="card-text">Please also ensure that the billing address you provided is the same one where your debit/credit card is registered.</p>
+                    <h2 class="card-title mb-4 text-danger"><i class="icon-x-circle"></i> Payment Unsuccessful</h2>
+                    <p class="card-text">You can attempt another payment using a different Visa or Mastercard.</p>
+                    <p class="card-text">Please verify that the billing address you provided matches the registered address of your debit/credit card.</p>
 <?php if ( ! empty( $code ) ) { ?>
                     <p class="card-text">Error Code: <?= $code ?></p>
 <?php } ?>

@@ -33,8 +33,10 @@ class Direct_Api_Controller extends Awx_Controller
      */
     public function direct_api()
     {
-        $this->vars[ 'client_id' ]  = $this->input->get( 'c', TRUE );
-        $this->vars[ 'api_key' ]    = $this->input->get( 'k', TRUE );
+        $this->vars[ 'client_id' ]  = $this->client_id;
+        $this->vars[ 'api_key' ]    = $this->api_key;
+
+        $this->vars[ 'device_id' ]  = random_string( 'alnum', 64 );
 
         $this->load->view( 'direct_api_checkout', $this->vars );
     }
@@ -61,7 +63,7 @@ class Direct_Api_Controller extends Awx_Controller
             ],
             [
                 'field' => 'name',
-                'label' => 'Full Name',
+                'label' => 'Name on Card',
                 'rules' => 'trim|required|max_length[30]'
             ],
             [
@@ -96,7 +98,7 @@ class Direct_Api_Controller extends Awx_Controller
 
         // 1.1 - Validate card info
         $number = preg_replace( '/\s+/', '', $this->input->post( 'number', TRUE ) );
-        if ( ! $this->validate_cc( $number, [ 'visa', 'mc' ] ) )
+        if ( ! $this->validate_cc( $number, [ 'visa', 'mc', 'amex', 'jcb' ] ) )
         {
             $error_msg = [
                 'number'   => 'Please input a valid Visa or Mastercard card number.'
@@ -104,11 +106,12 @@ class Direct_Api_Controller extends Awx_Controller
             $this->json_response( [ 'result' => 0, 'msg' => $error_msg ] );
             return FALSE;
         }
+
         // TODO validate expiry and cvc
 
         // 2 - Fetch an AWX Token
-        $client_id  = $this->input->get( 'c', TRUE );
-        $api_key    = $this->input->get( 'k', TRUE );
+        $client_id  = $this->client_id;
+        $api_key    = $this->api_key;
 
         $token = $this->get_api_token( $client_id, $api_key );
 
@@ -123,7 +126,7 @@ class Direct_Api_Controller extends Awx_Controller
         // 3 - Create a Payment Intent
         $order = [
             'request_id'        => random_string(),
-            'amount'            => '100000',
+            'amount'            => '80.05',
             'currency'          => 'USD',
             'merchant_order_id' => random_string( 'alnum', 32 ),
             'order' => [
@@ -161,7 +164,7 @@ class Direct_Api_Controller extends Awx_Controller
                     ]
                 ]
             ],
-            'return_url' => site_url( 'direct-api-callback' )
+            'return_url' => site_url( 'payments/cards/direct-api-callback' )
         ];
 
         $intent = $this->get_secret( $token, $order );
@@ -213,15 +216,17 @@ class Direct_Api_Controller extends Awx_Controller
             'payment_method_options' => [
                 'card' => [
                     'auto_capture'  => true,
-                    'three_ds'      => [
-                        'return_url' => site_url( 'direct-api-callback/' . $intent[ 'id' ] ) . '?c=' . $client_id . '&k=' . $api_key
-                    ]
                 ]
-            ]
+            ],
+            'device_data' => [
+                'device_id' => $this->input->post( 'device_id', TRUE )
+            ],
         ];
 
         $confirm_result = $this->confirm_intent( $token, $intent[ 'id' ], $payment_detail );
 
+
+        //
         if ( empty( $confirm_result ) OR ! isset( $confirm_result[ 'status' ] ) )
         {
             $this->json_response( [ 'result' => 0, 'msg' => [
@@ -231,10 +236,28 @@ class Direct_Api_Controller extends Awx_Controller
             return FALSE;
         }
 
+
         // Optional 5 - 3DS
         if ( 'REQUIRES_CUSTOMER_ACTION' == $confirm_result[ 'status' ] )
         {
-            $this->json_response( [ 'result' => 1, 'fingerprint' => 1, 'intent' => $confirm_result ] );
+            $resp = [
+                'result' => 1,
+                'req_customer_action' => 1,
+                'intent' => $confirm_result
+            ];
+
+            if ( 'WAITING_DEVICE_DATA_COLLECTION' == $confirm_result[ 'next_action' ][ 'stage' ] )
+            {
+                $resp[ 'req_device_data' ] = 1; 
+            }
+
+            if ( 'WAITING_USER_INFO_INPUT' == $confirm_result[ 'next_action' ][ 'stage' ] )
+            {
+                $resp[ 'req_device_data' ] = 0; 
+            }
+
+
+            $this->json_response( $resp );
             return TRUE;
         }
 
@@ -242,32 +265,20 @@ class Direct_Api_Controller extends Awx_Controller
         return TRUE;
     }
 
-    // --------------------------------------------------------------------
-
-    /**
-     * 3DS Device Page.
-     */
-    public function three_ds_device()
-    {
-        $this->vars[ 'url' ] = $this->input->get( 'url', TRUE );
-        $this->vars[ 'bin' ] = $this->input->get( 'bin', TRUE );
-        $this->vars[ 'jwt' ] = $this->input->get( 'jwt', TRUE );
-
-        $this->load->view( 'device_3ds', $this->vars );
-    }
 
     // --------------------------------------------------------------------
 
     /**
      * 3DS Callback.
      */
-    public function three_ds_callback( $intent_id = '' )
+    public function three_ds_callback()
     {
-        $client_id  = $this->input->get( 'c', TRUE );
-        $api_key    = $this->input->get( 'k', TRUE );
+        $client_id  = $this->client_id;
+        $api_key    = $this->api_key;
+
+        $intent_id  = $this->input->post( 'paymentIntentId', TRUE );
 
         $token = $this->get_api_token( $client_id, $api_key );
-        $res = FALSE;
 
         if ( FALSE === $token )
         {
@@ -275,55 +286,32 @@ class Direct_Api_Controller extends Awx_Controller
         }
 
 
-        $tran_id = $this->input->post( 'TransactionId', TRUE );
+        //
+        $res = $this->confirm_continue_intent( $token, $intent_id, [
+            'request_id'    => random_string(),
+            'type'          => '3ds_continue',
+        ] );
 
-        if ( empty( $tran_id ) )
+
+        //
+        if ( 'REQUIRES_CUSTOMER_ACTION' === $res[ 'status' ] )
         {
-            $device_data = $this->input->post( 'Response', TRUE );
-
-            $res = $this->confirm_continue_intent( $token, $intent_id, [
-                'request_id'    => random_string(),
-                'type'          => '3dsCheckEnrollment',
-                'three_ds'      => [
-                    'device_data_collection_res' => $device_data
-                ]
-            ] );
-
-            if ( isset( $res[ 'next_action' ] ) AND isset( $res[ 'next_action' ][ 'url' ] ) )
-            {
-                $this->vars[ 'url' ] = $res[ 'next_action' ][ 'url' ];
-                $this->vars[ 'jwt' ] = $res[ 'next_action' ][ 'data' ][ 'jwt' ];
-
-                $this->load->view( 'stepup_3ds', $this->vars );
-
-                return TRUE;
-            }
-        }
-
-        // The last comfirmation
-        if ( ! empty( $tran_id ) )
-        {
-            $res = $this->confirm_continue_intent( $token, $intent_id, [
-                'request_id'    => random_string(),
-                'type'          => '3dsValidate',
-                'three_ds'      => [
-                    'ds_transaction_id' => $tran_id
-                ]
-            ] );
-
-        }
-
-        // Happy path
-        if ( isset( $res[ 'status' ] ) AND ( 'SUCCEEDED' == $res[ 'status' ] ) )
-        {
-            redirect( site_url( 'direct-api-3ds-result/1' . '?id=' . $intent_id . '&c=' . $client_id . '&k=' . $api_key ) );
+            redirect( $res[ 'next_action' ][ 'url' ] );
 
             return TRUE;
         }
 
-        if ( FALSE !== $res )
+
+        //
+        if ( isset( $res[ 'status' ] ) AND ( 'SUCCEEDED' == $res[ 'status' ] ) )
         {
-            redirect( site_url( 'direct-api-3ds-result/0' . '?id=' . $intent_id . '&c=' . $client_id . '&k=' . $api_key . ( isset( $res[ 'provider_original_response_code' ] ) ? '&code=' . $res[ 'provider_original_response_code' ] : '' ) ) );
+            redirect( site_url( 'payments/cards/direct-api-3ds-result/1' . '?id=' . $intent_id ) );
+
+            return TRUE;
+        }
+        else
+        {
+            redirect( site_url( 'payments/cards/direct-api-3ds-result/0' . '?id=' . $intent_id . ( isset( $res[ 'provider_original_response_code' ] ) ? '&code=' . $res[ 'provider_original_response_code' ] : '' ) ) );
 
             return FALSE;
         }
@@ -346,7 +334,7 @@ class Direct_Api_Controller extends Awx_Controller
         $code = $this->input->get( 'code', TRUE );
         if ( ! empty( $id ) )
         {
-            $result_uri .= '?id=' . $id . '&c=' . $c . '&k=' . $k . '&m=direct-api';
+            $result_uri .= '?id=' . $id . '&m=direct-api';
         }
 
         $this->vars[ 'result_page' ]    = site_url( $result_uri );

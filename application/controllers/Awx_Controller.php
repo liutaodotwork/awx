@@ -14,15 +14,6 @@ class Awx_Controller extends CI_Controller
     // --------------------------------------------------------------------
 
     /**
-     * AWX Doamin
-     *
-     * @access public
-     */
-    protected $awx_domain = 'https://api-demo.airwallex.com';
-
-    // --------------------------------------------------------------------
-
-    /**
      * Constructor
      *
      * @access public
@@ -41,7 +32,35 @@ class Awx_Controller extends CI_Controller
         ] );
 
         $this->vars[ 'asset_path' ] = ( ENVIRONMENT == 'production' ) ? '/dist' : '/dist';
-        $this->vars[ 'is_mobile' ] = $this->agent->is_mobile();
+        $this->vars[ 'is_mobile' ]  = $this->agent->is_mobile();
+        $this->vars[ 'is_demo' ]    = ( ENVIRONMENT == 'production' ) ? FALSE : TRUE ;
+
+        $this->awx_domain   = ( ENVIRONMENT == 'production' ) ?  'https://api.airwallex.com' : 'https://api-demo.airwallex.com';
+        $this->file_domain  = ( ENVIRONMENT == 'production' ) ?  'https://files.airwallex.com' : 'https://files-demo.airwallex.com';
+
+
+        // Get client id and api secret from DB
+        $this->load->database();
+
+        $this->db->select( 'name, value' );
+        $this->db->from( 'en_settings' );
+        $this->db->where_in( 'name', [ 'api_key', 'client_id' ] );
+
+        $query  = $this->db->get();
+        $result = $query->result_array();
+
+        foreach ( $result as $row )
+        {
+            if ($row[ 'name' ] == 'api_key')
+            {
+                $this->api_key = $row[ 'value' ];
+            }
+            elseif ($row[ 'name' ] == 'client_id')
+            {
+                $this->client_id = $row[ 'value' ];
+            }
+        }
+
     }
 
     // --------------------------------------------------------------------
@@ -51,6 +70,7 @@ class Awx_Controller extends CI_Controller
      */
     public function index()
     {
+        $this->load->view( 'index', $this->vars );
     }
 
     // --------------------------------------------------------------------
@@ -60,10 +80,12 @@ class Awx_Controller extends CI_Controller
      */
     public function success()
     {
-        $client_id  = $this->input->get( 'c', TRUE );
-        $api_key    = $this->input->get( 'k', TRUE );
+        $client_id  = $this->client_id;
+        $api_key    = $this->api_key;
+
+        $intent_id  = $this->input->get( 'id', TRUE );
         $mode       = $this->input->get( 'm', TRUE );
-        $intent_id = $this->input->get( 'id', TRUE );
+
         if ( empty( $intent_id ) OR  empty( $client_id ) OR empty( $api_key )  )
         {
             show_404();
@@ -88,15 +110,15 @@ class Awx_Controller extends CI_Controller
 
         if ( 'nc-direct-api' == $mode )
         {
-            $this->vars[ 'back_url' ] = '/nc-direct-api-for-card-payments?c=' . $client_id . '&k=' . $api_key;
+            $this->vars[ 'back_url' ] = site_url( 'payments/cards/nc-direct-api-for-card-payments' );
         }
         elseif ( 'direct-api' == $mode )
         {
-            $this->vars[ 'back_url' ] = '/nc-direct-api-for-card-payments?c=' . $client_id . '&k=' . $api_key;
+            $this->vars[ 'back_url' ] = site_url( 'payments/cards/direct-api' );
         }
         else
         {
-            $this->vars[ 'back_url' ] = '/embedded-fields-for-card-payments?c=' . $client_id . '&k=' . $api_key;
+            $this->vars[ 'back_url' ] = '/embedded-fields-for-card-payments';
         }
 
         $this->load->view( 'success', $this->vars );
@@ -109,10 +131,11 @@ class Awx_Controller extends CI_Controller
      */
     public function failure()
     {
-        $client_id = $this->input->get( 'c', TRUE );
-        $api_key = $this->input->get( 'k', TRUE );
+        $client_id  = $this->client_id;
+        $api_key    = $this->api_key;
+
         $mode       = $this->input->get( 'm', TRUE );
-        $intent_id = $this->input->get( 'id', TRUE );
+        $intent_id  = $this->input->get( 'id', TRUE );
         $code = $this->input->get( 'code', TRUE );
 
         if ( empty( $intent_id ) OR  empty( $client_id ) OR empty( $api_key )  )
@@ -139,15 +162,15 @@ class Awx_Controller extends CI_Controller
         $this->vars[ 'mode' ]       = $mode;
         if ( 'nc-direct-api' == $mode )
         {
-            $this->vars[ 'back_url' ]   = '/nc-direct-api-for-card-payments?c=' . $client_id . '&k=' . $api_key;
+            $this->vars[ 'back_url' ]   = '/nc-direct-api-for-card-payments';
         }
         elseif ( 'direct-api' == $mode )
         {
-            $this->vars[ 'back_url' ]   = '/direct-api-for-card-payments?c=' . $client_id . '&k=' . $api_key;
+            $this->vars[ 'back_url' ] = site_url( 'payments/cards/direct-api' );
         }
         else
         {
-            $this->vars[ 'back_url' ] = '/embedded-fields-for-card-payments?c=' . $client_id . '&k=' . $api_key;
+            $this->vars[ 'back_url' ] = '/embedded-fields-for-card-payments';
         }
 
         $this->load->view( 'failure', $this->vars );
