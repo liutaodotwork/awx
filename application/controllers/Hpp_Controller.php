@@ -25,6 +25,7 @@ class Hpp_Controller extends Awx_Controller
     public function index()
     {
     }
+
     // --------------------------------------------------------------------
 
     /**
@@ -32,21 +33,65 @@ class Hpp_Controller extends Awx_Controller
      */
     public function hpp()
     {
-        /*
-        $this->vars[ 'client_id' ]      = $this->input->get( 'c', TRUE );
-        $this->vars[ 'api_key' ]        = $this->input->get( 'k', TRUE );
-        $this->vars[ 'customer_id' ]    = $this->input->get( 'cu', TRUE );
+        $token = $this->get_api_token( $this->client_id, $this->api_key );
 
-
-        $token = $this->get_api_token( $this->vars[ 'client_id' ], $this->vars[ 'api_key' ] );
-
-        if ( ! empty( $token ) )
+        if ( FALSE === $token )
         {
-            $this->get_customer( $token, $this->vars[ 'customer_id' ] );
-
+            show_404();
         }
-         */
 
+        // Create a Payment Intent
+        $order = [
+            'request_id'        => random_string(),
+            'amount'            => 100,
+            'currency'          => 'USD',
+            'merchant_order_id' => random_string( 'alnum', 32 ),
+            'order' => [
+                'products' => [
+                    [
+                    'code' => random_string(),
+                    'sku'  => random_string(),
+                    'name' => 'iPhone XR',
+                    'desc' => '64 GB White',
+                    'quantity' => 1,
+                    'unit_price' => 850,
+                    'type' => 'physical'
+                    ],
+                    [
+                    'code' => random_string(),
+                    'sku'  => random_string(),
+                    'name' => 'Shipping',
+                    'desc' => 'Ship to the US',
+                    'quantity' => 1,
+                    'unit_price' => 10,
+                    'type' => 'shipping'
+                    ],
+                ],
+                'shipping' => [
+                    'first_name' => 'Steve',
+                    'last_name'  => 'Gates',
+                    'phone_number' => '+187631283',
+                    'shipping_method' => 'DEFINED by YOUR WEBSITE',
+                    'address' => [
+                        'country_code' => "US",
+                        'state' => "AK",
+                        'city' => "Akhiok",
+                        'street' => "Street No. 4",
+                        'postcode' => "99654"
+                    ]
+                ]
+            ],
+            'return_url' => site_url( '' )
+        ];
+
+        $intent = $this->get_secret( $token, $order );
+
+        if ( FALSE === $intent )
+        {
+            show_404();
+        }
+
+        $this->vars[ 'intent' ] = $intent;
 
         $this->load->view( 'hpp', $this->vars );
     }

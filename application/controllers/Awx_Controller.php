@@ -341,6 +341,36 @@ class Awx_Controller extends CI_Controller
     // --------------------------------------------------------------------
 
     /**
+     * Get consent.
+     */
+    protected function get_consent( $token = '', $customer_id = '' )
+    {
+        $client = new \GuzzleHttp\Client();
+        try
+        {
+            $response = $client->request( 'GET', $this->awx_domain . '/api/v1/pa/customers/' . $customer_id, [
+                'headers' => [
+                    'Content-Type'  => 'application/json',
+                    'Authorization' => 'Bearer ' . $token
+                ]
+            ] );
+
+            if ( '200' != $response->getStatusCode() )
+            {
+                return FALSE;
+            }
+
+            return json_decode( $response->getBody(), TRUE );
+        } 
+        catch (\Throwable $th)
+        {
+            return FALSE;
+        }
+    }
+
+    // --------------------------------------------------------------------
+
+    /**
      * Charge fees.
      */
     protected function charge_fees( $token = '', $intent = [], $consent = [] )
@@ -450,6 +480,68 @@ class Awx_Controller extends CI_Controller
             ] );
 
             if ( '201' != $response->getStatusCode() )
+            {
+                return FALSE;
+            }
+
+            return json_decode( $response->getBody(), TRUE );
+        } 
+        catch (\Throwable $th)
+        {
+            return FALSE;
+        }
+    }
+
+    // --------------------------------------------------------------------
+
+    /**
+     * Create consent
+     */
+    protected function create_consent( $token = '', $body = [] )
+    {
+        $client = new \GuzzleHttp\Client();
+        try
+        {
+            $response = $client->request( 'POST', $this->awx_domain . '/api/v1/pa/payment_consents/create', [
+                'headers' => [
+                    'Content-Type'  => 'application/json',
+                    'Authorization' => 'Bearer ' . $token
+                ],
+                'body' => json_encode( $body ) 
+            ] );
+
+            if ( '201' != $response->getStatusCode() )
+            {
+                return FALSE;
+            }
+
+            return json_decode( $response->getBody(), TRUE );
+        } 
+        catch (\Throwable $th)
+        {
+            return FALSE;
+        }
+    }
+
+    // --------------------------------------------------------------------
+
+    /**
+     * Verify consent
+     */
+    protected function verify_consent( $token = '', $consent_id = '', $body = [] )
+    {
+        $client = new \GuzzleHttp\Client();
+        try
+        {
+            $response = $client->request( 'POST', $this->awx_domain . '/api/v1/pa/payment_consents/' . $consent_id . '/verify', [
+                'headers' => [
+                    'Content-Type'  => 'application/json',
+                    'Authorization' => 'Bearer ' . $token
+                ],
+                'body' => json_encode( $body ) 
+            ] );
+
+            if ( '200' != $response->getStatusCode() )
             {
                 return FALSE;
             }

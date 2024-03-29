@@ -5,7 +5,7 @@ if ( ! class_exists( 'Awx_Controller', FALSE ) )
     require_once( APPPATH . 'controllers/Awx_Controller.php' );
 }
 
-class Embedded_Fields_Controller extends Awx_Controller
+class Embedded_Elements_Controller extends Awx_Controller
 {
     /**
      * Constructor

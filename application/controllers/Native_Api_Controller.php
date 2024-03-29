@@ -243,7 +243,7 @@ class Native_Api_Controller extends Awx_Controller
         }
 
 
-        // Optional 5 - 3DS
+        //
         if ( 'REQUIRES_CUSTOMER_ACTION' == $confirm_result[ 'status' ] )
         {
             $resp = [

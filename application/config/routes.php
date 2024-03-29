@@ -9,6 +9,16 @@ $route['payments/cards/native-api-checkout']['post']            = 'Native_Api_Co
 $route['payments/cards/native-api-callback']['post']            = 'Native_Api_Controller/three_ds_callback';
 $route['payments/cards/native-api-3ds-result/(:num)']['get']    = 'Native_Api_Controller/three_ds_result/$1';
 
+// Hosted Payment Page
+$route['payments/hpp'] = 'Hpp_Controller/hpp';
+
+
+
+// APM Native API Payment Page
+$route['payments/apms/alipay']['get']              = 'Apm_Native_Api_Controller/alipay';
+$route['payments/apms/alipay-auth']['post']    = 'Apm_Native_Api_Controller/alipay_auth';
+$route['payments/apms/pay-with-alipay']    = 'Apm_Native_Api_Controller/pay_with_alipay';
+
 
 $route['demo']['get']   = 'Embedded_Fields_Controller/demo';
 $route['embedded-fields-for-card-payments'] = 'Embedded_Fields_Controller/embedded_fields';
@@ -29,7 +39,6 @@ $route['nc-native-api-checkout']['post'] = 'Nc_native_Api_Controller/do_checkout
 $route['nc-native-api-callback/(:any)']['post'] = 'Nc_native_Api_Controller/three_ds_callback/$1';
 $route['nc-native-api-3ds-result/(:num)']['get'] = 'Nc_native_Api_Controller/three_ds_result/$1';
 
-$route['hpp-for-card-payments'] = 'Hpp_Controller/hpp';
 
 $route['payout']['get'] = 'Payout_Controller/index';
 $route['fx']['get'] = 'Fx_Controller/index';

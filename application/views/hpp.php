@@ -1,51 +1,87 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-    </head>
-    <body>
-<h1>Hosted payment page (HPP) integration</h1>
-    <p>
-      The following button redirects the customer to an Airwallex payment page.
-    </p>
-    <!-- STEP #3: Add a checkout button -->
-    <button id="hpp">Pay Now</button>
-<script src="https://checkout.airwallex.com/assets/elements.bundle.min.js"></script>
+  <head>
+    <meta charset="utf-8">
+    <title>Hosted Payment Page Demo</title>
+    <!-- Mobile Specific Meta Tag-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Vendor Styles including: Bootstrap, Font Icons, Plugins, etc.-->
+    <link rel="stylesheet" media="screen" href="<?= $asset_path ?>/css/vendor.min.css?v=<?= VER ?>">
+    <!-- Main Template Styles-->
+    <link id="mainStyles" rel="stylesheet" media="screen" href="<?= $asset_path ?>/css/styles.min.css?v=<?= VER ?>">
+    <!-- Modernizr-->
+    <script src="<?= $asset_path ?>/js/modernizr.min.js?v=<?= VER ?>"></script>
+  </head>
+  <!-- Body-->
+  <body>
+    <!-- Page Title-->
+    <div class="page-title">
+      <div class="container">
+        <div class="column">
+          <h1>Hosted Payment Page Demo</h1>
+        </div>
+        <div class="column"></div>
+      </div>
+    </div>
+    <!-- Page Content-->
+    <div class="container padding-bottom-3x mb-2">
+      <div class="row">
+        <div class="col-12">
+            <h6 class="text-muted text-lg text-uppercase">Basic Example</h6>
+            <hr class="margin-bottom-1x">
+
+            <div class="text-center paddin-top-1x mt-4">
+                <div class="row">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-4">
+                    <button id="pay-button" class="btn btn-primary btn-block" type="button" data-action="http://awx.local/payments/cards/native-api-checkout"><i class="icon-credit-card"></i> Proceed to Checkout</button>
+                    </div>
+                    <div class="col-sm-4"></div>
+                  </div>
+            </div>
+
+        </div>
+      </div>
+    </div>
+    <script src="<?= $asset_path ?>/js/vendor.min.js?v=<?= VER ?>"></script>
+    <script src="<?= $asset_path ?>/js/scripts.min.js?v=<?= VER ?>"></script>
+
+    <script src="https://checkout.airwallex.com/assets/elements.bundle.min.js"></script>
     <script>
-      const intent_id = 'replace-with-your-intent-id';
-      const client_secret = 'replace-with-your-client-secret';
-      const currency = 'replace-with-your-currency';
-      const mode = 'payment'; // Should be one of ['payment', 'recurring']
+        $( document ).ready( function()
+        {
+              Airwallex.init(
+              {
+                env: "<?= 'production' === ENVIRONMENT ? 'prod' : 'demo' ?>",
+                origin: window.location.origin,
+                locale: "en",
+                fonts: {
+                    family: '-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"',
+                    src: "",
+                    weight: "regular"
+                } 
+              } );
 
-      // STEP #2: Initialize the Airwallex package with the appropriate environment
-      Airwallex.init({
-        env: 'demo', // Setup which Airwallex env('staging' | 'demo' | 'prod') to integrate with
-        origin: window.location.origin, // Setup your event target to receive the browser events message
-      });
+              const redirectHppForCheckout = () => {
+                Airwallex.redirectToCheckout({
+                  env: 'demo',
+                  mode: 'payment',
+                  currency: 'HKD',
+                  autoCapture: false,
+                  intent_id: "<?= $intent[ 'id' ] ?>", // Required, must provide intent details
+                  client_secret: "<?= $intent[ 'client_secret' ] ?>", // Required
+                  successUrl: "<?= site_url( '' ) ?>", // Must be HTTPS sites
+                  failUrl: 'https://www.google.com', // Must be HTTPS sites
+                });
+              }
 
-      const redirectHppForCheckout = () => {
-        Airwallex.redirectToCheckout({
-          env: 'demo',
-          mode: 'payment',
-          currency: 'usd',
-          autoCapture: false,
-          intent_id:'int_hkdm5zz2jg2p0i1nnn9', // Required, must provide intent details
-          client_secret:'eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MzI1NjE3MjEsImV4cCI6MTYzMjU2NTMyMSwiYWNjb3VudF9pZCI6ImVkZjc0YzJmLTMyNzQtNDhkNy1hNDhhLWFkMmQzNzM4YTNkMyIsImRhdGFfY2VudGVyX3JlZ2lvbiI6IkhLIiwiaW50ZW50X2lkIjoiaW50X2hrZG01enoyamcycDBpMW5ubjkiLCJwYWRjIjoiSEsifQ.7HJfH6gvxqAGgcF6u19Vmzmuqer7DQ3zTsv4O1MWbFo', // Required
-          successUrl: 'https://www.google.com', // Must be HTTPS sites
-          failUrl: 'https://www.google.com', // Must be HTTPS sites
-          // For more detailed documentation at https://github.com/airwallex/airwallex-payment-demo/tree/master/docs#redirectToCheckout
+
+              document.getElementById('pay-button').addEventListener('click', () => {
+                  redirectHppForCheckout();
+              });
+
         });
-      }
-
-
-      document.getElementById('hpp').addEventListener('click', () => {
-        // STEP #4: Add a button handler to trigger the redirect to HPP
-        if (mode === 'payment') {
-          redirectHppForCheckout();
-        } else if (mode === 'recurring') {
-          redirectHppForRecurring();
-        }
-      });
     </script>
     </body>
 </html>
