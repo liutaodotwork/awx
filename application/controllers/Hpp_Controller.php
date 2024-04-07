@@ -82,6 +82,11 @@ class Hpp_Controller extends Awx_Controller
                     ]
                 ]
             ],
+            'payment_method_options' => [
+                'card' => [
+                    'three_ds_action' => 'FORCE_3DS'
+                ]
+            ],
             'return_url' => site_url( '' )
         ];
 
@@ -96,8 +101,6 @@ class Hpp_Controller extends Awx_Controller
             'currency'          => 'USD',
             'merchant_order_id' => random_string( 'alnum', 32 ),
             'customer' => [
-                'first_name' => 'Steve',
-                'last_name' => 'Gates',
                 'email' => 'steve.gates@mail.com',
                 'merchant_customer_id' => random_string(),
             ],
@@ -122,6 +125,8 @@ class Hpp_Controller extends Awx_Controller
                     ],
                 ],
                 'shipping' => [
+                    'first_name' => 'Steve',
+                    'last_name' => 'Gates',
                     'address' => [
                         'country_code' => "TW",
                         'state' => "Taipei City",
@@ -129,6 +134,11 @@ class Hpp_Controller extends Awx_Controller
                         'street' => "Street No. 10",
                         'postcode' => "103247"
                     ]
+                ]
+            ],
+            'payment_method_options' => [
+                'card' => [
+                    'three_ds_action' => 'FORCE_3DS'
                 ]
             ],
             'return_url' => site_url( '' )
