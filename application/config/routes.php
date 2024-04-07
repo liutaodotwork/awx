@@ -17,7 +17,10 @@ $route['payments/hpp'] = 'Hpp_Controller/hpp';
 // APM Native API Payment Page
 $route['payments/apms/alipay']['get']              = 'Apm_Native_Api_Controller/alipay';
 $route['payments/apms/alipay-auth']['post']    = 'Apm_Native_Api_Controller/alipay_auth';
-$route['payments/apms/pay-with-alipay']    = 'Apm_Native_Api_Controller/pay_with_alipay';
+$route['payments/apms/pay-with-alipay-consent'][ 'post' ]    = 'Apm_Native_Api_Controller/pay_with_alipay_consent';
+
+
+$route['payments/apms/googlepay']['get']              = 'Embedded_Elements_Controller/googlepay';
 
 
 $route['demo']['get']   = 'Embedded_Fields_Controller/demo';

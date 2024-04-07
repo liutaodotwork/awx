@@ -42,7 +42,7 @@ class Awx_Controller extends CI_Controller
         // Get client id and api secret from DB
         $this->load->database();
 
-        $this->db->select( 'name, value' );
+        $this->db->select( 'name, value, merchant' );
         $this->db->from( 'en_settings' );
         $this->db->where_in( 'name', [ 'api_key', 'client_id' ] );
 
@@ -51,11 +51,16 @@ class Awx_Controller extends CI_Controller
 
         foreach ( $result as $row )
         {
-            if ($row[ 'name' ] == 'api_key')
+            if ( $row[ 'merchant' ] !== '' )
+            {
+                continue;
+            }
+
+            if ( $row[ 'name' ] == 'api_key' )
             {
                 $this->api_key = $row[ 'value' ];
             }
-            elseif ($row[ 'name' ] == 'client_id')
+            elseif ( $row[ 'name' ] == 'client_id' )
             {
                 $this->client_id = $row[ 'value' ];
             }

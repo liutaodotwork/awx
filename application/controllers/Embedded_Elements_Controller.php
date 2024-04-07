@@ -29,6 +29,43 @@ class Embedded_Elements_Controller extends Awx_Controller
     // --------------------------------------------------------------------
 
     /**
+     * Google Pay Checkout Page.
+     */
+    public function googlepay()
+    {
+        $token = $this->get_api_token( $this->client_id, $this->api_key );
+
+        // Create a Payment Intent with the customer id
+        $order = [
+            'request_id'        => random_string(),
+            'amount'            => 245.00,
+            'currency'          => 'CNY',
+            'merchant_order_id' => random_string( 'alnum', 32 ),
+            'order' => [
+                'products' => [
+                    [
+                    'code' => random_string(),
+                    'sku'  => random_string(),
+                    'name' => 'Premium Membership - 1 Year',
+                    'desc' => ' Yearly Premium Membership subscription',
+                    'quantity' => 1,
+                    'unit_price' => 245,
+                    'type' => 'virtual'
+                    ],
+                ],
+            ],
+            'return_url' => ''
+        ];
+
+        $this->vars[ 'intent' ] = $this->get_secret( $token, $order );
+
+
+        $this->load->view( 'apms/googlepay', $this->vars );
+    }
+
+    // --------------------------------------------------------------------
+
+    /**
      * Save cards Page.
      */
     public function embedded_fields_save_cards()

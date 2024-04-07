@@ -35,7 +35,8 @@
                 <div class="row">
                     <div class="col-sm-4"></div>
                     <div class="col-sm-4">
-                    <button id="pay-button" class="btn btn-primary btn-block" type="button" data-action="http://awx.local/payments/cards/native-api-checkout"><i class="icon-credit-card"></i> Proceed to Checkout</button>
+                    <button id="pay-button-hkd" class="btn btn-primary btn-block" type="button" data-action="http://awx.local/payments/cards/native-api-checkout"><i class="icon-credit-card"></i> Checkout with HKD</button>
+                    <button id="pay-button-twd" class="btn btn-success btn-block" type="button" data-action="http://awx.local/payments/cards/native-api-checkout"><i class="icon-credit-card"></i> Checkout with TWD</button>
                     </div>
                     <div class="col-sm-4"></div>
                   </div>
@@ -53,9 +54,8 @@
         {
               Airwallex.init(
               {
-                env: "<?= 'production' === ENVIRONMENT ? 'prod' : 'demo' ?>",
+                env: "<?= 'production' !== ENVIRONMENT ? 'demo' : 'prod' ?>",
                 origin: window.location.origin,
-                locale: "en",
                 fonts: {
                     family: '-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"',
                     src: "",
@@ -63,22 +63,48 @@
                 } 
               } );
 
-              const redirectHppForCheckout = () => {
+              const redirectHppForCheckoutHKD = () => {
                 Airwallex.redirectToCheckout({
                   env: 'demo',
+                  locale: "zh-HK",
+                  country_code: 'HK',
                   mode: 'payment',
-                  currency: 'HKD',
-                  autoCapture: false,
-                  intent_id: "<?= $intent[ 'id' ] ?>", // Required, must provide intent details
-                  client_secret: "<?= $intent[ 'client_secret' ] ?>", // Required
-                  successUrl: "<?= site_url( '' ) ?>", // Must be HTTPS sites
+                  autoCapture: true,
+                  withBilling:true,
+                  requiredBillingContactFields:[ 'name', 'email', 'address' ],
+                  intent_id: "<?= $intent_hkd[ 'id' ] ?>", // Required, must provide intent details
+                  client_secret: "<?= $intent_hkd[ 'client_secret' ] ?>", // Required
+                  successUrl: "<?= site_url( 'payments/hpp' ) ?>", // Must be HTTPS sites
                   failUrl: 'https://www.google.com', // Must be HTTPS sites
                 });
               }
 
 
-              document.getElementById('pay-button').addEventListener('click', () => {
-                  redirectHppForCheckout();
+              document.getElementById('pay-button-hkd').addEventListener('click', () => {
+                  redirectHppForCheckoutHKD();
+              });
+
+
+
+              const redirectHppForCheckoutTWD = () => {
+                Airwallex.redirectToCheckout({
+                  env: 'demo',
+                  locale: "zh-HK",
+                  country_code: 'TW',
+                  mode: 'payment',
+                  autoCapture: true,
+                  withBilling:true,
+                  requiredBillingContactFields:[ 'name', 'email', 'address' ],
+                  intent_id: "<?= $intent_twd[ 'id' ] ?>", // Required, must provide intent details
+                  client_secret: "<?= $intent_twd[ 'client_secret' ] ?>", // Required
+                  successUrl: "<?= site_url( 'payments/hpp' ) ?>", // Must be HTTPS sites
+                  failUrl: 'https://www.google.com', // Must be HTTPS sites
+                });
+              }
+
+
+              document.getElementById('pay-button-twd').addEventListener('click', () => {
+                  redirectHppForCheckoutTWD();
               });
 
         });

@@ -41,57 +41,102 @@ class Hpp_Controller extends Awx_Controller
         }
 
         // Create a Payment Intent
-        $order = [
+        $order_hkd = [
             'request_id'        => random_string(),
             'amount'            => 100,
             'currency'          => 'USD',
             'merchant_order_id' => random_string( 'alnum', 32 ),
+            'customer' => [
+                'first_name' => 'Steve',
+                'last_name' => 'Gates',
+                'email' => 'steve.gates@mail.com',
+                'merchant_customer_id' => random_string(),
+            ],
             'order' => [
                 'products' => [
                     [
                     'code' => random_string(),
                     'sku'  => random_string(),
-                    'name' => 'iPhone XR',
-                    'desc' => '64 GB White',
+                    'name' => 'Product 1',
                     'quantity' => 1,
-                    'unit_price' => 850,
+                    'unit_price' => 90,
                     'type' => 'physical'
                     ],
                     [
                     'code' => random_string(),
                     'sku'  => random_string(),
                     'name' => 'Shipping',
-                    'desc' => 'Ship to the US',
+                    'desc' => 'Ship to Hong Kong ',
                     'quantity' => 1,
                     'unit_price' => 10,
                     'type' => 'shipping'
                     ],
                 ],
                 'shipping' => [
-                    'first_name' => 'Steve',
-                    'last_name'  => 'Gates',
-                    'phone_number' => '+187631283',
-                    'shipping_method' => 'DEFINED by YOUR WEBSITE',
                     'address' => [
-                        'country_code' => "US",
-                        'state' => "AK",
-                        'city' => "Akhiok",
+                        'country_code' => "HK",
+                        'state' => "Hong Kong Island",
+                        'city' => "Hong Kong",
                         'street' => "Street No. 4",
-                        'postcode' => "99654"
+                        'postcode' => ""
                     ]
                 ]
             ],
             'return_url' => site_url( '' )
         ];
 
-        $intent = $this->get_secret( $token, $order );
+        $intent_hkd = $this->get_secret( $token, $order_hkd );
 
-        if ( FALSE === $intent )
-        {
-            show_404();
-        }
+        $this->vars[ 'intent_hkd' ] = $intent_hkd;
 
-        $this->vars[ 'intent' ] = $intent;
+
+        $order_twd = [
+            'request_id'        => random_string(),
+            'amount'            => 100,
+            'currency'          => 'USD',
+            'merchant_order_id' => random_string( 'alnum', 32 ),
+            'customer' => [
+                'first_name' => 'Steve',
+                'last_name' => 'Gates',
+                'email' => 'steve.gates@mail.com',
+                'merchant_customer_id' => random_string(),
+            ],
+            'order' => [
+                'products' => [
+                    [
+                    'code' => random_string(),
+                    'sku'  => random_string(),
+                    'name' => 'Product 1',
+                    'quantity' => 1,
+                    'unit_price' => 90,
+                    'type' => 'physical'
+                    ],
+                    [
+                    'code' => random_string(),
+                    'sku'  => random_string(),
+                    'name' => 'Shipping',
+                    'desc' => 'Ship to Taiwan',
+                    'quantity' => 1,
+                    'unit_price' => 10,
+                    'type' => 'shipping'
+                    ],
+                ],
+                'shipping' => [
+                    'address' => [
+                        'country_code' => "TW",
+                        'state' => "Taipei City",
+                        'city' => "Taipei",
+                        'street' => "Street No. 10",
+                        'postcode' => "103247"
+                    ]
+                ]
+            ],
+            'return_url' => site_url( '' )
+        ];
+
+        $intent_twd = $this->get_secret( $token, $order_twd );
+
+        $this->vars[ 'intent_twd' ] = $intent_twd;
 
         $this->load->view( 'hpp', $this->vars );
     }
