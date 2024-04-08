@@ -81,7 +81,8 @@
 
 
               document.getElementById('pay-button-hkd').addEventListener("<?= $is_mobile ? 'touchstart' : 'click' ?>", () => {
-                  redirectHppForCheckoutHKD();
+                $( '#pay-button-hkd' ).html('<div class="spinner-border spinner-border-sm text-white mr-2" role="status"></div>Processing...').prop('disabled', true);
+                redirectHppForCheckoutHKD();
               });
 
 
@@ -104,7 +105,8 @@
 
 
               document.getElementById('pay-button-twd').addEventListener("<?= $is_mobile ? 'touchstart' : 'click' ?>", () => {
-                  redirectHppForCheckoutTWD();
+                $( '#pay-button-twd' ).html('<div class="spinner-border spinner-border-sm text-white mr-2" role="status"></div>Processing...').prop('disabled', true);
+                redirectHppForCheckoutTWD();
               });
 
         });
