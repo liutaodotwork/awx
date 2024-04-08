@@ -80,7 +80,7 @@
               }
 
 
-              document.getElementById('pay-button-hkd').addEventListener('click', () => {
+              document.getElementById('pay-button-hkd').addEventListener("<?= $is_mobile ? 'touchstart' : 'click' ?>", () => {
                   redirectHppForCheckoutHKD();
               });
 
@@ -103,7 +103,7 @@
               }
 
 
-              document.getElementById('pay-button-twd').addEventListener('click', () => {
+              document.getElementById('pay-button-twd').addEventListener("<?= $is_mobile ? 'touchstart' : 'click' ?>", () => {
                   redirectHppForCheckoutTWD();
               });
 

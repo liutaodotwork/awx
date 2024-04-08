@@ -129,7 +129,7 @@ class Hpp_Controller extends Awx_Controller
                     'last_name' => 'Gates',
                     'address' => [
                         'country_code' => "TW",
-                        'state' => "Taipei City",
+                        'state' => "台北市",
                         'city' => "Taipei",
                         'street' => "Street No. 10",
                         'postcode' => "103247"
