@@ -32,6 +32,7 @@
 
         </div>
 
+<?php if (false ) { ?>
 <div class="container padding-bottom-2x mb-2">
       <div class="row">
         <div class="col-lg-9 col-md-8 order-md-2">
@@ -306,6 +307,9 @@
 <?=  $this->load->view( '_side_menu', [], TRUE ); ?>
       </div>
     </div>
+<?php
+}
+?>
 
         <script src="<?= $asset_path ?>/js/vendor.min.js"></script>
         <script src="<?= $asset_path ?>/js/scripts.min.js"></script>
