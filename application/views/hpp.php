@@ -52,69 +52,76 @@
     <script>
         $( document ).ready( function()
         {
-              Airwallex.init(
-              {
-                env: "<?= 'production' !== ENVIRONMENT ? 'demo' : 'prod' ?>",
-                origin: window.location.origin,
-                fonts: {
-                    family: '-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"',
-                    src: "",
-                    weight: "regular"
-                } 
-              } );
+            $( '#pay-button-hkd' ).html('<i class="icon-credit-card"></i> Checkout with HKD').prop('disabled', false);
+            $( '#pay-button-twd' ).html('<i class="icon-credit-card"></i> Checkout with TWD').prop('disabled', false);
 
-              const redirectHppForCheckoutHKD = () => {
+            Airwallex.init(
+            {
+                env: "<?= 'production' !== ENVIRONMENT ? 'demo' : 'prod' ?>",
+                    origin: window.location.origin,
+                    fonts: {
+                    family: '-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"',
+                        src: "",
+                        weight: "regular"
+            } 
+            } );
+
+            const redirectHppForCheckoutHKD = () => {
 
                 $( '#pay-button-hkd' ).html('<div class="spinner-border spinner-border-sm text-white mr-2" role="status"></div>Processing...').prop('disabled', true);
 
                 var url = Airwallex.redirectToCheckout({
-                  env: 'demo',
-                  locale: "zh-HK",
-                  country_code: 'HK',
-                  mode: 'payment',
-                  autoCapture: true,
-                  disableAutoRedirect: true,
-                  withBilling:true,
-                  requiredBillingContactFields:[ 'name', 'email', 'address' ],
-                  intent_id: "<?= $intent_hkd[ 'id' ] ?>", // Required, must provide intent details
-                  client_secret: "<?= $intent_hkd[ 'client_secret' ] ?>", // Required
-                  successUrl: "<?= site_url( 'payments/hpp' ) ?>", // Must be HTTPS sites
-                  failUrl: 'https://www.google.com', // Must be HTTPS sites
+                env: 'demo',
+                    locale: "zh-HK",
+                    country_code: 'HK',
+                    mode: 'payment',
+                    autoCapture: true,
+                    disableAutoRedirect: true,
+                    withBilling:true,
+                    requiredBillingContactFields:[ 'name', 'email', 'address' ],
+                    intent_id: "<?= $intent_hkd[ 'id' ] ?>", // Required, must provide intent details
+                    client_secret: "<?= $intent_hkd[ 'client_secret' ] ?>", // Required
+                    successUrl: "<?= site_url( 'payments/hpp' ) ?>", // Must be HTTPS sites
+                    failUrl: 'https://www.google.com', // Must be HTTPS sites
                 });
-
-                $( '#pay-button-hkd' ).html('<div class="spinner-border spinner-border-sm text-white mr-2" role="status"></div>Processing...').prop('disabled', false);
 
                 return url;
-              }
+            }
 
 
-              $( '#pay-button-hkd' ).on( 'touchstart', function() {
-                  window.location = redirectHppForCheckoutHKD();
-              });
+            $( '#pay-button-hkd' ).on( "<?= $is_mobile ? 'touchstart' : 'click' ?>", function() {
+                window.location = redirectHppForCheckoutHKD();
+            });
 
 
 
-              const redirectHppForCheckoutTWD = () => {
-                Airwallex.redirectToCheckout({
-                  env: 'demo',
-                  locale: "zh-HK",
-                  country_code: 'TW',
-                  mode: 'payment',
-                  autoCapture: true,
-                  withBilling:true,
-                  requiredBillingContactFields:[ 'name', 'email', 'address' ],
-                  intent_id: "<?= $intent_twd[ 'id' ] ?>", // Required, must provide intent details
-                  client_secret: "<?= $intent_twd[ 'client_secret' ] ?>", // Required
-                  successUrl: "<?= site_url( 'payments/hpp' ) ?>", // Must be HTTPS sites
-                  failUrl: 'https://www.google.com', // Must be HTTPS sites
-                });
-              }
+            const redirectHppForCheckoutTWD = () => {
 
-
-              document.getElementById('pay-button-twd').addEventListener("<?= $is_mobile ? 'touchstart' : 'click' ?>", () => {
                 $( '#pay-button-twd' ).html('<div class="spinner-border spinner-border-sm text-white mr-2" role="status"></div>Processing...').prop('disabled', true);
-                redirectHppForCheckoutTWD();
-              });
+
+                var url = Airwallex.redirectToCheckout({
+                env: 'demo',
+                    locale: "zh-HK",
+                    country_code: 'TW',
+                    mode: 'payment',
+                    autoCapture: true,
+                    withBilling:true,
+                    disableAutoRedirect: true,
+                    requiredBillingContactFields:[ 'name', 'email', 'address' ],
+                    intent_id: "<?= $intent_twd[ 'id' ] ?>", // Required, must provide intent details
+                    client_secret: "<?= $intent_twd[ 'client_secret' ] ?>", // Required
+                    successUrl: "<?= site_url( 'payments/hpp' ) ?>", // Must be HTTPS sites
+                    failUrl: 'https://www.google.com', // Must be HTTPS sites
+                });
+
+
+                return url;
+            }
+
+
+            $( '#pay-button-twd' ).on( "<?= $is_mobile ? 'touchstart' : 'click' ?>", function() {
+                window.location = redirectHppForCheckoutTWD();
+            });
 
         });
     </script>
