@@ -52,8 +52,11 @@
     <script>
         $( document ).ready( function()
         {
-            $( '#pay-button-hkd' ).html('<i class="icon-credit-card"></i> Checkout with HKD').prop('disabled', false);
-            $( '#pay-button-twd' ).html('<i class="icon-credit-card"></i> Checkout with TWD').prop('disabled', false);
+            $(window).on( 'pageshow', function()
+            {
+                $( '#pay-button-hkd' ).html('<i class="icon-credit-card"></i> Checkout with HKD').prop('disabled', false);
+                $( '#pay-button-twd' ).html('<i class="icon-credit-card"></i> Checkout with TWD').prop('disabled', false);
+            }
 
             Airwallex.init(
             {
