@@ -553,8 +553,9 @@ class Awx_Controller extends CI_Controller
 
             return json_decode( $response->getBody(), TRUE );
         } 
-        catch (\Throwable $th)
+        catch (\GuzzleHttp\Exception\RequestException $th)
         {
+            // $th->getResponse()->getBody()->getContents();
             return FALSE;
         }
     }

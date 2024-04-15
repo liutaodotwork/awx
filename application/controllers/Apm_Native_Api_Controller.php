@@ -86,8 +86,8 @@ class Apm_Native_Api_Controller extends Awx_Controller
             'payment_method'    => [
                 'type' => 'alipaycn', //alipaycn
                 'alipaycn' => [ // should be the same as the type 
-                    'flow' => 'mobile_web', // one of qrcode, mobile_web, mobile_app
-                    'os_type' => 'ios' // One of ios, android. os_type must be set when flow is mobile_web, mobile_app.
+                    'flow' => 'qrcode', // one of qrcode, mobile_web, mobile_app
+                    // 'os_type' => '' // One of ios, android. os_type must be set when flow is mobile_web, mobile_app.
                 ]
             ],
         ];

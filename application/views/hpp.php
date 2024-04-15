@@ -52,10 +52,10 @@
     <script>
         $( document ).ready( function()
         {
-            $(window).on( 'pageshow', function()
+            $( window ).on( 'pageshow', function()
             {
-                $( '#pay-button-hkd' ).html('<i class="icon-credit-card"></i> Checkout with HKD').prop('disabled', false);
-                $( '#pay-button-twd' ).html('<i class="icon-credit-card"></i> Checkout with TWD').prop('disabled', false);
+                $( '#pay-button-hkd' ).html( '<i class="icon-credit-card"></i> Checkout with HKD' ).prop( 'disabled', false );
+                $( '#pay-button-twd' ).html( '<i class="icon-credit-card"></i> Checkout with TWD' ).prop( 'disabled', false );
             } );
 
             Airwallex.init(
@@ -86,6 +86,16 @@
                     client_secret: "<?= $intent_hkd[ 'client_secret' ] ?>", // Required
                     successUrl: "<?= site_url( 'payments/hpp' ) ?>", // Must be HTTPS sites
                     failUrl: 'https://www.google.com', // Must be HTTPS sites
+                    methods: [],
+                    applePayRequestOptions: {
+                        buttonType: 'buy', // Indicate the type of button you want displayed on your payments form. Like 'buy' 
+                        buttonColor: 'white-with-line', // Indicate the color of the button. Default value is 'black' 
+                        countryCode: 'HK', // The merchant's two-letter ISO 3166 country code. Like 'HK' 
+                        totalPriceLabel: 'COMPANY, INC.', // Provide a business name for the label field.
+                        requiredBillingContactFields: [
+                            'postalAddress', 'email', 'name', 'phone', 'phoneticName'
+                        ],
+                    }
                 });
 
                 return url;
