@@ -86,7 +86,7 @@
         <div class="page-title">
             <div class="container">
                 <div class="column">
-                    <h1>Airwallex Card Payment Demo - Embedded Fields</h1>
+                    <h1>Airwallex Card Payment Embedded Fields Demo</h1>
                 </div>
             </div>
         </div>
@@ -96,18 +96,7 @@
                 <input type="hidden" name="amount" value="860">
                 <div class="row">
                     <!-- Checkout Adress-->
-                    <div class="col-xl-8 col-lg-7">
-                        <div class="steps flex-sm-nowrap mb-5">
-                            <a class="step" href="#">
-                                <h4 class="step-title"><i class="icon-check-circle"></i>1. Cart</h4>
-                            </a>
-                            <a class="step" href="#">
-                                <h4 class="step-title"><i class="icon-check-circle"></i>2. Shipping</h4>
-                            </a>
-                            <a class="step active" href="">
-                                <h4 class="step-title">3. Payment</h4>
-                            </a>
-                        </div>
+                    <div class="col-12">
 
         <div class="accordion" id="accordion" role="tablist">
             <div class="card">
@@ -167,38 +156,6 @@
             </div>
           </div>
 
-                    </div>
-                    <!-- Sidebar -->
-                    <div class="col-xl-4 col-lg-5 order-first order-md-last">
-                        <aside class="sidebar">
-                            <!-- Order Summary Widget-->
-                            <section class="widget widget-order-summary widget-featured-products">
-                                <h3 class="widget-title">Order Summary</h3>
-                                <div class="entry">
-                                    <div class="entry-thumb">
-                                        <a href="/"><img src="/assets/img/shop/widget/iphone-xr-white-select-201809.png" alt="Product"></a>
-                                    </div>
-                                    <div class="entry-content">
-                                        <h4 class="entry-title"><a href="/">Product Name</a></h4>
-                                        <span class="entry-meta">128 GB White</span>
-                                        <span class="entry-meta text-gray-dark text-right">$850 x 1</span>
-                                    </div>
-                                </div>
-                                <hr class="mb-3">
-                                <table class="table">
-                                    <tr>
-                                        <td>Subtotal</td>
-                                        <td class="text-gray-dark">$850</td></tr>
-                                    <tr>
-                                        <td>Shipping</td>
-                                        <td class="text-gray-dark">$10</td></tr>
-                                    <tr>
-                                        <td class="text-lg">Total</td>
-                                        <td class="text-lg text-gray-dark">$860</td>
-                                    </tr>
-                                </table>
-                            </section>
-                        </aside>
                     </div>
                 </div>
             </form>
