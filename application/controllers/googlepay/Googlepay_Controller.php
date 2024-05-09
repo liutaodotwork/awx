@@ -82,63 +82,10 @@ class Googlepay_Controller extends Awx_Controller
             'return_url' => site_url( '' )
         ];
 
-        $intent_hkd = $this->get_secret( $token, $order_hkd );
+        $intent = $this->get_secret( $token, $order_hkd );
 
-        $this->vars[ 'intent_hkd' ] = $intent_hkd;
+        $this->vars[ 'intent' ] = $intent;
 
-
-        $order_twd = [
-            'request_id'        => random_string(),
-            'amount'            => 100,
-            'currency'          => 'USD',
-            'merchant_order_id' => random_string( 'alnum', 32 ),
-            'customer' => [
-                'email' => 'steve.gates@mail.com',
-                'merchant_customer_id' => random_string(),
-            ],
-            'order' => [
-                'products' => [
-                    [
-                    'code' => random_string(),
-                    'sku'  => random_string(),
-                    'name' => 'Product 1',
-                    'quantity' => 1,
-                    'unit_price' => 90,
-                    'type' => 'physical'
-                    ],
-                    [
-                    'code' => random_string(),
-                    'sku'  => random_string(),
-                    'name' => 'Shipping',
-                    'desc' => 'Ship to Taiwan',
-                    'quantity' => 1,
-                    'unit_price' => 10,
-                    'type' => 'shipping'
-                    ],
-                ],
-                'shipping' => [
-                    'first_name' => 'Steve',
-                    'last_name' => 'Gates',
-                    'address' => [
-                        'country_code' => "TW",
-                        'state' => "台北市",
-                        'city' => "Taipei",
-                        'street' => "Street No. 10",
-                        'postcode' => "103247"
-                    ]
-                ]
-            ],
-            'payment_method_options' => [
-                'card' => [
-                    'three_ds_action' => 'FORCE_3DS'
-                ]
-            ],
-            'return_url' => site_url( '' )
-        ];
-
-        $intent_twd = $this->get_secret( $token, $order_twd );
-
-        $this->vars[ 'intent_twd' ] = $intent_twd;
 
         $this->load->view( 'googlepay/googlepay', $this->vars );
     }
