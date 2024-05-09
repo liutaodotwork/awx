@@ -33,11 +33,6 @@ class Card_Embedded_Elements_Controller extends Awx_Controller
      */
     public function embedded_fields_save_cards()
     {
-        $this->vars[ 'client_id' ]      = $this->input->get( 'c', TRUE );
-        $this->vars[ 'api_key' ]        = $this->input->get( 'k', TRUE );
-        $this->vars[ 'customer_id' ]    = $this->input->get( 'cu', TRUE );
-
-
         $this->load->view( 'embedded_fields_save_cards', $this->vars );
     }
 
@@ -200,7 +195,6 @@ class Card_Embedded_Elements_Controller extends Awx_Controller
      */
     public function embedded_fields()
     {
-
         $this->load->view( 'embedded_fields_checkout', $this->vars );
     }
 

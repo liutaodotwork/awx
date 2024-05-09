@@ -121,6 +121,10 @@ class Awx_Controller extends CI_Controller
         {
             $this->vars[ 'back_url' ] = site_url( 'payments/cards/native-api' );
         }
+        elseif ( 'card-embedded-fields' == $mode )
+        {
+            $this->vars[ 'back_url' ] = site_url( 'payments/cards/embedded-fields' );
+        }
         else
         {
             $this->vars[ 'back_url' ] = '/embedded-fields-for-card-payments';

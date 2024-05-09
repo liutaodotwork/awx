@@ -376,7 +376,7 @@
                             })
                             .then((response) => {
                                 // Handle successful responses
-                                window.location = '/success?id=' + data.intent.id;
+                                window.location = '/success?m=card-embedded-fields&id=' + data.intent.id;
 
                             })
                             .catch((response) => {
