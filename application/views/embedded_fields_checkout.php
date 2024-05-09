@@ -13,10 +13,6 @@
         <!-- Main Template Styles-->
         <link id="mainStyles" rel="stylesheet" media="screen" href="<?= $asset_path ?>/css/styles.min.css">
         <style type="text/css">
-            #payment-form iframe {
-                height: 46px !important
-            }
-
             #payment-form #cardNumber iframe,#payment-form #expiry iframe,#payment-form #cvc iframe {
                 -webkit-box-flex: 1;
                 -ms-flex: 1 1 auto;
@@ -46,6 +42,10 @@
                 color: #05f;
             }
 
+            #payment-form .icon-container.awx-error {
+                color: #dc3545;
+            }
+
             #payment-form [id$="-error"] {
                 display: none
             }
@@ -55,13 +55,19 @@
                 border-radius: 5px !important;
                 background-color: #fff !important;
                 color: #505050 !important;
-                font-family: "Rubik",Helvetica,Arial,sans-serif !important;
-                font-size: 14px !important;
                 height: 46px !important
             }
 
             #payment-form iframe.awx-focus {
                 border-color: #05f !important;
+                outline: none !important;
+                background-color: rgba(0,85,255,0.02) !important;
+                color: #505050 !important;
+                box-shadow: none !important
+            }
+
+            #payment-form iframe.awx-error {
+                border-color: #dc3545 !important;
                 outline: none !important;
                 background-color: rgba(0,85,255,0.02) !important;
                 color: #505050 !important;
@@ -104,55 +110,6 @@
                         </div>
 
         <div class="accordion" id="accordion" role="tablist">
-<?php if ( FALSE ) { ?>
-            <div class="card">
-                <div class="card-header" role="tab">
-                    <h6><a href="#card" data-toggle="collapse" class="" aria-expanded="true">Pay With A Saved Card</a></h6>
-                </div>
-                <div class="collapse show" id="card" data-parent="#accordion" role="tabpanel" style="">
-
-                <div class="card-body" style="padding-left:0;padding-right:0;padding-top:0">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                          <tbody>
-                            <tr>
-                              <td class="align-middle" width="2%" style="border-top:0;border-bottom: 1px solid #dee2e6;">
-                                <div class="custom-control custom-radio mb-0" style="padding-left:2px">
-                                  <input class="custom-control-input" type="radio" id="local" checked name="shipping-method">
-                                  <label class="custom-control-label" for="local"></label>
-                                </div>
-                              </td>
-                              <td class="align-middle" style="border-top:0;border-bottom: 1px solid #dee2e6;"><img class="d-inline-block align-middle" src="https://checkout-demo.airwallex.com/static/media/visa.745a6485.svg" height="24" alt="Cerdit Cards"> <span class="text-gray-dark">411111******1111</span><br><span class="text-muted text-sm">Saved on: July 12, 2021</span></td>
-                              <td class="align-middle" style="border-top:0;border-bottom: 1px solid #dee2e6;">Forget this card</td>
-                            </tr>
-                            <tr>
-                              <td class="align-middle">
-                                <div class="custom-control custom-radio mb-0">
-                                  <input class="custom-control-input" type="radio" id="flat" name="shipping-method">
-                                  <label class="custom-control-label" for="flat"></label>
-                                </div>
-                              </td>
-                              <td class="align-middle"><img class="d-inline-block align-middle" src="https://checkout-demo.airwallex.com/static/media/mastercard.262f85fc.svg" height="24" alt="Cerdit Cards"> <span class="text-gray-dark">222300******1375</span><br><span class="text-muted text-sm">Saved on: Sep. 02, 2021</span></td>
-                              <td class="align-middle">Forget this card</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-
-                    <div class="form-group col-12 text-center mt-2">
-                        <div class="row">
-                            <div class="col-sm-3"></div>
-                            <div class="col-sm-6">
-                                <button id="pay-button-saved-card" class="btn btn-primary btn-block" type="button" data-action="/embedded-fields-checkout"><i class="icon-credit-card"></i> Pay $80.05</button>
-                            </div>
-                            <div class="col-sm-3"></div>
-                          </div>
-                    </div>
-                </div>
-              </div>
-            </div>
-<?php } ?>
-
             <div class="card">
               <div class="card-header" role="tab">
                 <h6><a class="" href="#newcard" data-toggle="collapse" aria-expanded="true">Pay with A New Card</a></h6>
@@ -161,9 +118,12 @@
                 <div class="card-body">
                     <div class="text-center modal-spinner"><div class="spinner-border text-primary m-2" role="status"></div></div>
                     <div class="awx-fields" style="display:none;">
-                        <p>We accept following cards:&nbsp;&nbsp;
-                            <img class="d-inline-block align-middle" src="https://checkout-demo.airwallex.com/static/media/visa.745a6485.svg" height="24" alt="Cerdit Cards">
-                            <img class="d-inline-block align-middle" src="https://checkout-demo.airwallex.com/static/media/mastercard.262f85fc.svg" height="24" alt="Cerdit Cards">
+                        <p>We accept following cards<br/><br/>
+                        <img class="d-inline-block align-middle" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzUiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAzNSAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik0wIDMuMjVDMCAxLjQ1NTA4IDEuNDU1MDcgMCAzLjI1IDBIMzEuNzVDMzMuNTQ0OSAwIDM1IDEuNDU1MDcgMzUgMy4yNVYyMC43NUMzNSAyMi41NDQ5IDMzLjU0NDkgMjQgMzEuNzUgMjRIMy4yNUMxLjQ1NTA3IDI0IDAgMjIuNTQ0OSAwIDIwLjc1VjMuMjVaIiBmaWxsPSJ3aGl0ZSIgLz4KICAgIDxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTAuNzUwMyAxNi41NjhIOC40MTM2Mkw2LjY2MTM5IDkuODY4OTZDNi41NzgyMiA5LjU2MDggNi40MDE2MyA5LjI4ODM3IDYuMTQxODcgOS4xNTk5OEM1LjQ5MzYxIDguODM3MyA0Ljc3OTI4IDguNTgwNTEgNCA4LjQ1MDk5VjguMTkzMDhINy43NjQyMkM4LjI4Mzc0IDguMTkzMDggOC42NzMzOCA4LjU4MDUxIDguNzM4MzIgOS4wMzA0Nkw5LjY0NzQ3IDEzLjg2MjdMMTEuOTgzIDguMTkzMDhIMTQuMjU0OEwxMC43NTAzIDE2LjU2OFpNMTUuNTUzMyAxNi41NjhIMTMuMzQ2NUwxNS4xNjM3IDguMTkzMDhIMTcuMzcwNUwxNS41NTMzIDE2LjU2OFpNMjAuMjI1NyAxMC41MTMzQzIwLjI5MDYgMTAuMDYyMiAyMC42ODAzIDkuODA0MjcgMjEuMTM0OSA5LjgwNDI3QzIxLjg0OTIgOS43Mzk1MiAyMi42MjczIDkuODY5MDMgMjMuMjc2NyAxMC4xOTA2TDIzLjY2NjQgOC4zODc0M0MyMy4wMTcgOC4xMjk1MSAyMi4zMDI2IDggMjEuNjU0NCA4QzE5LjUxMjUgOCAxNy45NTM5IDkuMTYwMDUgMTcuOTUzOSAxMC43NzAxQzE3Ljk1MzkgMTEuOTk0OSAxOS4wNTc5IDEyLjYzOCAxOS44MzcyIDEzLjAyNTRDMjAuNjgwMyAxMy40MTE3IDIxLjAwNSAxMy42Njk2IDIwLjk0IDE0LjA1NTlDMjAuOTQgMTQuNjM1NCAyMC4yOTA2IDE0Ljg5MzMgMTkuNjQyNCAxNC44OTMzQzE4Ljg2MzEgMTQuODkzMyAxOC4wODM4IDE0LjcwMDIgMTcuMzcwNiAxNC4zNzc1TDE2Ljk4MSAxNi4xODE4QzE3Ljc2MDMgMTYuNTAzMyAxOC42MDMzIDE2LjYzMjggMTkuMzgyNiAxNi42MzI4QzIxLjc4NDIgMTYuNjk2NSAyMy4yNzY3IDE1LjUzNzUgMjMuMjc2NyAxMy43OThDMjMuMjc2NyAxMS42MDc0IDIwLjIyNTcgMTEuNDc5IDIwLjIyNTcgMTAuNTEzM1pNMzEgMTYuNTY4TDI5LjI0NzggOC4xOTMwOEgyNy4zNjU3QzI2Ljk3NiA4LjE5MzA4IDI2LjU4NjQgOC40NTA5OSAyNi40NTY1IDguODM3M0wyMy4yMTE4IDE2LjU2OEgyNS40ODM2TDI1LjkzNyAxNS4zNDQzSDI4LjcyODNMMjguOTg4IDE2LjU2OEgzMVpNMjcuNjkwNCAxMC40NDg3TDI4LjMzODYgMTMuNjA1MUgyNi41MjE1TDI3LjY5MDQgMTAuNDQ4N1oiIGZpbGw9IiMyMjREQkEiIC8+CiAgICA8cGF0aCBkPSJNMy4yNSAxSDMxLjc1Vi0xSDMuMjVWMVpNMzQgMy4yNVYyMC43NUgzNlYzLjI1SDM0Wk0zMS43NSAyM0gzLjI1VjI1SDMxLjc1VjIzWk0xIDIwLjc1VjMuMjVILTFWMjAuNzVIMVpNMy4yNSAyM0MyLjAwNzM2IDIzIDEgMjEuOTkyNiAxIDIwLjc1SC0xQy0xIDIzLjA5NzIgMC45MDI3ODkgMjUgMy4yNSAyNVYyM1pNMzQgMjAuNzVDMzQgMjEuOTkyNiAzMi45OTI2IDIzIDMxLjc1IDIzVjI1QzM0LjA5NzIgMjUgMzYgMjMuMDk3MiAzNiAyMC43NUgzNFpNMzEuNzUgMUMzMi45OTI2IDEgMzQgMi4wMDczNiAzNCAzLjI1SDM2QzM2IDAuOTAyNzkgMzQuMDk3MiAtMSAzMS43NSAtMVYxWk0zLjI1IC0xQzAuOTAyNzkgLTEgLTEgMC45MDI3OSAtMSAzLjI1SDFDMSAyLjAwNzM2IDIuMDA3MzYgMSAzLjI1IDFWLTFaIiBmaWxsPSIjRjZGN0Y4IiAvPgo8L3N2Zz4KICAgIA==" height="24" alt="Visa">
+                        <img class="d-inline-block align-middle" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzNSIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDM1IDI0Ij4KICAgIDxnIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPHJlY3Qgd2lkdGg9IjM1IiBoZWlnaHQ9IjI0IiBmaWxsPSIjRThFQUVEIiByeD0iMy4yNDgiLz4KICAgICAgICA8Zz4KICAgICAgICAgICAgPHBhdGggZmlsbD0iI0ZGNUUwMCIgZD0iTTE1LjUxOS4xMjJjMy42ODcgMCA2LjY3NiAyLjk2NyA2LjY3NiA2LjYyNyAwIDMuNjYtMi45ODkgNi42MjctNi42NzYgNi42MjctMS42NTMgMC0zLjE2Ni0uNTk2LTQuMzMyLTEuNTg0LTEuMTY0Ljk4OC0yLjY3NyAxLjU4NC00LjMzIDEuNTg0QzMuMTcgMTMuMzc2LjE4IDEwLjQwOS4xOCA2Ljc0OS4xOCAzLjA4OSAzLjE3LjEyMiA2Ljg1Ny4xMjJjMS42NTMgMCAzLjE2Ni41OTYgNC4zMzIgMS41ODNDMTIuMzUzLjcxOCAxMy44NjYuMTIyIDE1LjUxOS4xMjJ6IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg2IDUpIi8+CiAgICAgICAgICAgIDxwYXRoIGZpbGw9IiNFRDAwMDYiIGQ9Ik02Ljg1Ny4xMjJjMS42NTMgMCAzLjE2Ni41OTYgNC4zMzIgMS41ODNDOS43NTIgMi45MjEgOC44NDIgNC43MyA4Ljg0MiA2Ljc1YzAgMi4wMi45MSAzLjgyOCAyLjM0NSA1LjA0My0xLjE2NC45ODgtMi42NzcgMS41ODQtNC4zMyAxLjU4NEMzLjE3IDEzLjM3Ni4xOCAxMC40MDkuMTggNi43NDkuMTggMy4wODkgMy4xNy4xMjIgNi44NTcuMTIyeiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNiA1KSIvPgogICAgICAgICAgICA8cGF0aCBmaWxsPSIjRjlBMDAwIiBkPSJNMTUuNTE5LjEyMmMzLjY4NyAwIDYuNjc2IDIuOTY3IDYuNjc2IDYuNjI3IDAgMy42Ni0yLjk4OSA2LjYyNy02LjY3NiA2LjYyNy0xLjY1MyAwLTMuMTY2LS41OTctNC4zMzItMS41ODQgMS40MzYtMS4yMTUgMi4zNDctMy4wMjMgMi4zNDctNS4wNDNzLS45MS0zLjgyOC0yLjM0NS01LjA0NEMxMi4zNTQuNzE4IDEzLjg2Ni4xMjIgMTUuNTE5LjEyMnoiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDYgNSkiLz4KICAgICAgICA8L2c+CiAgICA8L2c+Cjwvc3ZnPgo=" height="24" alt="Mastercard">
+                        <img class="d-inline-block align-middle" src="https://checkout-demo.airwallex.com/static/media/amex.f6c1eb25db0f19a0aada.svg" height="24" alt="JCB">
+                        <img class="d-inline-block align-middle" src="https://checkout-demo.airwallex.com/static/media/jcb.9c8dde0afb56485cd18e.svg" height="24" alt="JCB">
+                        <img class="d-inline-block align-middle" src="https://checkout-demo.airwallex.com/static/media/unionpay.9421a757c6289e8c65ec.svg" height="24" alt="UnionPay">
                         </p>
                         <p id="error-payment" class="text-primary mb-3"></p>
                         <div class="row">
@@ -172,36 +132,29 @@
                                     <i class="icon-credit-card"></i>
                                 </div>
                                 <div id="cardNumber"></div>
+                                <div class="cardNumber-invalid-tooltip invalid-tooltip"></div>
                             </div>
                             <div class="form-group col-6">
                                 <div class="icon-container">
                                     <i class="icon-calendar"></i>
                                 </div>
                                 <div id="expiry"></div>
+                                <div class="expiry-invalid-tooltip invalid-tooltip"></div>
                             </div>
                             <div class="form-group col-6">
                                 <div class="icon-container">
                                     <i class="icon-lock"></i>
                                 </div>
                                 <div id="cvc"></div>
+                                <div class="cvc-invalid-tooltip invalid-tooltip"></div>
                             </div>
                             
-                            <div class="form-group col-12 mt-4">
-                                <div class="custom-control custom-checkbox">
-                                    <input class="custom-control-input" type="checkbox" checked id="invalidCheck2">
-                                    <label class="custom-control-label" for="invalidCheck2">Save this card for your next payment.</label>
-                                </div>
-                                <div class="custom-control custom-checkbox">
-                                    <input class="custom-control-input" type="checkbox" checked id="invalidCheck3">
-                                    <label class="custom-control-label" for="invalidCheck3">Your billing address and shipping address are the same.</label>
-                                </div>
-                            </div>
 
                             <div class="form-group col-12 text-center paddin-top-1x">
                                 <div class="row">
                                     <div class="col-sm-3"></div>
                                     <div class="col-sm-6">
-                                        <button id="pay-button" class="btn btn-primary btn-block" disabled type="button" data-action="/embedded-fields-checkout"><i class="icon-credit-card"></i> Pay $80.05</button>
+                                        <button id="pay-button" class="btn btn-primary btn-block" disabled type="button" data-action="<?= site_url( 'payments/cards/embedded-fields' ) ?>"><i class="icon-credit-card"></i> Pay </button>
                                     </div>
                                     <div class="col-sm-3"></div>
                                   </div>
@@ -226,8 +179,8 @@
                                         <a href="/"><img src="/assets/img/shop/widget/iphone-xr-white-select-201809.png" alt="Product"></a>
                                     </div>
                                     <div class="entry-content">
-                                        <h4 class="entry-title"><a href="/">iPhone XR</a></h4>
-                                        <span class="entry-meta">64 GB White</span>
+                                        <h4 class="entry-title"><a href="/">Product Name</a></h4>
+                                        <span class="entry-meta">128 GB White</span>
                                         <span class="entry-meta text-gray-dark text-right">$850 x 1</span>
                                     </div>
                                 </div>
@@ -245,35 +198,6 @@
                                     </tr>
                                 </table>
                             </section>
-                            <div class="card mt-4 mb-5">
-                                <div class="card-header"><span class="text-lg">Demo API Access</span></div>
-                                <div class="card-body">
-                                    <p id="error-user" class="text-primary mb-3"></p>
-                                    <div class="row">
-                                        <div class="form-group col-12">
-                                            <div class="input-group">
-                                                <input class="form-control" id="client-id" type="text" name="client-id" placeholder="Client ID" value="<?= $client_id ?>"><span class="input-group-addon"><i class="icon-lock"></i></span>
-                                            </div>
-                                        </div>
-                                        <div class="form-group col-12">
-                                            <div class="input-group">
-                                                <input class="form-control" id="api-key" type="text" name="api-key" placeholder="API Key" value="<?= $api_key ?>"><span class="input-group-addon"><i class="icon-lock"></i></span>
-                                            </div>
-                                        </div>
-                                        <div class="form-group col-12">
-                                            <div class="input-group">
-                                                <input class="form-control" id="customer-id" type="text" name="customer-id" placeholder="Current Customer ID" value="<?= $customer_id ?>"><span class="input-group-addon"><i class="icon-user"></i></span>
-                                            </div>
-                                        </div>
-                                        <div class="form-group col-12">
-                                            <div class="custom-control custom-checkbox">
-                                                <input class="custom-control-input" type="checkbox" checked id="invalidCheck1">
-                                                <label class="custom-control-label" for="invalidCheck1">I konw this demo only accepts <b>Airwallex Demo Accounts</b> and the credentials will <b>NEVER</b> be saved.</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </aside>
                     </div>
                 </div>
@@ -318,13 +242,35 @@
                     // STEP #4: Create split card elements
                     const cardNumber = Airwallex.createElement('cardNumber', {
                         'placeholder': 'Card Number',
-                        'autoCapture': true
+                        'autoCapture': true,
+                        'allowedCardNetworks': [ 'amex', 'visa', 'mastercard', 'maestro', 'unionpay', 'jcb' ],
+                        'style' : {
+                            'base' : {
+                                'color': '#505050',
+                                'font-family': '-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"',
+                                'font-size': '0.9rem'
+                            }
+                        }
                     });
                     const expiry = Airwallex.createElement('expiry', {
-                        'placeholder': 'MM/YY'
+                        'placeholder': 'MM/YY',
+                        'style' : {
+                            'base' : {
+                                'color': '#505050',
+                                'font-family': '-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"',
+                                'font-size': '0.9rem'
+                            }
+                        }
                     });
                     const cvc = Airwallex.createElement('cvc', {
-                        'placeholder': 'CVV'
+                        'placeholder': 'CVV',
+                        'style' : {
+                            'base' : {
+                                'color': '#505050',
+                                'font-family': '-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"',
+                                'font-size': '0.9rem'
+                            }
+                        }
                     });
 
                     // STEP #5: Mount split card elements
@@ -349,6 +295,41 @@
                 });
 
                 window.addEventListener('onBlur', (event) => {
+
+                   console.log( event );
+
+                   let errDom = '';
+
+                   switch ( event.detail.type )
+                   {
+                   case 'cardNumber':
+                       errDom = 'cardNumber';
+                       break;
+                   case 'expiry':
+                       errDom = 'expiry';
+                       break;
+                   case 'cvc':
+                       errDom = 'cvc';
+                       break;
+                   }
+
+
+                   if (event && event.detail && event.detail.error && event.detail.error.message && event.detail.error.message.trim() !== "")
+                   {
+                       $('#' + event.detail.type + ' iframe').removeClass('awx-focus').addClass('awx-error');
+                       $('#' + event.detail.type ).siblings('.icon-container').removeClass('awx-focus').addClass('awx-error');
+
+                       $('.' + errDom + '-invalid-tooltip').html( '' ).html(event.detail.error.message).show();
+                   }
+                   else
+                   {
+                       $('#' + event.detail.type + ' iframe').removeClass('awx-error');
+                       $('#' + event.detail.type ).siblings('.icon-container').removeClass('awx-error');
+
+                       $('.' + errDom + '-invalid-tooltip').html( '' ).hide();
+                   }
+
+
                    $('#' + event.detail.type + ' iframe').removeClass('awx-focus');
                    $('#' + event.detail.type ).siblings('.icon-container').removeClass('awx-focus');
                 });
@@ -362,7 +343,6 @@
                 });
 
                 $('#pay-button').click(function(){
-                    validateApiKey();
                     submitPaymentForm();
                 });
             });
@@ -372,8 +352,6 @@
                 $.ajax({
                     url : $( '#pay-button' ).attr( 'data-action' ),
                     data : {
-                        'client-id': $('#client-id').val(),
-                        'api-key': $('#api-key').val(),
                         '<?= $this->security->get_csrf_token_name() ?>':'<?= $this->security->get_csrf_hash() ?>'
                     },
                     type : 'post',
@@ -385,27 +363,6 @@
                     {
                         if ( data.result == '0' )
                         {
-                            if ( data.msg.client_id != undefined && data.msg.client_id.length > 0 )
-                            {
-                                var clientId = $( '#client-id' );
-                                $('#error-user').html(data.msg.client_id);
-                                clientId.focus();
-                            }
-
-                            if ( data.msg.api_key != undefined && data.msg.api_key.length > 0 )
-                            {
-                                var apiKey = $( '#api-key' );
-                                $('#error-user').html(data.msg.api_key);
-                                apiKey.focus();
-                            }
-
-                            if ( data.msg.token != undefined && data.msg.token.length > 0 )
-                            {
-                                var clientId = $( '#client-id' );
-                                $('#error-user').html(data.msg.token);
-                                clientId.focus();
-                            }
-
                             $('#pay-button').html('<i class="icon-credit-card"></i> Pay $80.05').prop('disabled', false);
                         }
                         else if( data.result=='1' && data.intent != undefined )
@@ -419,7 +376,7 @@
                             })
                             .then((response) => {
                                 // Handle successful responses
-                                window.location = '/success?id=' + data.intent.id + '&c=' + $('#client-id').val() + '&k=' + $('#api-key').val();
+                                window.location = '/success?id=' + data.intent.id;
 
                             })
                             .catch((response) => {
@@ -438,37 +395,6 @@
                 });
             }
 
-            function validateApiKey( event )
-            {
-                var isValid     = false;
-                var clientId        = $( '#client-id' );
-                var apiKey       = $( '#api-key' );
-                var clientIdVal     = $( clientId ).val().trim();
-                var apiKeyVal    = $( apiKey ).val().trim();
-                var re = /\S+@\S+\.\S+/;
-
-                if ( clientIdVal.length == 0 )
-                {
-                    $('#error-user').html('The Client Id field is required.');
-                    clientId.focus();
-                }
-                else if ( apiKeyVal.length == 0 )
-                {
-                    $('#error-user').html('The Api Key field is required.');
-                    apiKey.focus();
-                }
-                else
-                {
-                    $('#error-user').html('');
-                    isValid = true;
-                }
-
-                if ( ! isValid )
-                {
-                    event.preventDefault();
-                }
-            }
-            
         </script>
     </body>
 </html>

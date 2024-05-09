@@ -5,7 +5,7 @@ if ( ! class_exists( 'Awx_Controller', FALSE ) )
     require_once( APPPATH . 'controllers/Awx_Controller.php' );
 }
 
-class Embedded_Elements_Controller extends Awx_Controller
+class Card_Embedded_Elements_Controller extends Awx_Controller
 {
     /**
      * Constructor
@@ -24,43 +24,6 @@ class Embedded_Elements_Controller extends Awx_Controller
      */
     public function index()
     {
-    }
-
-    // --------------------------------------------------------------------
-
-    /**
-     * Google Pay Checkout Page.
-     */
-    public function googlepay()
-    {
-        $token = $this->get_api_token( $this->client_id, $this->api_key );
-
-        // Create a Payment Intent with the customer id
-        $order = [
-            'request_id'        => random_string(),
-            'amount'            => 245.00,
-            'currency'          => 'CNY',
-            'merchant_order_id' => random_string( 'alnum', 32 ),
-            'order' => [
-                'products' => [
-                    [
-                    'code' => random_string(),
-                    'sku'  => random_string(),
-                    'name' => 'Premium Membership - 1 Year',
-                    'desc' => ' Yearly Premium Membership subscription',
-                    'quantity' => 1,
-                    'unit_price' => 245,
-                    'type' => 'virtual'
-                    ],
-                ],
-            ],
-            'return_url' => ''
-        ];
-
-        $this->vars[ 'intent' ] = $this->get_secret( $token, $order );
-
-
-        $this->load->view( 'apms/googlepay', $this->vars );
     }
 
     // --------------------------------------------------------------------
@@ -237,10 +200,6 @@ class Embedded_Elements_Controller extends Awx_Controller
      */
     public function embedded_fields()
     {
-        $this->vars[ 'client_id' ]      = $this->input->get( 'c', TRUE );
-        $this->vars[ 'api_key' ]        = $this->input->get( 'k', TRUE );
-        $this->vars[ 'customer_id' ]    = $this->input->get( 'cu', TRUE );
-
 
         $this->load->view( 'embedded_fields_checkout', $this->vars );
     }
@@ -257,37 +216,8 @@ class Embedded_Elements_Controller extends Awx_Controller
             show_error(404);
         }
 
-        $rules = [
-            [
-                'field' => 'client-id',
-                'label' => 'Client ID',
-                'rules' => 'trim|required|max_length[225]'
-            ],
-            [
-                'field' => 'api-key',
-                'label' => 'API Key',
-                'rules' => 'trim|required|max_length[225]'
-            ]
-        ];
-        $config = [
-            'error_prefix' => '',
-            'error_suffix' => '',
-        ];
-        $this->load->library( 'form_validation', $config );
-        $this->form_validation->set_rules( $rules );
-
-        if ( $this->form_validation->run() === FALSE )
-        {
-            $error_msg = [
-                'client_id'   => form_error( 'client-id' ),
-                'api_key'     => form_error( 'api-key' )
-            ];
-            $this->json_response( [ 'result' => 0, 'msg' => $error_msg ] );
-            return FALSE;
-        }
-
-        $client_id = $this->input->post( 'client-id', TRUE );
-        $api_key = $this->input->post( 'api-key', TRUE );
+        $client_id  = $this->client_id;
+        $api_key    = $this->api_key;
 
         $token = $this->get_api_token( $client_id, $api_key );
 
@@ -301,7 +231,7 @@ class Embedded_Elements_Controller extends Awx_Controller
 
         $order = [
             'request_id'        => random_string(),
-            'amount'            => '18',
+            'amount'            => '860',
             'currency'          => 'USD',
             'merchant_order_id' => random_string( 'alnum', 32 ),
         ];

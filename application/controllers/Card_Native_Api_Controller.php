@@ -5,7 +5,7 @@ if ( ! class_exists( 'Awx_Controller', FALSE ) )
     require_once( APPPATH . 'controllers/Awx_Controller.php' );
 }
 
-class Native_Api_Controller extends Awx_Controller
+class Card_Native_Api_Controller extends Awx_Controller
 {
     /**
      * Constructor

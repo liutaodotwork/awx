@@ -4,10 +4,20 @@ $route['testing']['get']   = 'Test_Controller/index';
 $route['test-webhook']['get']   = 'Test_Controller/test_webhook';
 
 // Native API
-$route['payments/cards/native-api']                             = 'Native_Api_Controller/native_api';
-$route['payments/cards/native-api-checkout']['post']            = 'Native_Api_Controller/do_checkout_native_api';
-$route['payments/cards/native-api-callback']['post']            = 'Native_Api_Controller/three_ds_callback';
-$route['payments/cards/native-api-3ds-result/(:num)']['get']    = 'Native_Api_Controller/three_ds_result/$1';
+$route['payments/cards/native-api']                             = 'Card_Native_Api_Controller/native_api';
+$route['payments/cards/native-api-checkout']['post']            = 'Card_Native_Api_Controller/do_checkout_native_api';
+$route['payments/cards/native-api-callback']['post']            = 'Card_Native_Api_Controller/three_ds_callback';
+$route['payments/cards/native-api-3ds-result/(:num)']['get']    = 'Card_Native_Api_Controller/three_ds_result/$1';
+
+
+// Embedded Fields
+$route['payments/cards/embedded-fields'][ 'get' ]   = 'Card_Embedded_Elements_Controller/embedded_fields';
+$route['payments/cards/embedded-fields']['post']    = 'Card_Embedded_Elements_Controller/do_checkout_embedded_fields';
+
+
+$route['embedded-fields-for-card-payments'] = 'Embedded_Elements_Controller/embedded_fields';
+$route['embedded-fields-checkout']['post'] = 'Embedded_Elements_Controller/do_checkout_embedded_fields';
+
 
 // Hosted Payment Page
 $route['payments/hpp'] = 'Hpp_Controller/hpp';
@@ -15,17 +25,21 @@ $route['payments/hpp'] = 'Hpp_Controller/hpp';
 
 
 // APM Native API Payment Page
-$route['payments/apms/alipay']['get']              = 'Apm_Native_Api_Controller/alipay';
-$route['payments/apms/alipay-auth']['post']    = 'Apm_Native_Api_Controller/alipay_auth';
+$route['payments/apms/alipay']['get']               = 'Apm_Native_Api_Controller/alipay';
+$route['payments/apms/alipay-auth']['post']         = 'Apm_Native_Api_Controller/alipay_auth';
 $route['payments/apms/pay-with-alipay-consent'][ 'post' ]    = 'Apm_Native_Api_Controller/pay_with_alipay_consent';
 
 
-$route['payments/apms/googlepay']['get']              = 'Embedded_Elements_Controller/googlepay';
+// Google Pay
+$route['payments/apms/googlepay']['get']              = 'googlepay/Googlepay_Controller/index';
+
+// Apple Pay
+$route['payments/apms/applepay']['get']              = 'applepay/Applepay_Controller/index';
 
 
 $route['demo']['get']   = 'Embedded_Fields_Controller/demo';
-$route['embedded-fields-for-card-payments'] = 'Embedded_Fields_Controller/embedded_fields';
-$route['embedded-fields-checkout']['post'] = 'Embedded_Fields_Controller/do_checkout_embedded_fields';
+$route['embedded-fields-for-card-payments'] = 'Embedded_Elements_Controller/embedded_fields';
+$route['embedded-fields-checkout']['post'] = 'Embedded_Elements_Controller/do_checkout_embedded_fields';
 
 // Save cards
 $route['embedded-fields-for-saving-cards'] = 'Embedded_Fields_Controller/embedded_fields_save_cards';

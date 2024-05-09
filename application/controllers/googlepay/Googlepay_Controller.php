@@ -5,7 +5,7 @@ if ( ! class_exists( 'Awx_Controller', FALSE ) )
     require_once( APPPATH . 'controllers/Awx_Controller.php' );
 }
 
-class Hpp_Controller extends Awx_Controller
+class Googlepay_Controller extends Awx_Controller
 {
     /**
      * Constructor
@@ -17,21 +17,13 @@ class Hpp_Controller extends Awx_Controller
         parent::__construct();
     }
 
+
     // --------------------------------------------------------------------
 
     /**
      * Checkout Page.
      */
     public function index()
-    {
-    }
-
-    // --------------------------------------------------------------------
-
-    /**
-     * Checkout Page.
-     */
-    public function hpp()
     {
         $token = $this->get_api_token( $this->client_id, $this->api_key );
 
@@ -148,7 +140,7 @@ class Hpp_Controller extends Awx_Controller
 
         $this->vars[ 'intent_twd' ] = $intent_twd;
 
-        $this->load->view( 'hpp', $this->vars );
+        $this->load->view( 'googlepay/googlepay', $this->vars );
     }
 
 }

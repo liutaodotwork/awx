@@ -95,6 +95,10 @@
                         requiredBillingContactFields: [
                             'postalAddress', 'email', 'name', 'phone', 'phoneticName'
                         ],
+                    },
+                    googlePayRequestOptions: {
+                        buttonType: 'buy', // Indicate the type of button you want displayed on your payments form. Like 'buy' 
+                        countryCode: 'HK', // The merchant's two-letter ISO 3166 country code. Like 'HK' 
                     }
                 });
 
