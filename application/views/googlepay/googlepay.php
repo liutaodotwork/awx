@@ -49,6 +49,10 @@
       const element = Airwallex.createElement('googlePayButton', {
           intent_id: "<?= $intent[ 'id' ] ?>",
           client_secret: "<?= $intent[ 'client_secret' ] ?>",
+          amount: {
+            value: '245.00',
+            currency: 'CNY',
+          },
           autoCapture: true,
           merchantInfo: {
             merchantName: 'FanLi',
