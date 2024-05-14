@@ -52,7 +52,7 @@
           client_secret: "<?= $intent[ 'client_secret' ] ?>",
           amount: {
             value: '245.00',
-            currency: 'CNY',
+            currency: 'JPY',
           },
           autoCapture: true,
           merchantInfo: {
