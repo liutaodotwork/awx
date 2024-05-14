@@ -116,6 +116,19 @@
                         </p>
                         <p id="error-payment" class="text-primary mb-3"></p>
                         <div class="row">
+
+                            <div class="form-group col-12">
+
+                              <select class="form-control" id="validationCustom03" required="">
+                                  <option value="en">Select Error Message Language...</option>
+                                  <option value="en">English</option>
+                                  <option value="zh">Simplified Chinese</option>
+                                  <option value="zh-HK">Traditional Chinese</option>
+                                  <option value="ja">Japanese</option>
+                                  <option value="ko">Korean</option>
+                              </select>
+                            </div>
+
                             <div class="form-group col-12">
                                 <div class="icon-container">
                                     <i class="icon-credit-card"></i>
@@ -137,13 +150,14 @@
                                 <div id="cvc"></div>
                                 <div class="cvc-invalid-tooltip invalid-tooltip"></div>
                             </div>
+
                             
 
                             <div class="form-group col-12 text-center paddin-top-1x">
                                 <div class="row">
                                     <div class="col-sm-3"></div>
                                     <div class="col-sm-6">
-                                        <button id="pay-button" class="btn btn-primary btn-block" disabled type="button" data-action="<?= site_url( 'payments/cards/embedded-fields' ) ?>"><i class="icon-credit-card"></i> Pay </button>
+                                        <button id="pay-button" class="btn btn-primary btn-block" disabled type="button" data-action="<?= site_url( 'payments/cards/embedded-fields' ) ?>"><i class="icon-credit-card"></i> Pay $80.59</button>
                                     </div>
                                     <div class="col-sm-3"></div>
                                   </div>
@@ -194,6 +208,7 @@
                     Airwallex.init({
                         env: 'demo', // Setup which Airwallex env('staging' | 'demo' | 'prod') to integrate with
                         origin: window.location.origin, // Setup your event target to receive the browser events message
+                        locale: 'zh-HK'
                     });
 
                     // STEP #4: Create split card elements
@@ -320,7 +335,7 @@
                     {
                         if ( data.result == '0' )
                         {
-                            $('#pay-button').html('<i class="icon-credit-card"></i> Pay $80.05').prop('disabled', false);
+                            $('#pay-button').html('<i class="icon-credit-card"></i> Pay $80.59').prop('disabled', false);
                         }
                         else if( data.result=='1' && data.intent != undefined )
                         {
@@ -338,13 +353,13 @@
                             })
                             .catch((response) => {
                                 // Handle error responses
-                                console.log( response.original_code );
+                                console.log( response );
                             
                                 var modal = $('#modal-failure');
 
                                 $(modal).modal('show');
 
-                                $('#pay-button').html('<i class="icon-credit-card"></i> Pay $80.05').prop('disabled', false);
+                                $('#pay-button').html('<i class="icon-credit-card"></i> Pay $80.59').prop('disabled', false);
 
                             });
                         }

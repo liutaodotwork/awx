@@ -59,6 +59,7 @@
           },
           origin: window.location.origin,
           countryCode: 'HK', // merchant country code
+          locale: 'ja'
       });
       // STEP #5: Mount 'googlePayButton' element
       const domElement = element.mount('googlePayButton');
