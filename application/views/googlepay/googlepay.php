@@ -30,7 +30,7 @@
         <div class="col-12">
             <h6 class="text-muted text-lg text-uppercase">GooglePay Example</h6>
             <hr class="margin-bottom-1x">
-                <div id="googlePayButton"></div>
+                <div id="applePayButton"></div>
             </div>
 
         </div>
@@ -44,10 +44,10 @@
       Airwallex.init({
         env: 'demo', // Setup which Airwallex env('staging' | 'demo' | 'prod') to integrate with
         origin: window.location.origin, // Setup your event target to receive the browser events message
-        locale: 'ja'
+        locale: 'zh-HK'
       });
       // STEP #4: Create 'googlePayButton' element
-      const element = Airwallex.createElement('googlePayButton', {
+      const element = Airwallex.createElement('applePayButton', {
           intent_id: "<?= $intent[ 'id' ] ?>",
           client_secret: "<?= $intent[ 'client_secret' ] ?>",
           amount: {
@@ -63,7 +63,7 @@
           locale: 'ja'
       });
       // STEP #5: Mount 'googlePayButton' element
-      const domElement = element.mount('googlePayButton');
+      const domElement = element.mount('applePayButton');
 
       // STEP #6: Add an event listener to handle events when the element is mounted
       domElement.addEventListener('onReady', (event) => {
