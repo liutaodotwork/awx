@@ -44,7 +44,7 @@
       Airwallex.init({
         env: 'demo', // Setup which Airwallex env('staging' | 'demo' | 'prod') to integrate with
         origin: window.location.origin, // Setup your event target to receive the browser events message
-        locale: 'zh-HK'
+        locale: 'ja'
       });
       // STEP #4: Create 'googlePayButton' element
       const element = Airwallex.createElement('googlePayButton', {
@@ -60,7 +60,7 @@
           },
           origin: window.location.origin,
           countryCode: 'HK', // merchant country code
-          locale: 'zh-HK'
+          locale: 'ja'
       });
       // STEP #5: Mount 'googlePayButton' element
       const domElement = element.mount('googlePayButton');
