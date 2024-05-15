@@ -47,7 +47,7 @@
         locale: 'zh-HK'
       });
       // STEP #4: Create 'googlePayButton' element
-      const element = Airwallex.createElement('googlePayButton', {
+      const element = Airwallex.createElement('googlepaybutton', {
           intent_id: "<?= $intent[ 'id' ] ?>",
           client_secret: "<?= $intent[ 'client_secret' ] ?>",
           amount: {
@@ -60,6 +60,7 @@
           },
           origin: window.location.origin,
           countryCode: 'HK', // merchant country code
+          locale: 'zh-HK'
       });
       // STEP #5: Mount 'googlePayButton' element
       const domElement = element.mount('googlePayButton');
