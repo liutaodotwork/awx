@@ -142,7 +142,7 @@
                             </div>
 
                             <div class="form-group col-6">
-                              <label for="msg-lang" style="padding-left: 0;">Select Error Message Language</label>
+                              <label for="msg-lang" style="padding-left: 0;">Error Message Language</label>
                               <select class="form-control" id="msg-lang">
                                   <option value="en" <?= ( $lang == 'en' ) ? 'selected ' : '' ?>>English</option>
                                   <option value="zh" <?= ( $lang == 'zh' ) ? 'selected ' : '' ?>>Simplified Chinese</option>
@@ -184,8 +184,8 @@
                         <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                     </div>
                     <div class="modal-body">
-                        <p class="mt-3">Your payment failed, but you can <b> try again with another card</b>.</p>
-                        <p>Please ensure that the billing address you provided is the same one where your debit/credit card is registered.</p>
+                        <p> <strong>Error Message:</strong> <span id="auth-error-msg"></span></p>
+                        <p> <strong>Original Code:</strong> <span id="auth-error-code"></span></p>
                         <div class="padding-top-1x text-center">
                         <button class="btn btn-primary" type="button" data-dismiss="modal"><i class="icon-credit-card"></i> Try Again</a>
                         </div>
@@ -255,6 +255,7 @@
 
                 }
 
+
                 window.addEventListener('onReady', (event) => {
                     if( 'cvc' == event.detail.type)
                     {
@@ -263,11 +264,14 @@
                     }
                 });
 
+
                 window.addEventListener('onFocus', (event) => {
                     $('#' + event.detail.type + ' iframe').addClass('awx-focus');
                     $('#' + event.detail.type ).siblings('.icon-container').addClass('awx-focus');
                 });
 
+
+                //
                 window.addEventListener('onBlur', (event) => {
 
                    console.log( event );
@@ -308,6 +312,8 @@
                    $('#' + event.detail.type ).siblings('.icon-container').removeClass('awx-focus');
                 });
 
+
+                //
                 window.addEventListener('onChange', (event) => {
                     if( 'cardNumber' == event.detail.type  ) card_is_completed = event.detail.complete;
                     if( 'expiry' == event.detail.type ) expiry_is_completed = event.detail.complete;
@@ -316,6 +322,8 @@
                     $( '#pay-button' ).prop('disabled', !(card_is_completed && expiry_is_completed && cvc_is_completed));
                 });
 
+
+                //
                 $('#pay-button').click(function(){
                     submitPaymentForm();
                 });
@@ -329,9 +337,6 @@
                         updateLanguageInUrl(selectedLanguage);
                     }
                 });
-
-
-
 
             });
 
@@ -372,6 +377,9 @@
                                 console.log( response );
                             
                                 var modal = $('#modal-failure');
+
+                                $( '#auth-error-msg' ).html( response.message );
+                                $( '#auth-error-code' ).html( response.original_code );
 
                                 $(modal).modal('show');
 
