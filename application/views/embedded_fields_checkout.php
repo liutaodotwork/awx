@@ -379,7 +379,15 @@
                                 var modal = $('#modal-failure');
 
                                 $( '#auth-error-msg' ).html( response.message );
-                                $( '#auth-error-code' ).html( response.original_code );
+
+                                if (response.original_code)
+                                {
+                                    $( '#auth-error-code' ).html( response.original_code );
+                                }
+                                else
+                                {
+                                    $( '#auth-error-code' ).html( 'N/A' );
+                                }
 
                                 $(modal).modal('show');
 
