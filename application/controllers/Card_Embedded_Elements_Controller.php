@@ -195,6 +195,15 @@ class Card_Embedded_Elements_Controller extends Awx_Controller
      */
     public function embedded_fields()
     {
+        $lang = $this->input->get( 'lang', TRUE );
+
+        if ( ! in_array( $lang, [ 'en', 'zh', 'zh-HK', 'ja', 'ko' ] ) )
+        {
+            $lang = 'en';
+        }
+
+        $this->vars[ 'lang' ] = $lang;
+
         $this->load->view( 'embedded_fields_checkout', $this->vars );
     }
 

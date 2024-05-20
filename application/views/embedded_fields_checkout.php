@@ -101,7 +101,7 @@
         <div class="accordion" id="accordion" role="tablist">
             <div class="card">
               <div class="card-header" role="tab">
-                <h6><a class="" href="#newcard" data-toggle="collapse" aria-expanded="true">Pay with A New Card</a></h6>
+                <h6><a class="" href="#newcard" data-toggle="collapse" aria-expanded="true">Pay with Card</a></h6>
               </div>
               <div class="collapse show" id="newcard" data-parent="#accordion" role="tabpanel" style="">
                 <div class="card-body">
@@ -113,21 +113,11 @@
                         <img class="d-inline-block align-middle" src="https://checkout-demo.airwallex.com/static/media/amex.f6c1eb25db0f19a0aada.svg" height="24" alt="JCB">
                         <img class="d-inline-block align-middle" src="https://checkout-demo.airwallex.com/static/media/jcb.9c8dde0afb56485cd18e.svg" height="24" alt="JCB">
                         <img class="d-inline-block align-middle" src="https://checkout-demo.airwallex.com/static/media/unionpay.9421a757c6289e8c65ec.svg" height="24" alt="UnionPay">
+                        <img class="d-inline-block align-middle" src="https://checkout-demo.airwallex.com/static/media/diners.e7ac1a6d6dc9664b8202.svg" height="24" alt="Diners Club">
+                        <img class="d-inline-block align-middle" src="https://checkout-demo.airwallex.com/static/media/discover.7f4c984384f28909560f.svg" height="24" alt="Discover">
                         </p>
                         <p id="error-payment" class="text-primary mb-3"></p>
                         <div class="row">
-
-                            <div class="form-group col-12">
-
-                              <select class="form-control" id="validationCustom03" required="">
-                                  <option value="en">Select Error Message Language...</option>
-                                  <option value="en">English</option>
-                                  <option value="zh">Simplified Chinese</option>
-                                  <option value="zh-HK">Traditional Chinese</option>
-                                  <option value="ja">Japanese</option>
-                                  <option value="ko">Korean</option>
-                              </select>
-                            </div>
 
                             <div class="form-group col-12">
                                 <div class="icon-container">
@@ -151,7 +141,19 @@
                                 <div class="cvc-invalid-tooltip invalid-tooltip"></div>
                             </div>
 
-                            
+                            <div class="form-group col-6">
+                              <label for="msg-lang" style="padding-left: 0;">Select Error Message Language</label>
+                              <select class="form-control" id="msg-lang">
+                                  <option value="en" <?= ( $lang == 'en' ) ? 'selected ' : '' ?>>English</option>
+                                  <option value="zh" <?= ( $lang == 'zh' ) ? 'selected ' : '' ?>>Simplified Chinese</option>
+                                  <option value="zh-HK" <?= ( $lang == 'zh-HK' ) ? 'selected ' : '' ?>>Traditional Chinese</option>
+                                  <option value="ja" <?= ( $lang == 'ja' ) ? 'selected ' : '' ?>>Japanese</option>
+                                  <option value="ko" <?= ( $lang == 'ko' ) ? 'selected ' : '' ?>>Korean</option>
+                              </select>
+                            </div>
+                            <div class="form-group col-6"></div>
+
+
 
                             <div class="form-group col-12 text-center paddin-top-1x">
                                 <div class="row">
@@ -195,11 +197,11 @@
         <script src="https://checkout.airwallex.com/assets/elements.bundle.min.js"></script>
 
         <script>
-            $( document ).ready( function()
+            $(document).ready(function()
             {
-                var card_is_completed = false;
+                var card_is_completed   = false;
                 var expiry_is_completed = false;
-                var cvc_is_completed = false;
+                var cvc_is_completed    = false;
 
                 var button_text = $('#pay-button').html();
 
@@ -208,14 +210,14 @@
                     Airwallex.init({
                         env: 'demo', // Setup which Airwallex env('staging' | 'demo' | 'prod') to integrate with
                         origin: window.location.origin, // Setup your event target to receive the browser events message
-                        locale: 'zh-HK'
+                        locale: '<?= $lang ?>'
                     });
 
                     // STEP #4: Create split card elements
                     const cardNumber = Airwallex.createElement('cardNumber', {
                         'placeholder': 'Card Number',
                         'autoCapture': true,
-                        'allowedCardNetworks': [ 'amex', 'visa', 'mastercard', 'maestro', 'unionpay', 'jcb' ],
+                        'allowedCardNetworks': [ 'visa', 'mastercard', 'amex', 'maestro', 'unionpay', 'jcb', 'diners', 'discover' ],
                         'style' : {
                             'base' : {
                                 'color': '#505050',
@@ -235,7 +237,7 @@
                         }
                     });
                     const cvc = Airwallex.createElement('cvc', {
-                        'placeholder': 'CVV',
+                        'placeholder': 'CVC/CVV',
                         'style' : {
                             'base' : {
                                 'color': '#505050',
@@ -317,6 +319,20 @@
                 $('#pay-button').click(function(){
                     submitPaymentForm();
                 });
+
+
+                $('#msg-lang').change(function()
+                {
+                    var selectedLanguage = $(this).val();
+                    if (selectedLanguage)
+                    {
+                        updateLanguageInUrl(selectedLanguage);
+                    }
+                });
+
+
+
+
             });
 
             function submitPaymentForm()
@@ -365,6 +381,13 @@
                         }
                     }
                 });
+            }
+
+            function updateLanguageInUrl(lang)
+            {
+                const url = new URL(window.location.href);
+                url.searchParams.set('lang', lang);
+                window.location.href = url.toString();
             }
 
         </script>
