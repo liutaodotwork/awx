@@ -44,7 +44,7 @@
       Airwallex.init({
         env: 'demo', // Setup which Airwallex env('staging' | 'demo' | 'prod') to integrate with
         origin: window.location.origin, // Setup your event target to receive the browser events message
-        locale: 'en'
+        locale: 'zh'
       });
       // STEP #4: Create 'applePayButton' element
       const element = Airwallex.createElement('applePayButton', {
@@ -61,15 +61,9 @@
           },
           origin: window.location.origin,
           countryCode: 'HK', // merchant country code
-          lineItems: [
-            {
-                label: "WEEKLY PRODUCT",
-                amount: "0.00",
-                type: "pending",
-                paymenttiming: "deferred",
-                deferredPaymentDate: new Date("2026-07-01T00:00:00")
-            }
-           ],
+          totalPriceLabel: 'WEEKLY', // merchant country code
+          totalPriceType: 'pending', // merchant country code
+          buttonType:'rent',
       });
       // STEP #5: Mount 'applePayButton' element
       const domElement = element.mount('applePayButton');
