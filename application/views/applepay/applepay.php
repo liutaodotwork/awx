@@ -61,7 +61,7 @@
           },
           origin: window.location.origin,
           countryCode: 'HK', // merchant country code
-          totalPriceLabel: 'WEEKLY', // merchant country code
+          totalPriceLabel: '这里显示公司名称', // merchant country code
           totalPriceType: 'pending', // merchant country code
           buttonType:'rent',
       });
