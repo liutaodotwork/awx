@@ -44,7 +44,7 @@
       Airwallex.init({
         env: 'demo', // Setup which Airwallex env('staging' | 'demo' | 'prod') to integrate with
         origin: window.location.origin, // Setup your event target to receive the browser events message
-        locale: 'ja'
+        locale: 'en'
       });
       // STEP #4: Create 'applePayButton' element
       const element = Airwallex.createElement('applePayButton', {
