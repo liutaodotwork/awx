@@ -195,14 +195,16 @@ class Card_Embedded_Elements_Controller extends Awx_Controller
      */
     public function embedded_fields()
     {
-        $lang = $this->input->get( 'lang', TRUE );
+        // Checkout flow
+        $flow = $this->input->get( 'flow', TRUE );
 
-        if ( ! in_array( $lang, [ 'en', 'zh', 'zh-HK', 'ja', 'ko' ] ) )
+        if ( ! in_array( $flow, [ '1', '2', '3', '4', '5' ] ) )
         {
-            $lang = 'en';
+            $flow = '1';
         }
 
-        $this->vars[ 'lang' ] = $lang;
+        $this->vars[ 'flow' ] = $flow;
+
 
         $this->load->view( 'embedded_fields_checkout', $this->vars );
     }
@@ -234,7 +236,7 @@ class Card_Embedded_Elements_Controller extends Awx_Controller
 
         $order = [
             'request_id'        => random_string(),
-            'amount'            => '80.59',
+            'amount'            => '80.05',
             'currency'          => 'USD',
             'merchant_order_id' => random_string( 'alnum', 32 ),
         ];
