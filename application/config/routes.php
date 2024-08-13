@@ -1,27 +1,30 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-$route['testing']['get']   = 'Test_Controller/index';
+$route['testing']['get']        = 'Test_Controller/index';
 $route['test-webhook']['get']   = 'Test_Controller/test_webhook';
+
+// Hosted Payment Page
+$route['payments/hpp'] = 'Hpp_Controller/hpp';
+
+
+// Drop-in Payment Page
+$route['payments/drop-in'] = 'Dropin_Controller/index';
+
+
+// Embedded Fields
+$route['payments/cards/embedded-fields'][ 'get' ]   = 'Card_Embedded_Elements_Controller/index';
+$route['payments/cards/embedded-fields']['post']    = 'Card_Embedded_Elements_Controller/do_checkout_embedded_fields';
+
+$route['payments/cards/embedded-fields-save-cards']['post']    = 'Card_Embedded_Elements_Controller/do_save_cards_embedded_fields';
+
+$route['embedded-fields-for-card-payments'] = 'Embedded_Elements_Controller/embedded_fields';
+$route['embedded-fields-checkout']['post'] = 'Embedded_Elements_Controller/do_checkout_embedded_fields';
 
 // Native API
 $route['payments/cards/native-api']                             = 'Card_Native_Api_Controller/native_api';
 $route['payments/cards/native-api-checkout']['post']            = 'Card_Native_Api_Controller/do_checkout_native_api';
 $route['payments/cards/native-api-callback']['post']            = 'Card_Native_Api_Controller/three_ds_callback';
 $route['payments/cards/native-api-3ds-result/(:num)']['get']    = 'Card_Native_Api_Controller/three_ds_result/$1';
-
-
-// Embedded Fields
-$route['payments/cards/embedded-fields'][ 'get' ]   = 'Card_Embedded_Elements_Controller/embedded_fields';
-$route['payments/cards/embedded-fields']['post']    = 'Card_Embedded_Elements_Controller/do_checkout_embedded_fields';
-
-
-$route['embedded-fields-for-card-payments'] = 'Embedded_Elements_Controller/embedded_fields';
-$route['embedded-fields-checkout']['post'] = 'Embedded_Elements_Controller/do_checkout_embedded_fields';
-
-
-// Hosted Payment Page
-$route['payments/hpp'] = 'Hpp_Controller/hpp';
-
 
 
 // APM Native API Payment Page
@@ -41,14 +44,8 @@ $route['demo']['get']   = 'Embedded_Fields_Controller/demo';
 $route['embedded-fields-for-card-payments'] = 'Embedded_Elements_Controller/embedded_fields';
 $route['embedded-fields-checkout']['post'] = 'Embedded_Elements_Controller/do_checkout_embedded_fields';
 
-// Save cards
-$route['embedded-fields-for-saving-cards'] = 'Embedded_Fields_Controller/embedded_fields_save_cards';
-$route['embedded-fields-save-cards']['post'] = 'Embedded_Fields_Controller/do_save_cards_embedded_fields';
-
 // MIT
 $route['embedded-fields-charge-fees']['post'] = 'Embedded_Fields_Controller/do_charge_fees';
-
-
 
 
 $route['nc-native-api-for-card-payments'] = 'Nc_native_Api_Controller/native_api';

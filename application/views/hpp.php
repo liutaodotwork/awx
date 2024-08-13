@@ -86,7 +86,7 @@
                     client_secret: "<?= $intent_hkd[ 'client_secret' ] ?>", // Required
                     successUrl: "<?= site_url( 'payments/hpp' ) ?>", // Must be HTTPS sites
                     failUrl: 'https://www.google.com', // Must be HTTPS sites
-                    methods: [],
+                    methods: ['card'],
                     applePayRequestOptions: {
                         buttonType: 'buy', // Indicate the type of button you want displayed on your payments form. Like 'buy' 
                         buttonColor: 'white-with-line', // Indicate the color of the button. Default value is 'black' 

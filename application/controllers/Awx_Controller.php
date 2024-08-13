@@ -65,7 +65,6 @@ class Awx_Controller extends CI_Controller
                 $this->client_id = $row[ 'value' ];
             }
         }
-
     }
 
     // --------------------------------------------------------------------

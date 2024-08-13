@@ -24,16 +24,18 @@ class Card_Embedded_Elements_Controller extends Awx_Controller
      */
     public function index()
     {
-    }
+        // Checkout flow
+        $flow = $this->input->get( 'flow', TRUE );
 
-    // --------------------------------------------------------------------
+        if ( ! in_array( $flow, [ '1', '2', '3', '4', '5' ] ) )
+        {
+            $flow = '1';
+        }
 
-    /**
-     * Save cards Page.
-     */
-    public function embedded_fields_save_cards()
-    {
-        $this->load->view( 'embedded_fields_save_cards', $this->vars );
+        $this->vars[ 'flow' ] = $flow;
+
+
+        $this->load->view( 'embedded_fields_checkout', $this->vars );
     }
 
     // --------------------------------------------------------------------
@@ -186,27 +188,6 @@ class Card_Embedded_Elements_Controller extends Awx_Controller
         $this->json_response( [ 'result' => $res  ] );
 
         return TRUE;
-    }
-
-    // --------------------------------------------------------------------
-
-    /**
-     * Checkout Page.
-     */
-    public function embedded_fields()
-    {
-        // Checkout flow
-        $flow = $this->input->get( 'flow', TRUE );
-
-        if ( ! in_array( $flow, [ '1', '2', '3', '4', '5' ] ) )
-        {
-            $flow = '1';
-        }
-
-        $this->vars[ 'flow' ] = $flow;
-
-
-        $this->load->view( 'embedded_fields_checkout', $this->vars );
     }
 
     // --------------------------------------------------------------------
