@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="" tests="3" assertions="1" errors="2" warnings="0" failures="0" skipped="0" time="0.005701">
+    <testsuite name="CodeIgniter Application Test Suite" tests="3" assertions="1" errors="2" warnings="0" failures="0" skipped="0" time="0.005701">
+      <testsuite name="Welcome_test" file="/home/vagrant/code/projects/awx/application/tests/controllers/Welcome_test.php" tests="3" assertions="1" errors="2" warnings="0" failures="0" skipped="0" time="0.005701">
+        <testcase name="test_index" class="Welcome_test" classname="Welcome_test" file="/home/vagrant/code/projects/awx/application/tests/controllers/Welcome_test.php" line="13" assertions="0" time="0.004467">
+          <error type="RuntimeException">Welcome_test::test_index
+RuntimeException: Undefined index: HTTP_HOST on line 26 in file /home/vagrant/code/projects/awx/application/config/config.php
+
+/home/vagrant/code/projects/awx/application/tests/_ci_phpunit_test/CIPHPUnitTestCase.php:180
+/home/vagrant/code/projects/awx/application/config/config.php:26
+/home/vagrant/code/projects/awx/application/tests/_ci_phpunit_test/replacing/core/Common.php:350
+/home/vagrant/code/projects/awx/application/tests/_ci_phpunit_test/replacing/core/Common.php:339
+/home/vagrant/code/projects/awx/application/tests/_ci_phpunit_test/functions.php:114
+/home/vagrant/code/projects/awx/application/tests/_ci_phpunit_test/functions.php:32
+/home/vagrant/code/projects/awx/application/tests/_ci_phpunit_test/CIPHPUnitTestRequest.php:277
+/home/vagrant/code/projects/awx/application/tests/_ci_phpunit_test/CIPHPUnitTestRequest.php:160
+/home/vagrant/code/projects/awx/application/tests/_ci_phpunit_test/CIPHPUnitTestCase.php:155
+/home/vagrant/code/projects/awx/application/tests/controllers/Welcome_test.php:15</error>
+        </testcase>
+        <testcase name="test_method_404" class="Welcome_test" classname="Welcome_test" file="/home/vagrant/code/projects/awx/application/tests/controllers/Welcome_test.php" line="19" assertions="0" time="0.000712">
+          <error type="RuntimeException">Welcome_test::test_method_404
+RuntimeException: Undefined index: HTTP_HOST on line 26 in file /home/vagrant/code/projects/awx/application/config/config.php
+
+/home/vagrant/code/projects/awx/application/tests/_ci_phpunit_test/CIPHPUnitTestCase.php:180
+/home/vagrant/code/projects/awx/application/config/config.php:26
+/home/vagrant/code/projects/awx/application/tests/_ci_phpunit_test/replacing/core/Common.php:350
+/home/vagrant/code/projects/awx/application/tests/_ci_phpunit_test/replacing/core/Common.php:339
+/home/vagrant/code/projects/awx/application/tests/_ci_phpunit_test/functions.php:114
+/home/vagrant/code/projects/awx/application/tests/_ci_phpunit_test/functions.php:32
+/home/vagrant/code/projects/awx/application/tests/_ci_phpunit_test/CIPHPUnitTestRequest.php:277
+/home/vagrant/code/projects/awx/application/tests/_ci_phpunit_test/CIPHPUnitTestRequest.php:160
+/home/vagrant/code/projects/awx/application/tests/_ci_phpunit_test/CIPHPUnitTestCase.php:155
+/home/vagrant/code/projects/awx/application/tests/controllers/Welcome_test.php:21</error>
+        </testcase>
+        <testcase name="test_APPPATH" class="Welcome_test" classname="Welcome_test" file="/home/vagrant/code/projects/awx/application/tests/controllers/Welcome_test.php" line="25" assertions="1" time="0.000522"/>
+      </testsuite>
+    </testsuite>
+  </testsuite>
+</testsuites>

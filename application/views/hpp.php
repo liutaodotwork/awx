@@ -85,7 +85,7 @@
                     intent_id: "<?= $intent_hkd[ 'id' ] ?>", // Required, must provide intent details
                     client_secret: "<?= $intent_hkd[ 'client_secret' ] ?>", // Required
                     successUrl: "<?= site_url( 'payments/hpp' ) ?>", // Must be HTTPS sites
-                    failUrl: 'https://www.google.com', // Must be HTTPS sites
+                    failUrl: 'https://www.google.com',
                     methods: ['card'],
                     applePayRequestOptions: {
                         buttonType: 'buy', // Indicate the type of button you want displayed on your payments form. Like 'buy' 
@@ -101,7 +101,7 @@
                         countryCode: 'HK', // The merchant's two-letter ISO 3166 country code. Like 'HK' 
                     }
                 });
-
+                    
                 return url;
             }
 

@@ -29,8 +29,12 @@ $route['payments/cards/native-api-3ds-result/(:num)']['get']    = 'Card_Native_A
 
 // APM Native API Payment Page
 $route['payments/apms/alipay']['get']               = 'Apm_Native_Api_Controller/alipay';
-$route['payments/apms/alipay-auth']['post']         = 'Apm_Native_Api_Controller/alipay_auth';
-$route['payments/apms/pay-with-alipay-consent'][ 'post' ]    = 'Apm_Native_Api_Controller/pay_with_alipay_consent';
+$route['payments/apms/alipay-pay']['post']         = 'Apm_Native_Api_Controller/alipay_pay';
+
+// Alipay-MIT
+$route['payments/apms/alipay-mit']['get']               = 'Apm_Mit_Native_Api_Controller/alipay';
+$route['payments/apms/alipay-mit-auth']['post']         = 'Apm_Mit_Native_Api_Controller/alipay_auth';
+$route['payments/apms/pay-with-alipay-mit-consent'][ 'post' ]    = 'Apm_Mit_Native_Api_Controller/pay_with_alipay_consent';
 
 
 // Google Pay

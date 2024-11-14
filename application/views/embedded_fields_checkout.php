@@ -130,6 +130,7 @@
 <?php } ?>
 <!-- End of Save card during a payment -->
 
+<div id="auth-form"></div>
 
                     </div>
                 </div>
@@ -183,7 +184,8 @@
                                 'font-family': '-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"',
                                 'font-size': '0.9rem'
                             }
-                        }
+                        },
+                        'authFormContainer' : 'auth-form'
                     });
                     const expiry = Airwallex.createElement('expiry', {
                         'placeholder': 'MM/YY',

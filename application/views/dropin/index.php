@@ -83,26 +83,27 @@
                 // country_code: '', // Consumer location
             });
 
-            dropIn.update( {
-                billing: {
-                    first_name: "First",
-                    last_name: "Last",
-                    email: "email@example.cn",
-                    phone_number: "109911",
-                    address: {
-                        country_code: "US",
-                        state: "CA",
-                        city: "Mammoth Lakes",
-                        street: "2443 Sierra Nevada Road",
-                        postcode: "93546"
-                    },
-                },
-            } );
 
             const domElement = dropIn.mount('dropIn');
 
             domElement.addEventListener('onReady', (event) => {
+                dropIn.update( {
+                    billing: {
+                        first_name: "First",
+                        last_name: "Last",
+                        email: "email@example.cn",
+                        phone_number: "109911",
+                        address: {
+                            country_code: "US",
+                            state: "CA",
+                            city: "Mammoth Lakes",
+                            street: "2443 Sierra Nevada Road",
+                            postcode: "93546"
+                        },
+                    },
+                } );
             });
+
 
             domElement.addEventListener('onSuccess', (event) => {
                 console.log(event.detail);

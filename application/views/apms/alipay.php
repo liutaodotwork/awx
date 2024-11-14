@@ -11,7 +11,6 @@
     <!-- Main Template Styles-->
     <link id="mainStyles" rel="stylesheet" media="screen" href="<?= $asset_path ?>/css/styles.min.css?v=<?= VER ?>">
     <!-- Modernizr-->
-    <script src="<?= $asset_path ?>/js/modernizr.min.js?v=<?= VER ?>"></script>
   </head>
   <!-- Body-->
   <body>
@@ -28,35 +27,21 @@
     <div class="container padding-bottom-3x mb-2">
       <div class="row">
         <div class="col-12">
-            <h6 class="text-muted text-lg text-uppercase">Authorization Example</h6>
+            <h6 class="text-muted text-lg text-uppercase">One-off Payment</h6>
             <hr class="margin-bottom-1x">
 
-<?php if ( empty( $consent_id ) OR empty( $customer_id ) ) { ?>
-            <div class="card text-center">
-                <div class="card-body padding-top-2x">
-                <h4 class="card-title mb-4 text-primary"><i class="icon-user"></i> Authorization</h4>
-                    <p class="card-text">A customer can subscribe to the service you are offering and </p><p class="card-text"> authorize recurring subsequent payments using an Alipay account.</p>
-                </div>
-            </div>
-<?php } else { ?>
-            <div class="card text-center">
-                <div class="card-body padding-top-2x">
-                <h4 class="card-title mb-4 text-success"><i class="icon-check-circle"></i> Authorization Success!</h4>
-                    <p class="card-text">The shopper has just authorized recurring subsequent payments with an Alipay account.</p>
-                    <p class="card-text">As a merchant, you now have the capability to directly debit funds from the Alipay account.</p>
-                </div>
-            </div>
-<?php } ?>
 
             <div class="text-center paddin-top-1x mt-4">
                 <div class="row">
                     <div class="col-sm-4"></div>
                     <div class="col-sm-4">
-<?php if ( empty( $consent_id ) OR empty( $customer_id ) ) { ?>
-                        <button id="auth-button" class="btn btn-primary btn-block" type="button" data-action="<?= site_url( 'payments/apms/alipay-auth' ) ?>"><i class="icon-user"></i> Proceed to Authorize</button>
-<?php } else { ?>
-                        <button id="pay-button" class="btn btn-success btn-block" type="button" data-action="<?= site_url( 'payments/apms/pay-with-alipay-consent' ) ?>"><i class="icon-credit-card"></i> Debit ¥245.00</button>
-<?php } ?>
+                        <button id="pay-mobile-button" class="btn btn-primary btn-block" type="button" data-action="<?= site_url( 'payments/apms/alipay-pay?flow=mobile' ) ?>">Pay HKD 190.00 - Mobile Flow</button>
+                    </div>
+                    <div class="col-sm-4"></div>
+
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-4">
+                        <button id="pay-pc-button" class="btn btn-success btn-block" type="button" data-action="<?= site_url( 'payments/apms/alipay-pay?flow=pc' ) ?>">Pay HKD 190.00 - QRcode Flow</button>
                     </div>
                     <div class="col-sm-4"></div>
                   </div>
@@ -66,57 +51,57 @@
       </div>
     </div>
     <script src="<?= $asset_path ?>/js/vendor.min.js?v=<?= VER ?>"></script>
+    <script src="<?= $asset_path ?>/js/qrcode.min.js?v=<?= VER ?>"></script>
     <script src="<?= $asset_path ?>/js/scripts.min.js?v=<?= VER ?>"></script>
     <script>
         $( document ).ready( function()
         {
-            $('#auth-button').click( function()
+            $('#pay-mobile-button').click( function()
             {
-                submitAuth();
+                submitPaymentMobile();
             });
 
-            $('#pay-button').click( function()
+            $('#pay-pc-button').click( function()
             {
-                submitPayment();
+                submitPaymentPc();
             });
         });
 
-        function submitPayment()
+        function submitPaymentMobile()
         {
             $.ajax({
-                url : $( '#pay-button' ).attr( 'data-action' ),
+                url : $( '#pay-mobile-button' ).attr( 'data-action' ),
                 data : {
-                    'consent' : '<?= $consent_id ?>',
-                    'customer' : '<?= $customer_id ?>',
                     '<?= $this->security->get_csrf_token_name() ?>':'<?= $this->security->get_csrf_hash() ?>'
                 },
                 type : 'post',
                 beforeSend : function()
                 {
-                    $( '#pay-button' ).html('<div class="spinner-border spinner-border-sm text-white mr-2" role="status"></div>Processing...').prop('disabled', true);
+                    $( '#pay-mobile-button' ).html('<div class="spinner-border spinner-border-sm text-white mr-2" role="status"></div>Processing...').prop('disabled', true);
                 },
                 success : function( data )
                 {
-                    window.location = data.msg;
+                    window.location = data.url;
                 }
             });
         }
 
-        function submitAuth()
+        function submitPaymentPc()
         {
             $.ajax({
-                url : $( '#auth-button' ).attr( 'data-action' ),
+                url : $( '#pay-pc-button' ).attr( 'data-action' ),
                 data : {
                     '<?= $this->security->get_csrf_token_name() ?>':'<?= $this->security->get_csrf_hash() ?>'
                 },
                 type : 'post',
                 beforeSend : function()
                 {
-                    $( '#auth-button' ).html('<div class="spinner-border spinner-border-sm text-white mr-2" role="status"></div>Processing...').prop('disabled', true);
+                    $( '#pay-pc-button' ).html('<div class="spinner-border spinner-border-sm text-white mr-2" role="status"></div>Processing...').prop('disabled', true);
                 },
                 success : function( data )
                 {
-                    window.location = data.msg;
+                    // window.location = data.msg;
+                    console.log( QRCode.toDataURL( data.qrcode ) );
                 }
             });
         }
