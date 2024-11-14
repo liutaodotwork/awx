@@ -42,6 +42,7 @@
                     <div class="col-sm-4"></div>
                     <div class="col-sm-4">
                         <button id="pay-pc-button" class="btn btn-success btn-block" type="button" data-action="<?= site_url( 'payments/apms/alipay-pay?flow=pc' ) ?>">Pay HKD 190.00 - QRcode Flow</button>
+                        <div id="qrcode"></div>
                     </div>
                     <div class="col-sm-4"></div>
                   </div>
@@ -101,7 +102,16 @@
                 success : function( data )
                 {
                     // window.location = data.msg;
-                    console.log( QRCode.toDataURL( data.qrcode ) );
+                    // console.log( QRCode.toDataURL( data.qrcode ) );
+
+                    new QRCode(document.getElementById("qrcode"), {
+                        text: data.qrcode,
+                        width: 128,
+                        height: 128,
+                        colorDark : "#000000",
+                        colorLight : "#ffffff",
+                        correctLevel : QRCode.CorrectLevel.H
+                    });
                 }
             });
         }
