@@ -63,25 +63,52 @@
                 currency: "<?= $intent[ 'currency' ] ?>",
                 methods: [ 'card' ],
                 autoCapture: true, // true | false
-                billing: {
-                    first_name: "FirstName",
-                    last_name: "LastName",
-                    email: "email@example.com",
-                    phone_number: "109900",
-                    address: {
-                        country_code: "US",
-                        state: "CA",
-                        city: "Mammoth Lakes",
-                        street: "2443 Sierra Nevada Road",
-                        postcode: "93546"
-                    },
-                },
+                mode: 'payment', // payment | recurring
+                customer_id: 'cus_hkdm2sswsh02hmsh3fj',
+                next_triggered_by: 'customer'
+                // billing: {
+                //     first_name: "FirstName",
+                //     last_name: "LastName",
+                //     email: "email@example.com",
+                //     phone_number: "109900",
+                //     address: {
+                //         country_code: "US",
+                //         state: "CA",
+                //         city: "Mammoth Lakes",
+                //         street: "2443 Sierra Nevada Road",
+                //         postcode: "93546"
+                //     },
+                // },
                 // requiredBillingContactFields: [ 'name', 'email', 'phone', 'address' ],
-                // mode: 'payment', // payment | recurring
-                // customer_id: '',
                 // authorizationType: 'final_auth' // final_auth | pre_auth
                 // country_code: '', // Consumer location
             });
+
+            // const dropIn = Airwallex.createElement('dropIn', {
+            //     intent_id: "<?= $intent[ 'id' ] ?>",
+            //     client_secret: "<?= $intent[ 'client_secret' ] ?>",
+            //     currency: "<?= $intent[ 'currency' ] ?>",
+            //     methods: [ 'card' ],
+            //     autoCapture: true, // true | false
+            //     billing: {
+            //         first_name: "FirstName",
+            //         last_name: "LastName",
+            //         email: "email@example.com",
+            //         phone_number: "109900",
+            //         address: {
+            //             country_code: "US",
+            //             state: "CA",
+            //             city: "Mammoth Lakes",
+            //             street: "2443 Sierra Nevada Road",
+            //             postcode: "93546"
+            //         },
+            //     },
+            //     // requiredBillingContactFields: [ 'name', 'email', 'phone', 'address' ],
+            //     // mode: 'payment', // payment | recurring
+            //     // customer_id: '',
+            //     // authorizationType: 'final_auth' // final_auth | pre_auth
+            //     // country_code: '', // Consumer location
+            // });
 
 
             const domElement = dropIn.mount('dropIn');

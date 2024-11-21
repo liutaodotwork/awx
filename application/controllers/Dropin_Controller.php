@@ -38,12 +38,13 @@ class Dropin_Controller extends Awx_Controller
             'amount'            => 100,
             'currency'          => 'USD',
             'merchant_order_id' => random_string( 'alnum', 32 ),
-            'customer' => [
-                'first_name' => 'Steve',
-                'last_name' => 'Gates',
-                'email' => 'steve.gates@mail.com',
-                'merchant_customer_id' => random_string(),
-            ],
+            'customer_id'       => 'cus_hkdm2sswsh02hmsh3fj',
+            // 'customer' => [
+            //     'first_name' => 'Steve',
+            //     'last_name' => 'Gates',
+            //     'email' => 'steve.gates@mail.com',
+            //     'merchant_customer_id' => random_string(),
+            // ],
             'order' => [
                 'products' => [
                     [
